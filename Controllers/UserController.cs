@@ -7,6 +7,7 @@ using DWDW_API.Core.Infrastructure;
 using DWDW_API.Core.ViewModels;
 using DWDW_API.Providers;
 using DWDW_Service.Services;
+using DWDW_Service.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,10 @@ namespace DWDW_API.Controllers
     {
         private readonly IUserService userService;
 
+        private readonly UserValidation userValid;
+
         private readonly JwtTokenProvider jwtTokenProvider;
+
         public UserController(ExtensionSettings extensionSettings
                             , IUserService userService, JwtTokenProvider jwtTokenProvider) : base(extensionSettings)
         {
@@ -76,15 +80,15 @@ namespace DWDW_API.Controllers
 
 
 
-        [Route("CreateUserAsync")]
-        [Authorize]
+        [Route("CraeteUserByAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
         [HttpPost]
-        public  IActionResult CraeteUserAsync([FromQuery]UserCreateModel userCreated)
+        public IActionResult CraeteUser(UserCreateModel userCreated)
         {
             IActionResult result;
             try
             {
-                var insert =  userService.CreateUserAsync(userCreated);
+                var insert = userService.CreateUserAsync(userCreated);
                 result = Ok(insert);
             }
             catch (BaseException e)
@@ -93,7 +97,7 @@ namespace DWDW_API.Controllers
             }
             catch (Exception e)
             {
-                result =  StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
             return result;
         }
@@ -101,14 +105,14 @@ namespace DWDW_API.Controllers
         [Route("LoginAsync")]
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> LoginAsync([FromQuery]UserLoginInfo info)
+        public async Task<IActionResult> LoginAsync(UserLoginInfo info)
         {
             IActionResult result;
             try
             {
-                
+
                 var user = await userService.LoginAsync(info.UserName, info.Password);
-                if(user != null)
+                if (user != null)
                 {
 
                     string accessToken = jwtTokenProvider.CreateAccesstoken(user);
@@ -120,7 +124,7 @@ namespace DWDW_API.Controllers
                     result = BadRequest(ErrorMessages.INVALID_USERNAME_PASSWORD);
                 }
             } //handle exception
-            catch(BaseException e)
+            catch (BaseException e)
             {
                 result = BadRequest(e.Message);
             }
@@ -131,8 +135,50 @@ namespace DWDW_API.Controllers
             return result;
         }
 
-       
 
+        [Route("UpdateUserByAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpPut]
+        public IActionResult UpdateUserByAdmin(UserUpdateModel userUpdate)
+        {
+            IActionResult result;
+            try
+            {
+                var userUpdated = userService.UpdateUser(userUpdate);
+                return Ok(userUpdated);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
+        [Route("DeActiveUserByAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpDelete]
+        public IActionResult DeActiveUserByAdmin(int id)
+        {
+            IActionResult result;
+            try
+            {
+                var deActiveUser = userService.DeActiveUserByAdmin(id);
+                result = Ok(deActiveUser);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
     }
 
 }

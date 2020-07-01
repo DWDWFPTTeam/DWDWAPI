@@ -12,6 +12,7 @@ namespace DWDW_Service.Repositories
     {
         Task<User> GetUserByUsernamePassword(string username, string password);
         User GetUserByUsername(string username);
+
     }
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
@@ -19,6 +20,7 @@ namespace DWDW_Service.Repositories
         {
 
         }
+
 
         public User GetUserByUsername(string username)
         {
@@ -33,5 +35,7 @@ namespace DWDW_Service.Repositories
                                                                      && x.Password.Equals(password));
             return user;
         }
+       
+
     }
 }

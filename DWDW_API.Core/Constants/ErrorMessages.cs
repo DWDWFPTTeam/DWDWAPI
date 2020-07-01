@@ -32,5 +32,7 @@ namespace DWDW_API.Core.Constants
         public const string USERNAME_IS_EXISTED = "Username is existed";
         public const string USERID_IS_EXISTED = "UserId is existed";
         public const string USERID_IS_NOT_EXISTED = "UserID is not existed";
+        public const string WRONG_PHONE_FORMAT = "Wrong phone number format";
+        public const string GENDER_IS_NOT_EXISTED = "Gender is not existed";
     }
 }

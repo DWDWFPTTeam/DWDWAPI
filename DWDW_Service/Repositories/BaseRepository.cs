@@ -14,6 +14,7 @@ namespace DWDW_Service.Repositories
         void Update(TEntity entity);
         Task<TEntity> FindAsync(object Id);
         TEntity Find(object Id);
+
         IEnumerable<TEntity> GetAll();
     }
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
@@ -23,7 +24,7 @@ namespace DWDW_Service.Repositories
         public BaseRepository(DbContext dbContext)
         {
             this.dbContext = dbContext;
-
+            this.dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public async Task AddAsync(TEntity entity)
@@ -65,5 +66,7 @@ namespace DWDW_Service.Repositories
         {
             return dbContext.Set<TEntity>().Find(Id);
         }
+
+
     }
 }

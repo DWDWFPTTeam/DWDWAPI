@@ -18,20 +18,24 @@ namespace DWDW_Service.Services
         Task<User> LoginAsync(string username, string password);
         IEnumerable<UserViewModel> GetAll();
         IEnumerable<User> GetAllAllowAnonymous();
+        UserViewModel UpdateUser(UserUpdateModel userUpdate);
+        UserViewModel DeActiveUserByAdmin(int id);
     }
     public class UserService : BaseService<User>, IUserService
     {
         private readonly IUserRepository userRepository;
+        private readonly UserValidation userValid;
         public UserService(UnitOfWork unitOfWork, IUserRepository userRepository) : base(unitOfWork)
         {
             this.userRepository = userRepository;
+            this.userValid = new UserValidation(userRepository, unitOfWork);
         }
 
         public UserViewModel CreateUserAsync(UserCreateModel user)
         {
             //checkValid to created
-            var userValid = new UserValidation(this.userRepository);
             userValid.IsUsernameExisted(user.UserName);
+
 
             //Map userCreateModel => userEntity to insert to database
             var userEntity = user.ToEntity<User>();
@@ -67,6 +71,40 @@ namespace DWDW_Service.Services
         {
             var user = await userRepository.GetUserByUsernamePassword(username, password);
             return user;
+        }
+
+        public UserViewModel UpdateUser(UserUpdateModel userUpdate)
+        {
+            //check validation
+            userValid.IsValidToUpdate(userUpdate);
+
+            //Map UserModel to UserEntity
+            var userUpdateEntity = userUpdate.ToEntity<User>();
+            userRepository.Update(userUpdateEntity);
+
+            //Get User to response
+            var userResponse = userRepository.Find(userUpdate.UserId);
+
+            //Map UserEntity to UserViewModel
+            var userViewModel = userUpdateEntity.ToViewModel<UserViewModel>();
+
+            return userViewModel;
+
+        }
+
+        public UserViewModel DeActiveUserByAdmin(int id)
+        {
+            //check validation
+            userValid.IsIdNotExisted(id);
+
+            var deActiveEntity = userRepository.Find(id);
+            deActiveEntity.IsActive = false;
+
+            userRepository.Update(deActiveEntity);
+
+            //return ViewModel
+            return deActiveEntity.ToViewModel<UserViewModel>();
+
         }
     }
 }
