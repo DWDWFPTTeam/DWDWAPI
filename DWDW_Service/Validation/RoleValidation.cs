@@ -9,12 +9,10 @@ namespace DWDW_Service.Validation
     public class RoleValidation
     {
         private readonly IRoleRepository roleRepository;
-        private readonly UnitOfWork unitOfWorks;
 
-        public RoleValidation(IRoleRepository roleRepository, UnitOfWork unitOfWorks)
+        public RoleValidation(IRoleRepository roleRepository)
         {
             this.roleRepository = roleRepository;
-            this.unitOfWorks = unitOfWorks;
         }
     }
 }

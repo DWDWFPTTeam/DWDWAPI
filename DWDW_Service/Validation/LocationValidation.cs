@@ -9,12 +9,10 @@ namespace DWDW_Service.Validation
     public class LocationValidation
     {
         private readonly ILocationRepository locationRepository;
-        private readonly UnitOfWork unitOfWorks;
 
-        public LocationValidation(ILocationRepository locationRepository, UnitOfWork unitOfWorks)
+        public LocationValidation(ILocationRepository locationRepository)
         {
             this.locationRepository = locationRepository;
-            this.unitOfWorks = unitOfWorks;
         }
     }
 }

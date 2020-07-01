@@ -9,12 +9,10 @@ namespace DWDW_Service.Validation
     public class RecordValidation
     {
         private readonly IRecordRepository recordRepository;
-        private readonly UnitOfWork unitOfWorks;
 
-        public RecordValidation(IRecordRepository recordRepository, UnitOfWork unitOfWorks)
+        public RecordValidation(IRecordRepository recordRepository)
         {
             this.recordRepository = recordRepository;
-            this.unitOfWorks = unitOfWorks;
         }
     }
 }

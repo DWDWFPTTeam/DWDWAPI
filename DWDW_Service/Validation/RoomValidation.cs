@@ -9,12 +9,10 @@ namespace DWDW_Service.Validation
     public class RoomValidation
     {
         private readonly IRoomRepository roomRepository;
-        private readonly UnitOfWork unitOfWorks;
 
-        public RoomValidation(IRoomRepository roomRepository, UnitOfWork unitOfWorks)
+        public RoomValidation(IRoomRepository roomRepository)
         {
             this.roomRepository = roomRepository;
-            this.unitOfWorks = unitOfWorks;
         }
     }
 }

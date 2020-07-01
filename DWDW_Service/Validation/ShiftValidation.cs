@@ -9,12 +9,10 @@ namespace DWDW_Service.Validation
     public class ShiftValidation
     {
         private readonly IShiftRepository shiftRepository;
-        private readonly UnitOfWork unitOfWorks;
 
-        public ShiftValidation(IShiftRepository shiftRepository, UnitOfWork unitOfWorks)
+        public ShiftValidation(IShiftRepository shiftRepository)
         {
             this.shiftRepository = shiftRepository;
-            this.unitOfWorks = unitOfWorks;
         }
     }
 }

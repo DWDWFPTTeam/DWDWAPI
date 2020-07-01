@@ -2,13 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DWDW_Service.Repositories
 {
     public interface IArrangementRepository: IBaseRepository<Arrangement>
     {
-
+        IEnumerable<Arrangement> GetArrangementFromLocation(int locationId);
     }
     public class ArrangementRepository : BaseRepository<Arrangement>, IArrangementRepository
     {
@@ -17,5 +18,9 @@ namespace DWDW_Service.Repositories
 
         }
 
+        public IEnumerable<Arrangement> GetArrangementFromLocation(int locationId)
+        {
+            return dbContext.Set<Arrangement>().Where(a => a.LocationId == locationId && a.IsActive == true);
+        }
     }
 }

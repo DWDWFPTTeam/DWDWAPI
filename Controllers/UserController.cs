@@ -19,8 +19,6 @@ namespace DWDW_API.Controllers
     {
         private readonly IUserService userService;
 
-        private readonly UserValidation userValid;
-
         private readonly JwtTokenProvider jwtTokenProvider;
 
         public UserController(ExtensionSettings extensionSettings
@@ -63,7 +61,7 @@ namespace DWDW_API.Controllers
             IActionResult result;
             try
             {
-                var users = userService.GetAll();
+                var users = userService.GetAllByAdmin();
                 result = Ok(users);
             }
             catch (BaseException e)
@@ -74,6 +72,32 @@ namespace DWDW_API.Controllers
             {
                 result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
+            return result;
+        }
+
+
+        //unfinished
+        [Route("GetWorkerFromLocationByAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpGet]
+        public IActionResult GetUserFromLocationByAdmin(int locationId)
+        {
+            IActionResult result;
+            try
+            {
+                //unfinished
+                var users = userService.GetUserFromLocationByAdmin(locationId);
+                return Ok(users);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+
             return result;
         }
 
@@ -179,6 +203,7 @@ namespace DWDW_API.Controllers
             }
             return result;
         }
+ 
     }
 
 }

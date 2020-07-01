@@ -12,18 +12,13 @@ namespace DWDW_Service.Validation
     public class UserValidation
     {
         private readonly IUserRepository userRepository;
-        private readonly UnitOfWork unitOfWorks;
 
-        public UserValidation(IUserRepository userRepository, UnitOfWork unitOfWorks)
+        public UserValidation(IUserRepository userRepository)
         {
             this.userRepository = userRepository;
-            this.unitOfWorks = unitOfWorks;
         }
 
-        public void IsValidToUpdate(UserUpdateModel user)
-        {
-            this.IsIdNotExisted(user.UserId);
-        }
+      
         
         public void IsIdExisted(int id)
         {
@@ -48,5 +43,21 @@ namespace DWDW_Service.Validation
                 throw new BaseException(ErrorMessages.USERNAME_IS_EXISTED);
             }
         }
+
+        public void IsValidToUpdate(UserUpdateModel user)
+        {
+            this.IsIdNotExisted(user.UserId);
+        }
+
+        //public void IsValidToGetUserFromLocation(int locationId)
+        //{
+        //    var locationRepo = unitOfWorks.LocationRepository;
+        //    var location = locationRepo.Find(locationId);
+        //    if(location == null)
+        //    {
+        //        throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
+        //    }
+            
+        //}
     }
 }

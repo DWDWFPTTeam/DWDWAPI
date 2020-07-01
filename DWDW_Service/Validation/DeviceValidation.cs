@@ -9,12 +9,10 @@ namespace DWDW_Service.Validation
     public class DeviceValidation
     {
         private readonly IDeviceRepository devicerepository;
-        private readonly UnitOfWork unitOfWorks;
 
-        public DeviceValidation(IDeviceRepository devicerepository, UnitOfWork unitOfWorks)
+        public DeviceValidation(IDeviceRepository devicerepository)
         {
             this.devicerepository = devicerepository;
-            this.unitOfWorks = unitOfWorks;
         }
     }
 }
