@@ -13,7 +13,6 @@ namespace DWDW_API.Core.Entities
 
         public int? DeviceId { get; set; }
         public string DeviceCode { get; set; }
-        public int? DeviceStatus { get; set; }
         public bool? IsActive { get; set; }
 
         public virtual ICollection<Record> Record { get; set; }

@@ -18,7 +18,7 @@ namespace DWDW_API.Core.Constants
 
         //roles
         public const string ADMIN = "1";
-        public const int MANAGER = 2;
-        public const int WORKER = 3;
+        public const string MANAGER = "2";
+        public const string WORKER = "3";
     }
 }
