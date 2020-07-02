@@ -7,7 +7,6 @@ using DWDW_API.Core.Infrastructure;
 using DWDW_API.Core.ViewModels;
 using DWDW_API.Providers;
 using DWDW_Service.Services;
-using DWDW_Service.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -80,7 +79,7 @@ namespace DWDW_API.Controllers
         [Route("GetWorkerFromLocationByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
-        public IActionResult GetUserFromLocationByAdmin(int locationId)
+        public IActionResult GetWorkerFromLocationByAdmin(int locationId)
         {
             IActionResult result;
             try

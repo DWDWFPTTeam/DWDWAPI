@@ -74,8 +74,8 @@ namespace DWDW_API
             services.AddScoped<IDeviceService, DeviceService>();
 
             //Location instances
-            services.AddScoped<ILocationRepository, LocationRepository>();
             services.AddScoped<ILocationService, LocationService>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
 
             //Record instances
             services.AddScoped<IRecordRepository, RecordRepository>();
