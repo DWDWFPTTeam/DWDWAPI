@@ -12,7 +12,7 @@ using System.Text;
 
 namespace DWDW_Service.Services
 {
-    public interface IDeviceService: IBaseService<Device>
+    public interface IDeviceService : IBaseService<Device>
     {
         IEnumerable<DeviceViewModel> GetAll();
         List<DeviceViewModel> GetDeviceCode(string deviceCode);
@@ -20,11 +20,11 @@ namespace DWDW_Service.Services
         DeviceViewModel CreateDevice(DeviceCreateModel device);
         DeviceViewModel UpdateDevice(DeviceUpdateModel device);
         DeviceViewModel UpdateDeviceActive(DeviceActiveModel device);
-        List<DeviceViewModel> GetActiveDeviceFromLocation(int locationID);
+        IEnumerable<DeviceViewModel> GetActiveDeviceFromLocation(int locationID);
         List<DeviceViewModel> GetActiveDeviceFromLocationManager(int userID, int locationID);
         DeviceViewModel GetActiveDeviceFromRoom(int roomID);
         DeviceViewModel GetActiveDeviceFromRoomManager(int userID, int roomID);
-    } 
+    }
     public class DeviceService : BaseService<Device>, IDeviceService
     {
         private readonly IDeviceRepository deviceRepository;
@@ -143,39 +143,64 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        public List<DeviceViewModel> GetActiveDeviceFromLocation(int locationID)
+        //public List<DeviceViewModel> GetActiveDeviceFromLocation(int locationID)
+        //{
+        //    var result = new List<DeviceViewModel>();
+        //    var location = locationRepository.Find(locationID);
+        //    if (location != null)
+        //    {
+        //        var roomList = roomRepository.GetRoomFromLocation(locationID);
+        //        if (roomList.Count != 0)
+        //        {
+        //            var deviceList = new List<Device>();
+        //            for (int i = 0; i < roomList.Count; i++)
+        //            {
+        //                var roomAt = roomList.ElementAt(i);
+        //                var deviceListAt = deviceRepository.GetDeviceFromRoom(roomAt.RoomId);
+        //                deviceList.Add(deviceListAt);
+        //            }
+        //            if (deviceList.Count != 0)
+        //            {
+        //                for (int i = 0; i < deviceList.Count; i++)
+        //                {
+        //                    var deviceElement = deviceList.ElementAt(i);
+        //                    var deviceElementModel = deviceElement.ToViewModel<DeviceViewModel>();
+        //                    result.Add(deviceElementModel);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                throw new BaseException(ErrorMessages.LOCATION_DEVICE_EMPTY);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            throw new BaseException(ErrorMessages.LOCATION_DEVICE_EMPTY);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
+        //    }
+        //    return result;
+        //}
+
+        public IEnumerable<DeviceViewModel> GetActiveDeviceFromLocation(int locationID)
         {
-            var result = new List<DeviceViewModel>();
+            IEnumerable<DeviceViewModel> result = new List<DeviceViewModel>();
             var location = locationRepository.Find(locationID);
             if (location != null)
             {
-                var roomList = roomRepository.GetRoomFromLocation(locationID);
-                if (roomList.Count != 0)
+                var rooms = roomRepository.GetRoomFromLocation(locationID);
+                if (rooms.Count != 0)
                 {
-                    var deviceList = new List<Device>();
-                    for (int i = 0; i < roomList.Count; i++)
+                    var devices = new List<Device>();
+                    foreach (var room in rooms)
                     {
-                        var roomAt = roomList.ElementAt(i);
-                        var deviceListAt = deviceRepository.GetDeviceFromRoom(roomAt.RoomId);
-                        deviceList.Add(deviceListAt);
+                        var devicesEachRoom = deviceRepository.GetDeviceFromRoom(room.RoomId);
+                        devices.Add(devicesEachRoom);
                     }
-                    if (deviceList.Count != 0)
-                    {
-                        for (int i = 0; i < deviceList.Count; i++)
-                        {
-                            var deviceElement = deviceList.ElementAt(i);
-                            var deviceElementModel = deviceElement.ToViewModel<DeviceViewModel>();
-                            result.Add(deviceElementModel);
-                        }
-                    }
-                    else
-                    {
-                        throw new BaseException(ErrorMessages.LOCATION_DEVICE_EMPTY);
-                    }
-                }
-                else
-                {
-                    throw new BaseException(ErrorMessages.LOCATION_DEVICE_EMPTY);
+                    result = devices.Select(x => x.ToViewModel<DeviceViewModel>());
                 }
             }
             else
