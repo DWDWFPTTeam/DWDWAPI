@@ -37,6 +37,8 @@ namespace DWDW_API.Core.ViewModels
         public int UserId { get; set; }
         [Required]
         public string UserName { get; set; }
+        [Required]
+        [DataType(DataType.PhoneNumber, ErrorMessage = ErrorMessages.WRONG_PHONE_FORMAT)]
         public string Phone { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.BIRTHDAY_WRONG_DATETIME_FORMAT)]
         public DateTime? DateOfBirth { get; set; }

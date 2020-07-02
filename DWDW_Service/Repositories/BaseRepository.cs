@@ -16,7 +16,9 @@ namespace DWDW_Service.Repositories
         void Update(TEntity entity);
         Task<TEntity> FindAsync(object Id);
         TEntity Find(object Id);
-
+        IEnumerable<TEntity> Get(Expression<Func<TEntity, bool>> filter = null,
+                                Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+                                string includeProperties = "");
         IEnumerable<TEntity> GetAll();
     }
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
