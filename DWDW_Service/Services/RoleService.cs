@@ -2,7 +2,6 @@
 using DWDW_API.Core.ViewModels;
 using DWDW_Service.Repositories;
 using DWDW_Service.UnitOfWorks;
-using DWDW_Service.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +19,10 @@ namespace DWDW_Service.Services
     public class RoleService : BaseService<Role>, IRoleService
     {
         private readonly IRoleRepository roleRepository;
-        private readonly RoleValidation roleValidation;
 
         public RoleService(UnitOfWork unitOfWork, IRoleRepository roleRepository) : base(unitOfWork)
         {
             this.roleRepository = roleRepository;
-            this.roleValidation = new RoleValidation(roleRepository);
         }
 
         public IEnumerable<RoleViewModel> GetAll()
