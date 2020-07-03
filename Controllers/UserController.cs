@@ -51,6 +51,29 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [Route("GetUserInfoToken")]
+        [Authorize]
+        [HttpGet]
+        public IActionResult GetUserInfoToken()
+        {
+            IActionResult result;
+            try
+            {
+                var userId = int.Parse(CurrentUserId);
+                var user = userService.GetUserById(userId);
+                result = Ok(user);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
 
         [Route("GetAll")]
         [Authorize(Roles = Constant.ADMIN)]

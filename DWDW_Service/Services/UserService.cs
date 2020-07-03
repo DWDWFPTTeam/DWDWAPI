@@ -23,6 +23,7 @@ namespace DWDW_Service.Services
         IEnumerable<UserViewModel> GetUserFromLocationByAdmin(int locationId);
         IEnumerable<UserViewModel> GetUserFromLocationsByManager(int userId);
         IEnumerable<UserViewModel> GetUserFromOneLocationByManager(int userId, int locationId);
+        UserViewModel GetUserById(int userId);
     }
     public class UserService : BaseService<User>, IUserService
     {
@@ -209,6 +210,11 @@ namespace DWDW_Service.Services
             }
 
             return result;
+        }
+
+        public UserViewModel GetUserById(int userId)
+        {
+            return userRepository.Find(userId).ToViewModel<UserViewModel>();
         }
     }
 }
