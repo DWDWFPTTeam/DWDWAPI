@@ -46,7 +46,7 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.ADMIN)]
         [Route("CreateRole")]
         [HttpPost]
-        public IActionResult CreateRoles([FromQuery] RoleCreateModel roleCreated)
+        public IActionResult CreateRoles(RoleCreateModel roleCreated)
         {
             IActionResult result;
             try
@@ -66,9 +66,31 @@ namespace DWDW_API.Controllers
         }
 
         [Authorize(Roles = Constant.ADMIN)]
+        [Route("UpdateRole")]
+        [HttpPut]
+        public IActionResult UpdateRole(RoleViewModel roleActive)
+        {
+            IActionResult result;
+            try
+            {
+                var update = roleService.UpdateRole(roleActive);
+                result = Ok(update);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
+        [Authorize(Roles = Constant.ADMIN)]
         [Route("UpdateRoleActive")]
         [HttpPut]
-        public IActionResult UpdateRoleActive([FromQuery] RoleActiveModel roleActive)
+        public IActionResult UpdateRoleActive(RoleActiveModel roleActive)
         {
             IActionResult result;
             try

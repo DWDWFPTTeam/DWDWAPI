@@ -14,6 +14,7 @@ namespace DWDW_Service.Services
     {
         IEnumerable<RoleViewModel> GetAll();
         RoleViewModel CreateRole(RoleCreateModel role);
+        RoleViewModel UpdateRole(RoleViewModel role);
         RoleViewModel UpdateRoleActive(RoleActiveModel role);
     }
     public class RoleService : BaseService<Role>, IRoleService
@@ -49,9 +50,23 @@ namespace DWDW_Service.Services
             return result;
         }
 
+        public RoleViewModel UpdateRole(RoleViewModel role)
+        {
+            roleValidation.IsRoleNotExisted(role.RoleId);
+
+            var roleEntity = role.ToEntity<Role>();
+
+            //roleEntity.IsActive = role.IsActive;
+            roleRepository.Update(roleEntity);
+
+            var roleResponse = roleRepository.Find(role.RoleId);
+            var result = roleResponse.ToViewModel<RoleViewModel>();
+            return result;
+        }
+
         public RoleViewModel UpdateRoleActive(RoleActiveModel role)
         {
-            roleValidation.QualifyToUpdate(role);
+            roleValidation.IsRoleNotExisted(role.RoleId);
 
             var roleEntity = role.ToEntity<Role>();
 

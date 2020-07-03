@@ -26,11 +26,6 @@ namespace DWDW_Service.Validation
             }
         }
         
-        public void QualifyToUpdate(RoleActiveModel role)
-        {
-            this.IsRoleNotExisted(role.RoleId);
-        }
-
         public void IsRoleNotExisted(int roleId)
         {
             if(roleRepository.Find(roleId) == null)
