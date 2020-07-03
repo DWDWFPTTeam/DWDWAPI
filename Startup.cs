@@ -144,7 +144,10 @@ namespace DWDW_API
 
                 //Device Mapping
                 cfg.CreateMap<Device, DeviceViewModel>();
-                cfg.CreateMap<DeviceViewModel, DeviceViewModel>();
+                cfg.CreateMap<DeviceViewModel, Device>();
+                cfg.CreateMap<DeviceCreateModel, Device>();
+                cfg.CreateMap<DeviceUpdateModel, Device>();
+                cfg.CreateMap<DeviceActiveModel, Device>();
 
                 //Arrangement Mapping
                 cfg.CreateMap<Arrangement, ArrangementViewModel>();
@@ -158,6 +161,7 @@ namespace DWDW_API
                 cfg.CreateMap<Role, RoleViewModel>();
                 cfg.CreateMap<RoleViewModel, Role>();
                 cfg.CreateMap<RoleCreateModel, Role>();
+                cfg.CreateMap<RoleUpdateModel, Role>();
                 cfg.CreateMap<RoleActiveModel, Role>();
 
                 //Room Mapping

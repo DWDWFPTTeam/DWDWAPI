@@ -68,7 +68,7 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.ADMIN)]
         [Route("UpdateRole")]
         [HttpPut]
-        public IActionResult UpdateRole(RoleViewModel roleActive)
+        public IActionResult UpdateRole(RoleUpdateModel roleActive)
         {
             IActionResult result;
             try

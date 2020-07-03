@@ -18,6 +18,13 @@ namespace DWDW_API.Core.ViewModels
         [Required]
         public string RoleName { get; set; }
     }
+    public class RoleUpdateModel : BaseModel
+    {
+        [Required]
+        public int RoleId { get; set; }
+        [Required]
+        public string RoleName { get; set; }
+    }
     public class RoleActiveModel : BaseModel
     {
         [Required]
