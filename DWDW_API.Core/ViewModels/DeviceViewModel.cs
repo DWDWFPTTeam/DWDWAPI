@@ -8,7 +8,7 @@ namespace DWDW_API.Core.ViewModels
 {
     public class DeviceViewModel : BaseModel
     {
-        public int DeviceId { get; set; }
+        public int? DeviceId { get; set; }
         public string DeviceCode { get; set; }
         public bool? IsActive { get; set; }
     }
@@ -17,13 +17,12 @@ namespace DWDW_API.Core.ViewModels
     {
         [Required]
         public string DeviceCode { get; set; }
-        [Required]
-        public bool? IsActive { get; set; }
+
     }
     public class DeviceUpdateModel : BaseModel
     {
         [Required]
-        public int DeviceId { get; set; }
+        public int? DeviceId { get; set; }
         [Required]
         public string DeviceCode { get; set; }
 
@@ -31,7 +30,7 @@ namespace DWDW_API.Core.ViewModels
     public class DeviceActiveModel : BaseModel
     {
         [Required]
-        public int DeviceId { get; set; }
+        public int? DeviceId { get; set; }
         [Required]
         public bool? IsActive { get; set; }
 
