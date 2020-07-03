@@ -10,6 +10,9 @@ namespace DWDW_Service.Repositories
     public interface IArrangementRepository: IBaseRepository<Arrangement>
     {
         IEnumerable<Arrangement> GetArrangementFromLocation(int locationId);
+        //this function for MANAGER and WORKER
+        IEnumerable<Arrangement> GetArrangementOfUser(int managerId);
+        Arrangement GetArrangementOfUserInThisLocation(int userId, int locationId);
     }
     public class ArrangementRepository : BaseRepository<Arrangement>, IArrangementRepository
     {
@@ -20,7 +23,19 @@ namespace DWDW_Service.Repositories
 
         public IEnumerable<Arrangement> GetArrangementFromLocation(int locationId)
         {
-            return Get(a => a.LocationId.Equals(locationId), null, "User");
+            return Get(a => a.LocationId.Equals(locationId) && a.IsActive == true, null, "User");
+        }
+
+        public IEnumerable<Arrangement> GetArrangementOfUser(int userId)
+        {
+            return Get(a => a.UserId.Equals(userId) && a.IsActive == true, null, "Location");
+        }
+
+        public Arrangement GetArrangementOfUserInThisLocation(int userId, int locationId)
+        {
+            return Get(a => a.UserId.Equals(userId) 
+                       && a.LocationId.Equals(locationId)
+                       && a.IsActive == true, null, "Location").FirstOrDefault();
         }
     }
 }

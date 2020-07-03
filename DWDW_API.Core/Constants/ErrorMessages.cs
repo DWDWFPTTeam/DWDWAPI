@@ -42,11 +42,14 @@ namespace DWDW_API.Core.Constants
         public const string USERID_IS_NOT_EXISTED = "UserID is not existed";
         public const string WRONG_PHONE_FORMAT = "Wrong phone number format";
         public const string GENDER_IS_NOT_EXISTED = "Gender is not existed";
+        public const string MANAGER_HAVE_MORE_THAN_1_LOCATION = "Manager have more than 1 location";
+
 
 
         //Location Message
         public const string LOCATION_IS_NOT_EXISTED = "Location is not existed";
         public const string LOCATION_DEVICE_EMPTY = "There's no device in this location";
         public const string LOCATION_USER_NOT_EXISTED = "This location doesn't belong to the current manager";
+        public const string LOCATION_IS_NOT_BELONG_TO_MANAGER = "This location doesn't belong to the current manager";
     }
 }

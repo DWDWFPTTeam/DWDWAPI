@@ -21,6 +21,8 @@ namespace DWDW_Service.Services
         UserViewModel UpdateUser(UserUpdateModel userUpdate);
         UserViewModel DeActiveUserByAdmin(int id);
         IEnumerable<UserViewModel> GetUserFromLocationByAdmin(int locationId);
+        IEnumerable<UserViewModel> GetUserFromLocationsByManager(int userId);
+        IEnumerable<UserViewModel> GetUserFromOneLocationByManager(int userId, int locationId);
     }
     public class UserService : BaseService<User>, IUserService
     {
@@ -117,7 +119,7 @@ namespace DWDW_Service.Services
             UserViewModel result;
             //check validation
             var user = userRepository.Find(id);
-            if(user != null)
+            if (user != null)
             {
                 user.IsActive = false;
                 userRepository.Update(user);
@@ -127,7 +129,7 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
             }
-         
+
 
             //return ViewModel
             return result;
@@ -137,24 +139,76 @@ namespace DWDW_Service.Services
         //unfinished
         public IEnumerable<UserViewModel> GetUserFromLocationByAdmin(int locationId)
         {
+            IEnumerable<UserViewModel> result = new List<UserViewModel>();
             //check validated
             var locationRepo = this.unitOfWork.LocationRepository;
-            if(locationRepo.Find(locationId) != null)
+            if (locationRepo.Find(locationId) != null)
             {
                 var arrangementRepo = this.unitOfWork.ArrangementRepository;
                 //get User from Arrangement (UserLocation) with locationID
                 var arrangements = arrangementRepo.GetArrangementFromLocation(locationId);
                 var users = arrangements.Select(a => a.User);
 
-                return users.Select(u => u.ToViewModel<UserViewModel>());
+                result = users.Select(u => u.ToViewModel<UserViewModel>());
             }
             else
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
 
             }
+            return result;
 
-          
+        }
+        public IEnumerable<UserViewModel> GetUserFromLocationsByManager(int userId)
+        {
+            IEnumerable<UserViewModel> result = new List<UserViewModel>();
+            var arrangementRepository = this.unitOfWork.ArrangementRepository;
+            //get Arrangement of Manager 
+            var arrangementsOfManager = arrangementRepository.GetArrangementOfUser(userId);
+
+            //get Location which the manager is manage
+            var locations = arrangementsOfManager.Select(a => a.Location);
+
+            //Get Users which is Worker and Manager who work in these locations
+            var users = new List<User>();
+            foreach (var location in locations)
+            {
+                var usersFromLocation = arrangementRepository.GetArrangementFromLocation(location.LocationId.Value)
+                                                 .Select(a => a.User);
+                users.AddRange(usersFromLocation);
+            }
+            //toViewModel
+            result = users.Select(u => u.ToViewModel<UserViewModel>());
+            return result;
+        }
+        public IEnumerable<UserViewModel> GetUserFromOneLocationByManager(int userId, int locationId)
+        {
+            IEnumerable<UserViewModel> result = new List<UserViewModel>();
+            var locationRepository = this.unitOfWork.LocationRepository;
+            if (locationRepository.Find(locationId) != null)
+            {
+                var arrangementRepository = this.unitOfWork.ArrangementRepository;
+
+                var arrangement = arrangementRepository.GetArrangementOfUserInThisLocation(userId, locationId);
+
+                if (arrangement != null)
+                {
+                    var location = arrangement.Location;
+                    var users = arrangementRepository.GetArrangementFromLocation(location.LocationId.Value)
+                                                     .Select(a => a.User);
+                    result = users.Select(u => u.ToViewModel<UserViewModel>());
+                }
+                else
+                {
+                    throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_MANAGER);
+                }
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
+            }
+
+            return result;
         }
     }
 }

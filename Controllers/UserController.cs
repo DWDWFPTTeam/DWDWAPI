@@ -75,16 +75,14 @@ namespace DWDW_API.Controllers
         }
 
 
-        //unfinished
-        [Route("GetWorkerFromLocationByAdmin")]
+        [Route("GetUserFromLocationByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
-        public IActionResult GetWorkerFromLocationByAdmin(int locationId)
+        public IActionResult GetUserFromLocationByAdmin(int locationId)
         {
             IActionResult result;
             try
             {
-                //unfinished
                 var users = userService.GetUserFromLocationByAdmin(locationId);
                 return Ok(users);
             }
@@ -100,13 +98,63 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [Route("GetUserFromLocationsByManager")]
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpGet]
+        public IActionResult GetUserFromLocationsByManager()
+        {
+            IActionResult result;
+            try
+            {
+                int userId = int.Parse(CurrentUserId);
+                var users = userService.GetUserFromLocationsByManager(userId);
+                result = Ok(users);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+
+            return result;
+        }
+
+        [Route("GetUserFromOneLocationByManager")]
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpGet]
+        public IActionResult GetUserFromOneLocationByManager(int locationId)
+        {
+            IActionResult result;
+            try
+            {
+                int userId = int.Parse(CurrentUserId);
+                var users = userService.GetUserFromOneLocationByManager(userId, locationId);
+                result = Ok(users);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+
+            return result;
+        }
+
 
 
 
         [Route("CraeteUserByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpPost]
-        public IActionResult CraeteUser(UserCreateModel userCreated)
+        public IActionResult CraeteUserByAdmin(UserCreateModel userCreated)
         {
             IActionResult result;
             try
