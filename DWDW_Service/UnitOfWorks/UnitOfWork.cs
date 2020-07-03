@@ -35,29 +35,29 @@ namespace DWDW_Service.UnitOfWorks
         {
             get
             {
-                return DeviceRepository ?? new DeviceRepository(dbContext);
+                return new DeviceRepository(dbContext);
             }
         }
-        
+
         public ILocationRepository LocationRepository
         {
             get
             {
-                return LocationRepository ?? new LocationRepository(dbContext);
+                return new LocationRepository(dbContext);
             }
         }
         public IRecordRepository RecordRepository
         {
             get
             {
-                return RecordRepository ?? new RecordRepository(dbContext);
+                return new RecordRepository(dbContext);
             }
         }
         public IRoleRepository RoleRepository
         {
             get
             {
-                return RoleRepository ?? new RoleRepository(dbContext);
+                return new RoleRepository(dbContext);
             }
         }
 
@@ -65,30 +65,30 @@ namespace DWDW_Service.UnitOfWorks
         {
             get
             {
-                return RoomDeviceRepository ?? new RoomDeviceRepository(dbContext);
+                return new RoomDeviceRepository(dbContext);
             }
         }
         public IRoomRepository RoomRepository
         {
             get
             {
-                return RoomRepository ?? new RoomRepository(dbContext);
+                return new RoomRepository(dbContext);
             }
         }
         public IShiftRepository ShiftRepository
         {
             get
             {
-                return ShiftRepository ?? new ShiftRepository(dbContext);
+                return new ShiftRepository(dbContext);
             }
         }
         public IUserRepository UserRepository
         {
             get
             {
-                return UserRepository ?? new UserRepository(dbContext);
+                return new UserRepository(dbContext);
             }
         }
-       
+
     }
 }

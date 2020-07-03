@@ -1,9 +1,9 @@
-﻿using DWDW_API.Core.Entities;
+﻿using DWDW_API.Core.Constants;
+using DWDW_API.Core.Entities;
 using DWDW_API.Core.Infrastructure;
 using DWDW_API.Core.ViewModels;
 using DWDW_Service.Repositories;
 using DWDW_Service.UnitOfWorks;
-using DWDW_Service.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,33 +25,39 @@ namespace DWDW_Service.Services
     public class UserService : BaseService<User>, IUserService
     {
         private readonly IUserRepository userRepository;
-        private readonly UserValidation userValid;
         public UserService(UnitOfWork unitOfWork, IUserRepository userRepository) : base(unitOfWork)
         {
             this.userRepository = userRepository;
-            this.userValid = new UserValidation(userRepository);
         }
 
-        public UserViewModel CreateUserAsync(UserCreateModel user)
+        public UserViewModel CreateUserAsync(UserCreateModel create)
         {
+            UserViewModel result;
             //checkValid to created
-            userValid.IsUsernameExisted(user.UserName);
+            var user = userRepository.GetUserByUsername(create.UserName);
 
+            if (user != null)
+            {
+                //Map userCreateModel => userEntity to insert to database
+                var userEntity = create.ToEntity<User>();
 
-            //Map userCreateModel => userEntity to insert to database
-            var userEntity = user.ToEntity<User>();
+                //set IsAtive = true
+                userEntity.IsActive = true;
 
-            //set IsAtive = true
-            userEntity.IsActive = true;
+                //add user to database
+                userRepository.AddAsync(userEntity);
 
-            //add user to database
-            userRepository.AddAsync(userEntity);
+                //get User to response
+                var userResponse = userRepository.GetUserByUsername(user.UserName);
 
-            //get User to response
-            var userResponse = userRepository.GetUserByUsername(user.UserName);
+                //map User => UserViewModel to API
+                result = userResponse.ToViewModel<UserViewModel>();
 
-            //map User => UserViewModel to API
-            var result = userResponse.ToViewModel<UserViewModel>();
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.USERNAME_IS_EXISTED);
+            }
 
             return result;
 
@@ -75,37 +81,56 @@ namespace DWDW_Service.Services
             return user;
         }
 
+
         public UserViewModel UpdateUser(UserUpdateModel userUpdate)
         {
+            UserViewModel result;
             //check validation
-            userValid.IsValidToUpdate(userUpdate);
+            var user = userRepository.Find(userUpdate.UserId);
+            if (user != null)
+            {
+                //Map UserModel to UserEntity
+                user.UserName = userUpdate.UserName;
+                user.RoleId = userUpdate.RoleId;
+                user.Phone = userUpdate.Phone;
+                user.DateOfBirth = userUpdate.DateOfBirth;
+                user.Gender = userUpdate.Gender;
 
-            //Map UserModel to UserEntity
-            var userUpdateEntity = userUpdate.ToEntity<User>();
-            userRepository.Update(userUpdateEntity);
+                //update user
+                userRepository.Update(user);
 
-            //Get User to response
-            var userResponse = userRepository.Find(userUpdate.UserId);
+                //Map UserEntity to UserViewModel
+                result = user.ToViewModel<UserViewModel>();
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
+            }
 
-            //Map UserEntity to UserViewModel
-            var userViewModel = userUpdateEntity.ToViewModel<UserViewModel>();
 
-            return userViewModel;
+            return result;
 
         }
 
         public UserViewModel DeActiveUserByAdmin(int id)
         {
+            UserViewModel result;
             //check validation
-            userValid.IsIdNotExisted(id);
-
-            var deActiveEntity = userRepository.Find(id);
-            deActiveEntity.IsActive = false;
-
-            userRepository.Update(deActiveEntity);
+            var user = userRepository.Find(id);
+            if(user != null)
+            {
+                user.IsActive = false;
+                userRepository.Update(user);
+                result = user.ToViewModel<UserViewModel>();
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
+            }
+         
 
             //return ViewModel
-            return deActiveEntity.ToViewModel<UserViewModel>();
+            return result;
 
         }
 
@@ -113,11 +138,23 @@ namespace DWDW_Service.Services
         public IEnumerable<UserViewModel> GetUserFromLocationByAdmin(int locationId)
         {
             //check validated
-            var arrangementRepo = this.unitOfWork.ArrangementRepository;
-            var arrangements = arrangementRepo.GetArrangementFromLocation(locationId);
-            var users = arrangements.Select(a => a.User);
+            var locationRepo = this.unitOfWork.LocationRepository;
+            if(locationRepo.Find(locationId) != null)
+            {
+                var arrangementRepo = this.unitOfWork.ArrangementRepository;
+                //get User from Arrangement (UserLocation) with locationID
+                var arrangements = arrangementRepo.GetArrangementFromLocation(locationId);
+                var users = arrangements.Select(a => a.User);
 
-            return users.Select(u => u.ToViewModel<UserViewModel>());
+                return users.Select(u => u.ToViewModel<UserViewModel>());
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
+
+            }
+
+          
         }
     }
 }

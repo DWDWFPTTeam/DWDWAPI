@@ -20,7 +20,7 @@ namespace DWDW_Service.Repositories
 
         public IEnumerable<Arrangement> GetArrangementFromLocation(int locationId)
         {
-            return dbContext.Set<Arrangement>().Where(a => a.LocationId == locationId && a.IsActive == true);
+            return Get(a => a.LocationId.Equals(locationId), null, "User");
         }
     }
 }
