@@ -9,7 +9,7 @@ namespace DWDW_Service.Repositories
 {
     public interface IRoomRepository: IBaseRepository<Room>
     {
-        List<Room> GetRoomFromLocation(int locationID);
+        Room GetRoomByRoomCode(string roomCode);
     }
     public class RoomRepository : BaseRepository<Room>, IRoomRepository
     {
@@ -17,9 +17,10 @@ namespace DWDW_Service.Repositories
         {
         }
 
-        public List<Room> GetRoomFromLocation(int locationID)
+        public Room GetRoomByRoomCode(string roomCode)
         {
-            return this.dbContext.Set<Room>().Where(x => x.LocationId == locationID).ToList();
+            return this.dbContext.Set<Room>().FirstOrDefault
+                 (r => r.RoomCode.Trim().ToLower().Equals(roomCode.Trim().ToLower())); 
         }
     }
 }
