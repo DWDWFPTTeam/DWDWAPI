@@ -28,7 +28,7 @@ namespace DWDW_Service.UnitOfWorks
         {
             get
             {
-                return ArrangementRepository ?? new ArrangementRepository(dbContext);
+                return new ArrangementRepository(dbContext);
             }
         }
         public IDeviceRepository DeviceRepository
