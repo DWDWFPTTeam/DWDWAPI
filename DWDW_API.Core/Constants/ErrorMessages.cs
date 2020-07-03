@@ -20,7 +20,7 @@ namespace DWDW_API.Core.Constants
 
         //Role Message
         public const string ROLE_IS_NOT_EXISTED = "Role is not existed";
-
+        public const string ROLE_IS_EXISTED = "Role is existed";
 
 
         //User Message

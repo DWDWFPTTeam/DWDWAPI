@@ -156,6 +156,8 @@ namespace DWDW_API
                 //Role Mapping
                 cfg.CreateMap<Role, RoleViewModel>();
                 cfg.CreateMap<RoleViewModel, Role>();
+                cfg.CreateMap<RoleCreateModel, Role>();
+                cfg.CreateMap<RoleActiveModel, Role>();
 
                 //Room Mapping
                 cfg.CreateMap<Room, RoomViewModel>();
