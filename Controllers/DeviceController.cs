@@ -265,7 +265,28 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpPost]
+        [Route("AssignDeviceToRoom")]
+        public IActionResult AssignDeviceToRoom(RoomDeviceCreateModel roomDevice)
+        {
+            IActionResult result;
+            try
+            {
+                var devices = deviceService.AssignDeviceToRoom(roomDevice);
+                result = Ok(devices);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
 
+            }
+            return result;
+        }
 
     }
 }

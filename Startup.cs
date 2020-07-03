@@ -171,6 +171,7 @@ namespace DWDW_API
                 //RoomDevice Mapping
                 cfg.CreateMap<RoomDevice, RoomDeviceViewModel>();
                 cfg.CreateMap<RoomDeviceViewModel, RoomDevice>();
+                cfg.CreateMap<RoomDeviceCreateModel, RoomDevice>();
 
                 //Shift Mapping
                 cfg.CreateMap<Shift, ShiftViewModel>();

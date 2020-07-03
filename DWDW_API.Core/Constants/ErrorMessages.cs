@@ -23,6 +23,8 @@ namespace DWDW_API.Core.Constants
 
 
 
+        //RoomDevice Message
+
         //User Message
         public const string BIRTHDAY_WRONG_DATETIME_FORMAT = "Role is not existed";
         public const string PASSWORD_LEN_NOT_VALID = "Password must have more than 1 character";
