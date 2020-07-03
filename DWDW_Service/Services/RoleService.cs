@@ -1,4 +1,6 @@
-﻿using DWDW_API.Core.Entities;
+﻿using DWDW_API.Core.Constants;
+using DWDW_API.Core.Entities;
+using DWDW_API.Core.Infrastructure;
 using DWDW_API.Core.ViewModels;
 using DWDW_Service.Repositories;
 using DWDW_Service.UnitOfWorks;
@@ -33,45 +35,58 @@ namespace DWDW_Service.Services
         public RoleViewModel CreateRole(RoleCreateModel role)
         {
             //Check valid
-            roleValidation.IsRolenameExisted(role.RoleName);
-
-            //Map model to entity
-            var roleEntity = role.ToEntity<Role>();
-
-            roleEntity.IsActive = true;
-            roleRepository.AddAsync(roleEntity);
-
-            var roleResponse = roleRepository.GetRoleByRolename(role.RoleName);
-
-            var result = roleResponse.ToViewModel<RoleViewModel>();
+            var result = new RoleViewModel();
+            if (roleRepository.GetRoleByRolename(role.RoleName) == null)
+            {
+                roleRepository.Add(new Role()
+                {
+                    RoleName = role.RoleName,
+                    IsActive = true
+                });
+                result = roleRepository.GetRoleByRolename(role.RoleName).ToViewModel<RoleViewModel>();
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.ROLE_IS_EXISTED);
+            }
             return result;
         }
 
         public RoleViewModel UpdateRole(RoleViewModel role)
         {
-            roleValidation.IsRoleNotExisted(role.RoleId);
+            var result = new RoleViewModel();
+            var updateRole = roleRepository.Find(role.RoleId);
+            if (updateRole != null)
+            {
+                updateRole.RoleName = role.RoleName;
+                updateRole.IsActive = role.IsActive;
 
-            var roleEntity = role.ToEntity<Role>();
-
-            //roleEntity.IsActive = role.IsActive;
-            roleRepository.Update(roleEntity);
-
-            var roleResponse = roleRepository.Find(role.RoleId);
-            var result = roleResponse.ToViewModel<RoleViewModel>();
+                roleRepository.Update(updateRole);
+                result = updateRole.ToViewModel<RoleViewModel>();
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.ROLE_IS_NOT_EXISTED);
+            }
             return result;
         }
 
         public RoleViewModel UpdateRoleActive(RoleActiveModel role)
         {
-            roleValidation.IsRoleNotExisted(role.RoleId);
+            var result = new RoleViewModel();
+            var updateRoleActive = roleRepository.Find(role.RoleId);
+            if (updateRoleActive != null)
+            {
+                updateRoleActive.IsActive = role.IsActive;
+                roleRepository.Update(updateRoleActive);
+                result = roleRepository.Find(role.RoleId).ToViewModel<RoleViewModel>();
+                //result = updateRoleActive.ToViewModel<RoleViewModel>();
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.ROLE_IS_NOT_EXISTED);
+            }
 
-            var roleEntity = role.ToEntity<Role>();
-
-            //roleEntity.IsActive = role.IsActive;
-            roleRepository.Update(roleEntity);
-
-            var roleResponse = roleRepository.Find(role.RoleId);
-            var result = roleResponse.ToViewModel<RoleViewModel>();
             return result;
         }
     }
