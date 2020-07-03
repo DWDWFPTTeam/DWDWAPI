@@ -15,7 +15,7 @@ namespace DWDW_Service.Services
     public interface IDeviceService : IBaseService<Device>
     {
         IEnumerable<DeviceViewModel> GetAll();
-        List<DeviceViewModel> GetDeviceCode(string deviceCode);
+        IEnumerable<DeviceViewModel> GetDeviceCode(string deviceCode);
         DeviceViewModel GetDeviceID(int deviceID);
         DeviceViewModel CreateDevice(DeviceCreateModel device);
         DeviceViewModel UpdateDevice(DeviceUpdateModel device);
@@ -46,24 +46,12 @@ namespace DWDW_Service.Services
             return deviceRepository.GetAll().Select(x => x.ToViewModel<DeviceViewModel>());
         }
 
-        public List<DeviceViewModel> GetDeviceCode(string deviceCode)
+        public IEnumerable<DeviceViewModel> GetDeviceCode(string deviceCode)
         {
-            var result = new List<DeviceViewModel>();
+            IEnumerable<DeviceViewModel> result = new List<DeviceViewModel>();
             var deviceCodeList = deviceRepository.GetDeviceByCode(deviceCode);
-            if (deviceCodeList.Count != 0)
-            {
-                int count = deviceCodeList.Count();
-                for (int i = 0; i < deviceCodeList.Count; i++)
-                {
-                    var deviceElement = deviceCodeList.ElementAt(i);
-                    var deviceElementModel = deviceElement.ToViewModel<DeviceViewModel>();
-                    result.Add(deviceElementModel);
-                }
-            }
-            else
-            {
-                throw new BaseException(ErrorMessages.DEVICE_LIST_EMPTY);
-            }
+            int count = deviceCodeList.Count();
+            result = deviceCodeList.Select(x => x.ToViewModel<DeviceViewModel>());
             return result;
         }
 
@@ -73,9 +61,7 @@ namespace DWDW_Service.Services
             var device = deviceRepository.Find(deviceID);
             if (device != null)
             {
-                result.DeviceCode = device.DeviceCode;
-                result.DeviceId = device.DeviceId;
-                result.IsActive = device.IsActive;
+                result = device.ToViewModel<DeviceViewModel>();
             }
             else
             {

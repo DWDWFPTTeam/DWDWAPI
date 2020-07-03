@@ -14,6 +14,7 @@ namespace DWDW_Service.Repositories
         void DisableRoomDevice(int? roomID);
         RoomDevice GetLatest();
         List<Room> GetRoomFromLocation(int locationID);
+        bool CheckRoomLocation(int? roomID, int? ArrangementID);
     }
     public class RoomRepository : BaseRepository<Room>, IRoomRepository
     {
@@ -47,6 +48,20 @@ namespace DWDW_Service.Repositories
         public RoomDevice GetLatest()
         {
             return this.dbContext.Set<RoomDevice>().OrderByDescending(x => x.RoomDeviceId).First();
+        }
+        public bool CheckRoomLocation(int? roomID, int? ArrangementID)
+        {
+            bool result = false;
+            var arrangement = this.dbContext.Set<Arrangement>().Find(ArrangementID);
+            var roomLocation = this.dbContext.Set<Room>().Find(roomID);
+            if (roomLocation != null && arrangement != null)
+            {
+                if (roomLocation.LocationId == arrangement.LocationId)
+                {
+                    result = true;
+                }
+            }    
+            return result;
         }
     }
 }

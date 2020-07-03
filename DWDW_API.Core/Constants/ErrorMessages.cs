@@ -20,6 +20,23 @@ namespace DWDW_API.Core.Constants
         public const string ROLE_IS_NOT_EXISTED = "Role is not existed";
         public const string ROLE_IS_EXISTED = "Role is existed";
 
+        //Device Message
+        public const string DEVICE_LIST_EMPTY = "This device is not existed";
+        public const string DEVICE_IS_EXISTED = "Device is existed";
+        public const string DEVICE_IS_NOT_EXISTED = "Device is not existed";
+
+        //Room Message
+        public const string ROOM_IS_NOT_EXISTED = "Room is not existed";
+        public const string ROOM_USER_NOT_EXISTED = "This room doesn't belong to the current manager";
+        public const string ROOM_IS_EXISTED = "Room is existed";
+
+        //RoomDevice Message
+        public const string WRONG_DATETIME_FORMAT = "Invalid date";
+
+        //Shift Message
+        public const string INVALID_MANAGER = "This shift doesn't belong to the current manager";
+        public const string SHIFT_IS_NOT_EXISTED = "Shift is not existed";
+
         //User Message
         public const string BIRTHDAY_WRONG_DATETIME_FORMAT = "Role is not existed";
         public const string PASSWORD_LEN_NOT_VALID = "Password must have more than 1 character";
@@ -36,21 +53,8 @@ namespace DWDW_API.Core.Constants
         public const string LOCATION_IS_NOT_EXISTED = "Location is not existed";
         public const string LOCATION_IS_EXISTED = "Location is existed";
         public const string LOCATION_IS_NOT_BELONG_TO_MANAGER = "Location Is not belong to manager";
+        public static string LOCATION_DEVICE_EMPTY = "There is no device in this location";
 
-
-        //Room Message
-        public const string ROOM_IS_NOT_EXISTED = "Room is not existed";
-        public const string ROOM_IS_EXISTED = "Room is existed";
-        public const string ROOM_USER_NOT_EXISTED = "This room doesn't belong to the current manager";
-
-        //Location Message
-        public const string LOCATION_DEVICE_EMPTY = "There's no device in this location";
-        public const string LOCATION_USER_NOT_EXISTED = "This location doesn't belong to the current manager";
-
-        //Device Message
-        public const string DEVICE_LIST_EMPTY = "This device is not existed";
-        public const string DEVICE_IS_EXISTED = "Device is existed";
-        public const string DEVICE_IS_NOT_EXISTED = "Device is not existed";
-
+        public static string LOCATION_USER_NOT_EXISTED = "This location does not belong to the current manager";
     }
 }
