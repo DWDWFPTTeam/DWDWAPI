@@ -38,5 +38,10 @@ namespace DWDW_API.Core.Constants
 
         //Location Message
         public const string LOCATION_IS_NOT_EXISTED = "Location is not existed";
+        public const string LOCATION_IS_EXISTED = "Location is existed";
+
+        //Room Message
+        public const string ROOM_IS_NOT_EXISTED = "Room is not existed";
+        public const string ROOM_IS_EXISTED = "Room is existed";
     }
 }
