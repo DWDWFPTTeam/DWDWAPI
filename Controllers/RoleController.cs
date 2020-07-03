@@ -22,7 +22,6 @@ namespace DWDW_API.Controllers
             this.roleService = roleService;
         }
 
-        [Authorize(Roles = Constant.ADMIN)]
         [Route("GetAll")]
         [HttpGet]
         public IActionResult GetRoles()
