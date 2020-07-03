@@ -1,5 +1,6 @@
 ﻿using DWDW_Service.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,17 +12,17 @@ namespace DWDW_Service.UnitOfWorks
 
     public class UnitOfWork
     {
-        private DbContext dbContext;
-        private DbConnection dbConnection;
+        private readonly DbContext dbContext;
+        //private readonly DbConnection dbConnection;
 
         public UnitOfWork(DbContext dbContext)
         {
             this.dbContext = dbContext;
-            dbConnection = dbContext.Database.GetDbConnection();
+            //dbConnection = dbContext.Database.GetDbConnection();
         }
-        public IDbTransaction CreateTransaction()
+        public IDbContextTransaction CreateTransaction()
         {
-            return dbConnection.BeginTransaction();
+            return dbContext.Database.BeginTransaction();
         }
 
         public IArrangementRepository ArrangementRepository

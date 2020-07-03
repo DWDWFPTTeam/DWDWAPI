@@ -11,7 +11,7 @@ namespace DWDW_Service.Repositories
     {
         IEnumerable<Arrangement> GetArrangementFromLocation(int locationId);
         //this function for MANAGER and WORKER
-        IEnumerable<Arrangement> GetArrangementOfUser(int managerId);
+        IEnumerable<Arrangement> GetArrangementOfUser(int userId);
         Arrangement GetArrangementOfUserInThisLocation(int userId, int locationId);
         bool CheckUserShift(int userID, int? ArrangementID);
     }

@@ -6,6 +6,7 @@ using DWDW_Service.Repositories;
 using DWDW_Service.UnitOfWorks;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -115,15 +116,42 @@ namespace DWDW_Service.Services
 
         }
 
-        public UserViewModel DeActiveUserByAdmin(int id)
+        public UserViewModel DeActiveUserByAdmin(int userId)
         {
             UserViewModel result;
             //check validation
-            var user = userRepository.Find(id);
+            var user = userRepository.Find(userId);
             if (user != null)
             {
-                user.IsActive = false;
-                userRepository.Update(user);
+                using (var transaction = unitOfWork.CreateTransaction())
+                {
+                    try
+                    {
+                        //DeActive all Arrangement of the user
+                        var arrangementRepo = unitOfWork.ArrangementRepository;
+                        var arrangements = arrangementRepo.GetArrangementOfUser(userId);
+                        //Check If the user does not belong to any arrangements so we do not need to DeActive Arrangement
+                        if(arrangements.Count() > 0) 
+                        {
+                            foreach (var arrangement in arrangements)
+                            {
+                                arrangement.IsActive = false;
+                                arrangementRepo.Update(arrangement);
+                            }
+                        }
+                        //DeActive user
+                        user.IsActive = false;
+                        userRepository.Update(user);
+                        transaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+
+                        transaction.Rollback();
+                        throw e;
+                    }
+
+                }
                 result = user.ToViewModel<UserViewModel>();
             }
             else
