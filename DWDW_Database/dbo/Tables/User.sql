@@ -1,16 +1,18 @@
 ﻿CREATE TABLE [dbo].[User] (
     [UserId]      INT            IDENTITY (1, 1) NOT NULL,
-    [UserName]    NVARCHAR (100) NULL,
-    [Password]    NVARCHAR (100) NULL,
-    [Phone]       INT            NULL,
+    [UserName]    NVARCHAR (MAX) NULL,
+    [Password]    NVARCHAR (MAX) NULL,
+    [Phone]       NVARCHAR (MAX) NULL,
     [DateOfBirth] DATETIME       NULL,
     [Gender]      INT            NULL,
-    [DeviceToken] NVARCHAR (300) NULL,
+    [DeviceToken] NVARCHAR (MAX) NULL,
     [RoleId]      INT            NULL,
     [IsActive]    BIT            NULL,
-    PRIMARY KEY CLUSTERED ([UserId] ASC),
+    CONSTRAINT [PK__User__CB9A1CFF151180C8] PRIMARY KEY CLUSTERED ([UserId] ASC),
     CONSTRAINT [FK_User_Role] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[Role] ([roleId])
 );
+
+
 
 
 GO
