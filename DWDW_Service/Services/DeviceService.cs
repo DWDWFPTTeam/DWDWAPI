@@ -30,12 +30,15 @@ namespace DWDW_Service.Services
         private readonly IDeviceRepository deviceRepository;
         private readonly ILocationRepository locationRepository;
         private readonly IRoomRepository roomRepository;
+        private readonly IRoomDeviceRepository roomDeviceRepository;
         public DeviceService(UnitOfWork unitOfWork, IDeviceRepository deviceRepository,
-            ILocationRepository locationRepository, IRoomRepository roomRepository) : base(unitOfWork)
+            ILocationRepository locationRepository, IRoomRepository roomRepository
+            , IRoomDeviceRepository roomDeviceRepository) : base(unitOfWork)
         {
             this.deviceRepository = deviceRepository;
             this.locationRepository = locationRepository;
             this.roomRepository = roomRepository;
+            this.roomDeviceRepository = roomDeviceRepository;
         }
 
         public IEnumerable<DeviceViewModel> GetAll()
@@ -126,6 +129,10 @@ namespace DWDW_Service.Services
             if (deviceUpdate != null)
             {
                 deviceUpdate.IsActive = device.IsActive;
+                if (device.IsActive == false)
+                {
+                    roomDeviceRepository.DisableDeviceRoom(deviceUpdate.DeviceId);
+                }
                 deviceRepository.Update(deviceUpdate);
                 result = deviceUpdate.ToViewModel<DeviceViewModel>();
             }
