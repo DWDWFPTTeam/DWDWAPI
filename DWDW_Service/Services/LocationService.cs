@@ -60,11 +60,11 @@ namespace DWDW_Service.Services
 
         public LocationViewModel GetLocationById(int locationId)
         {
-            var room = locationRepository.Find(locationId);
+            var location = locationRepository.Find(locationId);
             LocationViewModel result;
-            if (room != null)
+            if (location != null)
             {
-                result = room.ToViewModel<LocationViewModel>();
+                result = location.ToViewModel<LocationViewModel>();
             }
             else
             {
@@ -85,30 +85,49 @@ namespace DWDW_Service.Services
         }
 
 
+        //public LocationViewModel InsertLocation(LocationInsertModel locationInsert)
+        //{
+        //    LocationViewModel result = null;
+        //    Location location;
+        //    var check = locationRepository.GetLocationByLocationCode(locationInsert.LocationCode);
+        //    if (check == null)
+        //    {
+        //        location = new Location()
+        //        {
+        //            LocationCode = locationInsert.LocationCode,
+        //            IsActive = true
+        //        };
+        //        locationRepository.Add(location);
+        //        result = location.ToViewModel<LocationViewModel>();
+        //    }
+        //    else if (check != null)
+        //    {
+        //        throw new BaseException(ErrorMessages.LOCATION_IS_EXISTED);
+        //    }
+        //    else
+        //    {
+        //        throw new BaseException(ErrorMessages.INSERT_ERROR);
+        //    }
+        //    return result;
+        //}
+
         public LocationViewModel InsertLocation(LocationInsertModel locationInsert)
         {
-            LocationViewModel result = null;
-            Location location;
+            LocationViewModel result;
             var check = locationRepository.GetLocationByLocationCode(locationInsert.LocationCode);
             if (check == null)
             {
-                location = new Location()
-                {
-                    LocationCode = locationInsert.LocationCode,
-                    IsActive = true
-                };
-                locationRepository.Add(location);
-                result = location.ToViewModel<LocationViewModel>();
-            }
-            else if (check != null)
-            {
-                throw new BaseException(ErrorMessages.LOCATION_IS_EXISTED);
+               
+                locationRepository.Add(locationInsert.ToEntity<Location>());
+                result = locationRepository.GetLocationByLocationCode(locationInsert.LocationCode)
+                                           .ToViewModel<LocationViewModel>();
             }
             else
             {
-                throw new BaseException(ErrorMessages.INSERT_ERROR);
+                throw new BaseException(ErrorMessages.LOCATION_IS_EXISTED);
             }
-            return result ;
+          
+            return result;
         }
 
 
