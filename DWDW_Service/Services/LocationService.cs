@@ -23,9 +23,21 @@ namespace DWDW_Service.Services
     public class LocationService : BaseService<Location>, ILocationService
     {
         private readonly ILocationRepository locationRepository;
-        public LocationService(UnitOfWork unitOfWork, ILocationRepository locationRepository) : base(unitOfWork)
+        private readonly IArrangementRepository arrangementRepository;
+        private readonly IRoomRepository roomRepository;
+        private readonly IShiftRepository shiftRepository;
+        private readonly IRoomDeviceRepository roomDeviceRepository;
+
+        public LocationService(UnitOfWork unitOfWork, ILocationRepository locationRepository,
+            IArrangementRepository arrangementRepository, IRoomRepository roomRepository,
+            IShiftRepository shiftRepository, IRoomDeviceRepository roomDeviceRepository)
+            : base(unitOfWork)
         {
             this.locationRepository = locationRepository;
+            this.arrangementRepository = arrangementRepository;
+            this.roomRepository = roomRepository;
+            this.shiftRepository = shiftRepository;
+            this.roomDeviceRepository = roomDeviceRepository;
         }
 
         public LocationViewModel DeactiveLocation(int locationId)
@@ -35,8 +47,34 @@ namespace DWDW_Service.Services
             var location = locationRepository.Find(locationId);
             if (location != null)
             {
-                location.IsActive = false;
-                locationRepository.Update(location);
+                using (var transaction = unitOfWork.CreateTransaction())
+                {
+                    try
+                    {
+                        //disable arrangements, rooms
+                        var arrangements = arrangementRepository.DisableArrangementFromLocation(locationId);
+                        var rooms = roomRepository.DisableRoomFromLocation(locationId);
+
+                        foreach (var a in arrangements)
+                        {
+                            //disable shifts
+                            shiftRepository.DisableShiftsByArrangementId(a.ArrangementId);
+                        }
+                        foreach (var r in rooms)
+                        {
+                            //disable roomDevice
+                            roomDeviceRepository.DisableRoomDevice(r.RoomId);
+                        }
+                        location.IsActive = false;
+                        locationRepository.Update(location);
+                        transaction.Commit();
+                    }
+                    catch (BaseException)
+                    {
+                        transaction.Rollback();
+                        throw new BaseException(ErrorMessages.DEACTIVE_ERROR);
+                    }
+                }
                 result = location.ToViewModel<LocationViewModel>();
             }
             else
@@ -84,40 +122,12 @@ namespace DWDW_Service.Services
             return result;
         }
 
-
-        //public LocationViewModel InsertLocation(LocationInsertModel locationInsert)
-        //{
-        //    LocationViewModel result = null;
-        //    Location location;
-        //    var check = locationRepository.GetLocationByLocationCode(locationInsert.LocationCode);
-        //    if (check == null)
-        //    {
-        //        location = new Location()
-        //        {
-        //            LocationCode = locationInsert.LocationCode,
-        //            IsActive = true
-        //        };
-        //        locationRepository.Add(location);
-        //        result = location.ToViewModel<LocationViewModel>();
-        //    }
-        //    else if (check != null)
-        //    {
-        //        throw new BaseException(ErrorMessages.LOCATION_IS_EXISTED);
-        //    }
-        //    else
-        //    {
-        //        throw new BaseException(ErrorMessages.INSERT_ERROR);
-        //    }
-        //    return result;
-        //}
-
         public LocationViewModel InsertLocation(LocationInsertModel locationInsert)
         {
             LocationViewModel result;
             var check = locationRepository.GetLocationByLocationCode(locationInsert.LocationCode);
             if (check == null)
             {
-               
                 locationRepository.Add(locationInsert.ToEntity<Location>());
                 result = locationRepository.GetLocationByLocationCode(locationInsert.LocationCode)
                                            .ToViewModel<LocationViewModel>();

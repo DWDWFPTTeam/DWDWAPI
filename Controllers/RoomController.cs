@@ -27,7 +27,7 @@ namespace DWDW_API.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN)]
         [Route("GetRooms")]
         public IActionResult GetRooms()
         {
@@ -46,11 +46,33 @@ namespace DWDW_API.Controllers
                 result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
             return result;
-
         }
 
+        //[HttpGet]
+        //[Authorize(Roles = Constant.MANAGER)]
+        //[Route("GetRoomsForManager")]
+        //public IActionResult GetRoomsForManager()
+        //{
+        //    IActionResult result;
+        //    try
+        //    {
+        //        int managerId = int.Parse(CurrentUserId);
+        //        var list = roomService.GetRooms();
+        //        return Ok(list);
+        //    }
+        //    catch (BaseException e)
+        //    {
+        //        result = BadRequest(e.Message);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+        //    }
+        //    return result;
+        //}
+
         [HttpGet]
-        //[Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN)]
         [Route("GetRoomsFromLocation/{locationId}")]
         public IActionResult GetRoomsFromLocation(int locationId)
         {
@@ -73,7 +95,7 @@ namespace DWDW_API.Controllers
 
         [HttpGet]
         [Route("GetRoomById")]
-        //[Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN)]
         public IActionResult GetRoomById(int RoomId)
         {
             IActionResult result;
@@ -94,7 +116,7 @@ namespace DWDW_API.Controllers
         }
 
         [HttpPut]
-        //[Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN)]
         [Route("UpdateRoom")]
         public IActionResult UpdateRoom(RoomUpdateModel roomUpdate)
         {
@@ -117,7 +139,7 @@ namespace DWDW_API.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN)]
         [Route("CreateRoom")]
         public IActionResult CreateRoom(RoomInsertModel roomInsert)
         {
@@ -140,7 +162,7 @@ namespace DWDW_API.Controllers
         }
 
         [HttpPut]
-        //[Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN)]
         [Route("DeactiveRoom/{roomId}")]
         public IActionResult DeactiveRoom(int roomId)
         {

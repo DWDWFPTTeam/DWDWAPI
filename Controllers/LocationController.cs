@@ -26,7 +26,7 @@ namespace DWDW_API.Controllers
             this.jwtTokenProvider = jwtTokenProvider;
         }
         [HttpGet]
-        //[Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN)]
         [Route("GetLocations")]
         public IActionResult GetLocations()
         {
@@ -47,7 +47,7 @@ namespace DWDW_API.Controllers
             return result;
         }
         [HttpGet]
-        //[Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN)]
         [Route("GetLocationById")]
         public IActionResult GetLocationById(int locationId)
         {
@@ -70,7 +70,7 @@ namespace DWDW_API.Controllers
         }
 
         [HttpPut]
-        //[Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN)]
         [Route("UpdateLocation")]
         public IActionResult UpdateLocation(LocationUpdateModel locationUpdate)
         {
@@ -92,7 +92,7 @@ namespace DWDW_API.Controllers
             return result;
         }
         [HttpPost]
-        //[Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN)]
         [Route("CreateLocation")]
         public IActionResult CreateLocation(LocationInsertModel locationInsert)
         {
@@ -114,7 +114,7 @@ namespace DWDW_API.Controllers
             return result;
         }
         [HttpPut]
-        //[Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN)]
         [Route("DeactiveLocation/{locationId}")]
         public IActionResult DeactiveLocation(int locationId)
         {

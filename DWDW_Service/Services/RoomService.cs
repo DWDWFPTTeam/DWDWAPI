@@ -13,22 +13,29 @@ namespace DWDW_Service.Services
 {
     public interface IRoomService : IBaseService<Room>
     {
+        //admin
         IEnumerable<RoomViewModel> GetRooms();
         RoomViewModel GetRoomById(int roomId);
         RoomViewModel InsertRoom(RoomInsertModel roomInsert);
         RoomViewModel UpdateRoom(RoomUpdateModel roomUpdate);
         RoomViewModel DeactiveRoom(int roomId);
         IEnumerable<RoomViewModel> GetRoomsFromLocation(int locationId);
+
+        //manager
+        IEnumerable<RoomViewModel> GetRoomsForManager(int managerId);
     }
     public class RoomService : BaseService<Room>, IRoomService
     {
         private readonly IRoomRepository roomRepository;
         private readonly ILocationRepository locationRepository;
+        private readonly IRoomDeviceRepository roomDeviceRepository;
         public RoomService(UnitOfWork unitOfWork, IRoomRepository roomRepository,
-            ILocationRepository locationRepository) : base(unitOfWork)
+            ILocationRepository locationRepository, IRoomDeviceRepository roomDeviceRepository)
+            : base(unitOfWork)
         {
             this.roomRepository = roomRepository;
             this.locationRepository = locationRepository;
+            this.roomDeviceRepository = roomDeviceRepository;
         }
 
         public RoomViewModel DeactiveRoom(int roomId)
@@ -38,8 +45,22 @@ namespace DWDW_Service.Services
             var room = roomRepository.Find(roomId);
             if (room!=null)
             {
-                room.IsActive = false;
-                roomRepository.Update(room);
+                using (var transaction = unitOfWork.CreateTransaction())
+                {
+                    try
+                    {
+                        room.IsActive = false;
+                        roomDeviceRepository.DisableRoomDevice(roomId);
+                        roomRepository.Update(room);
+                        transaction.Commit();
+                    }
+                    catch (BaseException)
+                    {
+                        transaction.Rollback();
+                        throw new BaseException(ErrorMessages.DEACTIVE_ERROR);
+                    }
+                }
+                
                 result = room.ToViewModel<RoomViewModel>();
             }
             else
@@ -74,10 +95,19 @@ namespace DWDW_Service.Services
             return result;
         }
 
+        public IEnumerable<RoomViewModel> GetRoomsForManager(int managerId)
+        {
+            var result = roomRepository.GetAll().Select(r => r.ToViewModel<RoomViewModel>());
+            if (result == null)
+            {
+                throw new BaseException(ErrorMessages.GET_LIST_FAIL);
+            }
+            return result;
+        }
+
         public IEnumerable<RoomViewModel> GetRoomsFromLocation(int locationId)
         {
-            var result = roomRepository.GetAll()
-                .Where(r => r.LocationId == locationId)
+            var result = roomRepository.GetRoomFromLocation(locationId)
                 .Select(r => r.ToViewModel<RoomViewModel>());
             if (result==null)
             {

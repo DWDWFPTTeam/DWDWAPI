@@ -14,6 +14,7 @@ namespace DWDW_Service.Repositories
         IEnumerable<Arrangement> GetArrangementOfUser(int userId);
         Arrangement GetArrangementOfUserInThisLocation(int userId, int locationId);
         bool CheckUserShift(int userID, int? ArrangementID);
+        List<Arrangement> DisableArrangementFromLocation(int locationId);
     }
     public class ArrangementRepository : BaseRepository<Arrangement>, IArrangementRepository
     {
@@ -53,6 +54,16 @@ namespace DWDW_Service.Repositories
                 }
             }
             return result;
+        }
+
+        public List<Arrangement> DisableArrangementFromLocation(int locationId)
+        {
+            var arrangements = this.dbContext.Set<Arrangement>()
+               .Where(a => a.LocationId == locationId).ToList();
+            arrangements.ForEach(a => a.IsActive = false);
+            this.dbContext.SaveChanges();
+            return arrangements;
+            
         }
     }
 }

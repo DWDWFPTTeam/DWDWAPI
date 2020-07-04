@@ -11,8 +11,7 @@ namespace DWDW_Service.Repositories
     {
         List<Shift> GetShiftByDate(DateTime date);
         Shift GetLatest();
-
-
+        void DisableShiftsByArrangementId(int? arrangementId);
     }
     public class ShiftRepository : BaseRepository<Shift>, IShiftRepository
     {
@@ -31,6 +30,14 @@ namespace DWDW_Service.Repositories
             return this.dbContext.Set<Shift>().OrderByDescending(x => x.ShiftId).First();
         }
 
+        public void DisableShiftsByArrangementId(int? arrangementId)
+        {
+            var shifts = this.dbContext.Set<Shift>()
+                .Where(s => s.ArrangementId == arrangementId)
+                .ToList();
+            shifts.ForEach(s => s.IsActive = false);
+            this.dbContext.SaveChanges();
+        }
     }
 
 }
