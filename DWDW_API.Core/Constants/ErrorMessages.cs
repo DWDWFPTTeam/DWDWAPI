@@ -32,6 +32,11 @@ namespace DWDW_API.Core.Constants
         public const string ROOM_USER_NOT_EXISTED = "This room doesn't belong to the current manager";
 
         //RoomDevice Message
+        public const string WRONG_DATETIME_FORMAT = "Invalid date";
+
+        //Shift Message
+        public const string INVALID_MANAGER = "This shift doesn't belong to the current manager";
+        public const string SHIFT_IS_NOT_EXISTED = "Shift is not existed";
 
         //User Message
         public const string BIRTHDAY_WRONG_DATETIME_FORMAT = "Role is not existed";

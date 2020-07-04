@@ -176,6 +176,10 @@ namespace DWDW_API
                 //Shift Mapping
                 cfg.CreateMap<Shift, ShiftViewModel>();
                 cfg.CreateMap<ShiftViewModel, Shift>();
+                cfg.CreateMap<ShiftCreateModel, Shift>();
+                cfg.CreateMap<ShiftUpdateModel, Shift>();
+                cfg.CreateMap<ShiftActiveModel, Shift>();
+
 
                 //User Mapping
                 cfg.CreateMap<User, UserViewModel>();

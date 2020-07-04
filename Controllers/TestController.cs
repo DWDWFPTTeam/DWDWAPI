@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using DWDW_API.Core.Constants;
 using DWDW_API.Providers;
+using DWDW_Service.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace DWDW_API.Controllers
@@ -13,6 +15,7 @@ namespace DWDW_API.Controllers
     [Route("[controller]")]
     public class TestController : BaseController
     {
+
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -35,5 +38,6 @@ namespace DWDW_API.Controllers
             })
             .ToArray();
         }
+
     }
 }

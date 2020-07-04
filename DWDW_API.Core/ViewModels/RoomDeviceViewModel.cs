@@ -22,9 +22,9 @@ namespace DWDW_API.Core.ViewModels
         public int? RoomId { get; set; }
         [Required]
         public int? DeviceId { get; set; }
-        [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.BIRTHDAY_WRONG_DATETIME_FORMAT)]
+        [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
         public DateTime? StartDate { get; set; }
-        [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.BIRTHDAY_WRONG_DATETIME_FORMAT)]
+        [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
         public DateTime? EndDate { get; set; }
     }
 }
