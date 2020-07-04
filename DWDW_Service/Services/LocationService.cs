@@ -69,10 +69,10 @@ namespace DWDW_Service.Services
                         locationRepository.Update(location);
                         transaction.Commit();
                     }
-                    catch (BaseException)
+                    catch (Exception e)
                     {
                         transaction.Rollback();
-                        throw new BaseException(ErrorMessages.DEACTIVE_ERROR);
+                        throw e;
                     }
                 }
                 result = location.ToViewModel<LocationViewModel>();
