@@ -31,6 +31,8 @@ namespace DWDW_API.Core.Constants
         public const string ROOM_IS_NOT_EXISTED = "Room is not existed";
         public const string ROOM_USER_NOT_EXISTED = "This room doesn't belong to the current manager";
 
+        //RoomDevice Message
+
         //User Message
         public const string BIRTHDAY_WRONG_DATETIME_FORMAT = "Role is not existed";
         public const string PASSWORD_LEN_NOT_VALID = "Password must have more than 1 character";
