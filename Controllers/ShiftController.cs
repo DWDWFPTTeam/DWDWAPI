@@ -93,6 +93,84 @@ namespace DWDW_API.Controllers
         }
 
         [Authorize(Roles = Constant.MANAGER)]
+        [HttpGet]
+        [Route("GetShiftManager")]
+        public IActionResult GetShiftManager()
+        {
+            IActionResult result;
+            var identity = (ClaimsIdentity)User.Identity;
+            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userID = int.Parse(ID);
+            try
+            {
+                var shifts = shiftService.GetShiftManager(userID);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+            }
+            return result;
+        }
+
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpGet]
+        [Route("GetShiftByDateManageer")]
+        public IActionResult GetShiftByDateManager(DateTime date)
+        {
+            IActionResult result;
+            var identity = (ClaimsIdentity)User.Identity;
+            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userID = int.Parse(ID);
+            try
+            {
+                var shifts = shiftService.GetShiftByDateManager(userID, date);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+            }
+            return result;
+        }
+
+        [Authorize(Roles = Constant.WORKER)]
+        [HttpGet]
+        [Route("GetShiftWorker")]
+        public IActionResult GetShiftWorker()
+        {
+            IActionResult result;
+            var identity = (ClaimsIdentity)User.Identity;
+            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userID = int.Parse(ID);
+            try
+            {
+                var shifts = shiftService.GetShiftWorker(userID);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+            }
+            return result;
+        }
+
+        [Authorize(Roles = Constant.MANAGER)]
         [HttpPost]
         [Route("CreateShift")]
         public IActionResult CreateShift(ShiftCreateModel shift)
@@ -142,7 +220,31 @@ namespace DWDW_API.Controllers
             }
             return result;
         }
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpPut]
+        [Route("UpdateShiftActive")]
+        public IActionResult UpdateShiftActive(ShiftActiveModel shift)
+        {
+            IActionResult result;
+            var identity = (ClaimsIdentity)User.Identity;
+            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userID = int.Parse(ID);
+            try
+            {
+                var shifts = shiftService.UpdateShiftActive(userID, shift);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
 
+            }
+            return result;
+        }
 
 
     }

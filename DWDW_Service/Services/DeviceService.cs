@@ -29,17 +29,9 @@ namespace DWDW_Service.Services
     public class DeviceService : BaseService<Device>, IDeviceService
     {
         private readonly IDeviceRepository deviceRepository;
-        private readonly ILocationRepository locationRepository;
-        private readonly IRoomRepository roomRepository;
-        private readonly IRoomDeviceRepository roomDeviceRepository;
-        public DeviceService(UnitOfWork unitOfWork, IDeviceRepository deviceRepository,
-            ILocationRepository locationRepository, IRoomRepository roomRepository
-            , IRoomDeviceRepository roomDeviceRepository) : base(unitOfWork)
+        public DeviceService(UnitOfWork unitOfWork, IDeviceRepository deviceRepository) : base(unitOfWork)
         {
             this.deviceRepository = deviceRepository;
-            this.locationRepository = locationRepository;
-            this.roomRepository = roomRepository;
-            this.roomDeviceRepository = roomDeviceRepository;
         }
 
         public IEnumerable<DeviceViewModel> GetAll()
@@ -115,13 +107,25 @@ namespace DWDW_Service.Services
             var deviceUpdate = deviceRepository.Find(device.DeviceId);
             if (deviceUpdate != null)
             {
-                deviceUpdate.IsActive = device.IsActive;
-                if (device.IsActive == false)
+                using( var transaction = unitOfWork.CreateTransaction())
                 {
-                    roomDeviceRepository.DisableDeviceRoom(deviceUpdate.DeviceId);
-                }
-                deviceRepository.Update(deviceUpdate);
-                result = deviceUpdate.ToViewModel<DeviceViewModel>();
+                    try
+                    {
+                        deviceUpdate.IsActive = device.IsActive;
+                        if (device.IsActive == false)
+                        {
+                            var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
+                            roomDeviceRepo.DisableDeviceRoom(deviceUpdate.DeviceId);
+                        }
+                        deviceRepository.Update(deviceUpdate);
+                        result = deviceUpdate.ToViewModel<DeviceViewModel>();
+                        transaction.Commit();
+                    }catch(Exception e)
+                    {
+                        transaction.Rollback();
+                        throw e;
+                    }
+                }            
             }
             else
             {
@@ -133,10 +137,12 @@ namespace DWDW_Service.Services
         public IEnumerable<DeviceViewModel> GetActiveDeviceFromLocation(int locationID)
         {
             IEnumerable<DeviceViewModel> result = new List<DeviceViewModel>();
-            var location = locationRepository.Find(locationID);
+            var locationRepo = unitOfWork.LocationRepository;
+            var location = locationRepo.Find(locationID);
             if (location != null)
             {
-                var roomList = roomRepository.GetRoomFromLocation(locationID);
+                var roomRepo = unitOfWork.RoomRepository;
+                var roomList = roomRepo.GetRoomFromLocation(locationID);
                 var deviceList = new List<Device>();
                 for (int i = 0; i < roomList.Count; i++)
                 {
@@ -160,11 +166,13 @@ namespace DWDW_Service.Services
         public IEnumerable<DeviceViewModel> GetActiveDeviceFromLocationManager(int userID, int locationID)
         {
             IEnumerable<DeviceViewModel> result = new List<DeviceViewModel>();
-            var location = locationRepository.Find(locationID);
+            var locationRepo = unitOfWork.LocationRepository;
+            var location = locationRepo.Find(locationID);
             bool check = deviceRepository.CheckUserLocation(userID, locationID);
             if (check == true && location != null)
             {
-                var roomList = roomRepository.GetRoomFromLocation(locationID);
+                var roomRepo = unitOfWork.RoomRepository;
+                var roomList = roomRepo.GetRoomFromLocation(locationID);
                 var deviceList = new List<Device>();
                 for (int i = 0; i < roomList.Count; i++)
                 {
@@ -187,7 +195,8 @@ namespace DWDW_Service.Services
         public DeviceViewModel GetActiveDeviceFromRoom(int roomID)
         {
             var result = new DeviceViewModel();
-            var room = roomRepository.Find(roomID);
+            var roomRepo = unitOfWork.RoomRepository;
+            var room = roomRepo.Find(roomID);
             if (room != null)
             {
                 var devices = deviceRepository.GetDeviceFromRoom(room.RoomId);
@@ -210,7 +219,8 @@ namespace DWDW_Service.Services
         public DeviceViewModel GetActiveDeviceFromRoomManager(int userID, int roomID)
         {
             var result = new DeviceViewModel();
-            var room = roomRepository.Find(roomID);
+            var roomRepo = unitOfWork.RoomRepository;
+            var room = roomRepo.Find(roomID);
             bool check = deviceRepository.CheckUserRoom(userID, roomID);
 
             if (check == true && room != null)
@@ -235,9 +245,10 @@ namespace DWDW_Service.Services
         public RoomDeviceViewModel AssignDeviceToRoom(RoomDeviceCreateModel roomDevice)
         {
             var result = new RoomDeviceViewModel();
-            roomDeviceRepository.DisableDeviceRoom(roomDevice.DeviceId);
-            roomDeviceRepository.DisableRoomDevice(roomDevice.RoomId);
-            roomDeviceRepository.Add(new RoomDevice
+            var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
+            roomDeviceRepo.DisableDeviceRoom(roomDevice.DeviceId);
+            roomDeviceRepo.DisableRoomDevice(roomDevice.RoomId);
+            roomDeviceRepo.Add(new RoomDevice
             {
                 RoomId = roomDevice.RoomId,
                 DeviceId = roomDevice.DeviceId,
@@ -245,7 +256,7 @@ namespace DWDW_Service.Services
                 EndDate = roomDevice.EndDate,
                 IsActive = true
             });
-            result = roomDeviceRepository.GetLatest().ToViewModel<RoomDeviceViewModel>();
+            result = roomDeviceRepo.GetLatest().ToViewModel<RoomDeviceViewModel>();
             return result;
         }
     }
