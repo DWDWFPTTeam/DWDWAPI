@@ -21,9 +21,10 @@ namespace DWDW_Service.Services
         DeviceViewModel UpdateDevice(DeviceUpdateModel device);
         DeviceViewModel UpdateDeviceActive(DeviceActiveModel device);
         IEnumerable<DeviceViewModel> GetActiveDeviceFromLocation(int locationID);
-        List<DeviceViewModel> GetActiveDeviceFromLocationManager(int userID, int locationID);
+        IEnumerable<DeviceViewModel> GetActiveDeviceFromLocationManager(int userID, int locationID);
         DeviceViewModel GetActiveDeviceFromRoom(int roomID);
         DeviceViewModel GetActiveDeviceFromRoomManager(int userID, int roomID);
+        RoomDeviceViewModel AssignDeviceToRoom(RoomDeviceCreateModel roomDevice);
     }
     public class DeviceService : BaseService<Device>, IDeviceService
     {
@@ -129,65 +130,24 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        //public List<DeviceViewModel> GetActiveDeviceFromLocation(int locationID)
-        //{
-        //    var result = new List<DeviceViewModel>();
-        //    var location = locationRepository.Find(locationID);
-        //    if (location != null)
-        //    {
-        //        var roomList = roomRepository.GetRoomFromLocation(locationID);
-        //        if (roomList.Count != 0)
-        //        {
-        //            var deviceList = new List<Device>();
-        //            for (int i = 0; i < roomList.Count; i++)
-        //            {
-        //                var roomAt = roomList.ElementAt(i);
-        //                var deviceListAt = deviceRepository.GetDeviceFromRoom(roomAt.RoomId);
-        //                deviceList.Add(deviceListAt);
-        //            }
-        //            if (deviceList.Count != 0)
-        //            {
-        //                for (int i = 0; i < deviceList.Count; i++)
-        //                {
-        //                    var deviceElement = deviceList.ElementAt(i);
-        //                    var deviceElementModel = deviceElement.ToViewModel<DeviceViewModel>();
-        //                    result.Add(deviceElementModel);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                throw new BaseException(ErrorMessages.LOCATION_DEVICE_EMPTY);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            throw new BaseException(ErrorMessages.LOCATION_DEVICE_EMPTY);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
-        //    }
-        //    return result;
-        //}
-
         public IEnumerable<DeviceViewModel> GetActiveDeviceFromLocation(int locationID)
         {
             IEnumerable<DeviceViewModel> result = new List<DeviceViewModel>();
             var location = locationRepository.Find(locationID);
             if (location != null)
             {
-                var rooms = roomRepository.GetRoomFromLocation(locationID);
-                if (rooms.Count != 0)
+                var roomList = roomRepository.GetRoomFromLocation(locationID);
+                var deviceList = new List<Device>();
+                for (int i = 0; i < roomList.Count; i++)
                 {
-                    var devices = new List<Device>();
-                    foreach (var room in rooms)
+                    var roomAt = roomList.ElementAt(i);
+                    var deviceListAt = deviceRepository.GetDeviceFromRoom(roomAt.RoomId);
+                    if (deviceListAt != null)
                     {
-                        var devicesEachRoom = deviceRepository.GetDeviceFromRoom(room.RoomId);
-                        devices.Add(devicesEachRoom);
+                        deviceList.Add(deviceListAt);
                     }
-                    result = devices.Select(x => x.ToViewModel<DeviceViewModel>());
                 }
+                result = deviceList.Select(x => x.ToViewModel<DeviceViewModel>());
             }
             else
             {
@@ -196,41 +156,26 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        public List<DeviceViewModel> GetActiveDeviceFromLocationManager(int userID, int locationID)
+
+        public IEnumerable<DeviceViewModel> GetActiveDeviceFromLocationManager(int userID, int locationID)
         {
-            var result = new List<DeviceViewModel>();
+            IEnumerable<DeviceViewModel> result = new List<DeviceViewModel>();
             var location = locationRepository.Find(locationID);
             bool check = deviceRepository.CheckUserLocation(userID, locationID);
             if (check == true && location != null)
             {
                 var roomList = roomRepository.GetRoomFromLocation(locationID);
-                if (roomList.Count != 0)
+                var deviceList = new List<Device>();
+                for (int i = 0; i < roomList.Count; i++)
                 {
-                    var deviceList = new List<Device>();
-                    for (int i = 0; i < roomList.Count; i++)
+                    var roomAt = roomList.ElementAt(i);
+                    var deviceListAt = deviceRepository.GetDeviceFromRoom(roomAt.RoomId);
+                    if (deviceListAt != null)
                     {
-                        var roomAt = roomList.ElementAt(i);
-                        var deviceListAt = deviceRepository.GetDeviceFromRoom(roomAt.RoomId);
                         deviceList.Add(deviceListAt);
                     }
-                    if (deviceList.Count != 0)
-                    {
-                        for (int i = 0; i < deviceList.Count; i++)
-                        {
-                            var deviceElement = deviceList.ElementAt(i);
-                            var deviceElementModel = deviceElement.ToViewModel<DeviceViewModel>();
-                            result.Add(deviceElementModel);
-                        }
-                    }
-                    else
-                    {
-                        throw new BaseException(ErrorMessages.LOCATION_DEVICE_EMPTY);
-                    }
                 }
-                else
-                {
-                    throw new BaseException(ErrorMessages.LOCATION_DEVICE_EMPTY);
-                }
+                result = deviceList.Select(x => x.ToViewModel<DeviceViewModel>());
             }
             else
             {
@@ -245,8 +190,15 @@ namespace DWDW_Service.Services
             var room = roomRepository.Find(roomID);
             if (room != null)
             {
-                var deviceList = deviceRepository.GetDeviceFromRoom(room.RoomId);
-                result = deviceList.ToViewModel<DeviceViewModel>();
+                var devices = deviceRepository.GetDeviceFromRoom(room.RoomId);
+                if (devices != null)
+                {
+                    result = devices.ToViewModel<DeviceViewModel>();
+                }
+                else
+                {
+                    throw new BaseException(ErrorMessages.ROOM_IS_NOT_EXISTED);
+                }
             }
             else
             {
@@ -263,13 +215,37 @@ namespace DWDW_Service.Services
 
             if (check == true && room != null)
             {
-                var deviceList = deviceRepository.GetDeviceFromRoom(room.RoomId);
-                result = deviceList.ToViewModel<DeviceViewModel>();
+                var devices = deviceRepository.GetDeviceFromRoom(room.RoomId);
+                if (devices != null)
+                {
+                    result = devices.ToViewModel<DeviceViewModel>();
+                }
+                else
+                {
+                    throw new BaseException(ErrorMessages.ROOM_IS_NOT_EXISTED);
+                }
             }
             else
             {
                 throw new BaseException(ErrorMessages.ROOM_USER_NOT_EXISTED);
             }
+            return result;
+        }
+
+        public RoomDeviceViewModel AssignDeviceToRoom(RoomDeviceCreateModel roomDevice)
+        {
+            var result = new RoomDeviceViewModel();
+            roomDeviceRepository.DisableDeviceRoom(roomDevice.DeviceId);
+            roomDeviceRepository.DisableRoomDevice(roomDevice.RoomId);
+            roomDeviceRepository.Add(new RoomDevice
+            {
+                RoomId = roomDevice.RoomId,
+                DeviceId = roomDevice.DeviceId,
+                StartDate = roomDevice.StartDate,
+                EndDate = roomDevice.EndDate,
+                IsActive = true
+            });
+            result = roomDeviceRepository.GetLatest().ToViewModel<RoomDeviceViewModel>();
             return result;
         }
     }
