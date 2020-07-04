@@ -23,15 +23,10 @@ namespace DWDW_Service.Services
     public class ShiftService : BaseService<Shift>, IShiftService
     {
         private readonly IShiftRepository shiftRepository;
-        private readonly IArrangementRepository arrangementRepository;
-        private readonly IRoomRepository roomRepository;
         public ShiftService(UnitOfWork unitOfWork, IShiftRepository shiftRepository
-            , IArrangementRepository arrangementRepository
             , IRoomRepository roomRepository) : base(unitOfWork)
         {
             this.shiftRepository = shiftRepository;
-            this.arrangementRepository = arrangementRepository;
-            this.roomRepository = roomRepository;
         }
 
         public IEnumerable<ShiftViewModel> GetAll()
@@ -65,8 +60,10 @@ namespace DWDW_Service.Services
         public ShiftViewModel CreateShift(int userID, ShiftCreateModel shift)
         {
             var result = new ShiftViewModel();
-            bool CheckManagerLocation = arrangementRepository.CheckUserShift(userID, shift.ArrangementId);
-            bool CheckRoomLocation = roomRepository.CheckRoomLocation(shift.RoomId, shift.ArrangementId);
+            var arrangementRepo = this.unitOfWork.ArrangementRepository;
+            var roomRepo = this.unitOfWork.RoomRepository;
+            bool CheckManagerLocation = arrangementRepo.CheckUserShift(userID, shift.ArrangementId);
+            bool CheckRoomLocation = roomRepo.CheckRoomLocation(shift.RoomId, shift.ArrangementId);
             if (CheckManagerLocation == true && CheckRoomLocation == true)
             {
                 shiftRepository.Add(new Shift
@@ -93,14 +90,21 @@ namespace DWDW_Service.Services
             var shiftU = shiftRepository.Find(shift.ShiftId);
             if (shiftU != null)
             {
-                bool CheckManagerLocation = arrangementRepository.CheckUserShift(userID, shiftU.ArrangementId);
+                var arrangementRepo = this.unitOfWork.ArrangementRepository;
+                var roomRepo = this.unitOfWork.RoomRepository;
+                bool CheckManagerLocation = arrangementRepo.CheckUserShift(userID, shiftU.ArrangementId);
                 if (CheckManagerLocation)
                 {
-                    bool CheckManagerUpdateLocation = arrangementRepository.CheckUserShift(userID, shift.ArrangementId);
-                    bool CheckRoomUpdateLocation = roomRepository.CheckRoomLocation(shift.RoomId, shift.ArrangementId);
+                    bool CheckManagerUpdateLocation = arrangementRepo.CheckUserShift(userID, shift.ArrangementId);
+                    bool CheckRoomUpdateLocation = roomRepo.CheckRoomLocation(shift.RoomId, shift.ArrangementId);
                     if (CheckManagerUpdateLocation == true && CheckRoomUpdateLocation == true)
                     {
-
+                        shiftU.ArrangementId = shift.ArrangementId;
+                        shiftU.Date = shift.Date;
+                        shiftU.RoomId = shift.RoomId;
+                        shiftU.ShiftType = shift.ShiftType;
+                        shiftRepository.Update(shiftU);
+                        result = shiftU.ToViewModel<ShiftViewModel>();
                     }
                 }
                 else
