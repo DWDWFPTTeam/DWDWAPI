@@ -107,14 +107,25 @@ namespace DWDW_Service.Services
             var deviceUpdate = deviceRepository.Find(device.DeviceId);
             if (deviceUpdate != null)
             {
-                deviceUpdate.IsActive = device.IsActive;
-                if (device.IsActive == false)
+                using( var transaction = unitOfWork.CreateTransaction())
                 {
-                    var roomDeviceRepo = this.unitOfWork.RoomDeviceRepository;
-                    roomDeviceRepo.DisableDeviceRoom(deviceUpdate.DeviceId);
-                }
-                deviceRepository.Update(deviceUpdate);
-                result = deviceUpdate.ToViewModel<DeviceViewModel>();
+                    try
+                    {
+                        deviceUpdate.IsActive = device.IsActive;
+                        if (device.IsActive == false)
+                        {
+                            var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
+                            roomDeviceRepo.DisableDeviceRoom(deviceUpdate.DeviceId);
+                        }
+                        deviceRepository.Update(deviceUpdate);
+                        result = deviceUpdate.ToViewModel<DeviceViewModel>();
+                        transaction.Commit();
+                    }catch(Exception e)
+                    {
+                        transaction.Rollback();
+                        throw e;
+                    }
+                }            
             }
             else
             {
@@ -126,11 +137,11 @@ namespace DWDW_Service.Services
         public IEnumerable<DeviceViewModel> GetActiveDeviceFromLocation(int locationID)
         {
             IEnumerable<DeviceViewModel> result = new List<DeviceViewModel>();
-            var locationRepo = this.unitOfWork.LocationRepository;
+            var locationRepo = unitOfWork.LocationRepository;
             var location = locationRepo.Find(locationID);
             if (location != null)
             {
-                var roomRepo = this.unitOfWork.RoomRepository;
+                var roomRepo = unitOfWork.RoomRepository;
                 var roomList = roomRepo.GetRoomFromLocation(locationID);
                 var deviceList = new List<Device>();
                 for (int i = 0; i < roomList.Count; i++)
@@ -155,12 +166,12 @@ namespace DWDW_Service.Services
         public IEnumerable<DeviceViewModel> GetActiveDeviceFromLocationManager(int userID, int locationID)
         {
             IEnumerable<DeviceViewModel> result = new List<DeviceViewModel>();
-            var locationRepo = this.unitOfWork.LocationRepository;
+            var locationRepo = unitOfWork.LocationRepository;
             var location = locationRepo.Find(locationID);
             bool check = deviceRepository.CheckUserLocation(userID, locationID);
             if (check == true && location != null)
             {
-                var roomRepo = this.unitOfWork.RoomRepository;
+                var roomRepo = unitOfWork.RoomRepository;
                 var roomList = roomRepo.GetRoomFromLocation(locationID);
                 var deviceList = new List<Device>();
                 for (int i = 0; i < roomList.Count; i++)
@@ -184,7 +195,7 @@ namespace DWDW_Service.Services
         public DeviceViewModel GetActiveDeviceFromRoom(int roomID)
         {
             var result = new DeviceViewModel();
-            var roomRepo = this.unitOfWork.RoomRepository;
+            var roomRepo = unitOfWork.RoomRepository;
             var room = roomRepo.Find(roomID);
             if (room != null)
             {
@@ -208,7 +219,7 @@ namespace DWDW_Service.Services
         public DeviceViewModel GetActiveDeviceFromRoomManager(int userID, int roomID)
         {
             var result = new DeviceViewModel();
-            var roomRepo = this.unitOfWork.RoomRepository;
+            var roomRepo = unitOfWork.RoomRepository;
             var room = roomRepo.Find(roomID);
             bool check = deviceRepository.CheckUserRoom(userID, roomID);
 
@@ -234,7 +245,7 @@ namespace DWDW_Service.Services
         public RoomDeviceViewModel AssignDeviceToRoom(RoomDeviceCreateModel roomDevice)
         {
             var result = new RoomDeviceViewModel();
-            var roomDeviceRepo = this.unitOfWork.RoomDeviceRepository;
+            var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
             roomDeviceRepo.DisableDeviceRoom(roomDevice.DeviceId);
             roomDeviceRepo.DisableRoomDevice(roomDevice.RoomId);
             roomDeviceRepo.Add(new RoomDevice

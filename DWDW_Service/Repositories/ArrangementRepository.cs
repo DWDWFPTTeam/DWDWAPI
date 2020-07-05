@@ -14,6 +14,8 @@ namespace DWDW_Service.Repositories
         IEnumerable<Arrangement> GetArrangementOfUser(int userId);
         Arrangement GetArrangementOfUserInThisLocation(int userId, int locationId);
         bool CheckUserShift(int userID, int? ArrangementID);
+        List<int?> GetArrangementBelongToManager(int userID);
+        List<int?> GetArrangementBelongToWorker(int userID);
     }
     public class ArrangementRepository : BaseRepository<Arrangement>, IArrangementRepository
     {
@@ -47,12 +49,49 @@ namespace DWDW_Service.Repositories
                 var ManagerLocation = this.dbContext.Set<Arrangement>().FirstOrDefault(
                                 x => x.LocationId == arrangement.LocationId
                                 && x.UserId == userID);
-                if (ManagerLocation != null)
+                //Khi moi quan he ton tai va duoc su dung thi moi duoc set shift
+                if (ManagerLocation != null && ManagerLocation.IsActive == true)
                 {
                     result = true;
                 }
             }
             return result;
+        }
+
+        public List<int?> GetArrangementBelongToManager(int userID)
+        {
+            var arrangementManager = dbContext.Set<Arrangement>().Where(x => x.UserId == userID).ToList();
+            List<int?> qualifyLocation = new List<int?>();
+            List<int?> qualifyUserRelatedLocation = new List<int?>();
+            //Lay ra danh sach nhung location thuoc ve manager
+            for (int i = 0; i < arrangementManager.Count; i++)
+            {
+                int? a = arrangementManager.ElementAt(i).LocationId;
+                qualifyLocation.Add(a);
+            }
+            //Lay ra nhung arrangement co location duoi quyen manager
+            var arrangementRelated = dbContext.Set<Arrangement>().Where(x => qualifyLocation.Contains(x.LocationId)).ToList();
+            for (int i = 0; i < arrangementRelated.Count; i++)
+            {
+                int? a = arrangementRelated.ElementAt(i).ArrangementId;
+                qualifyUserRelatedLocation.Add(a);
+            }
+            return qualifyUserRelatedLocation;
+        }
+
+        public List<int?> GetArrangementBelongToWorker(int userID)
+        {
+            var arrangementManager = dbContext.Set<Arrangement>().Where(x => x.UserId == userID).ToList();
+ 
+            List<int?> qualifyWorkerRelated = new List<int?>();
+            //Lay ra danh sach nhung arrangement thuoc ve user
+            for (int i = 0; i < arrangementManager.Count; i++)
+            {
+                int? a = arrangementManager.ElementAt(i).ArrangementId;
+                qualifyWorkerRelated.Add(a);
+            }
+            
+            return qualifyWorkerRelated;
         }
     }
 }

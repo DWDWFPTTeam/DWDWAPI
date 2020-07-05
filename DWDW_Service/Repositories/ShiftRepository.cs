@@ -1,4 +1,5 @@
 ﻿using DWDW_API.Core.Entities;
+using DWDW_API.Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ namespace DWDW_Service.Repositories
     {
         List<Shift> GetShiftByDate(DateTime date);
         Shift GetLatest();
+        void DisableOldSameShift(ShiftCreateModel shift);
+        List<Shift> GetShiftSubAccount(List<int?> arrangementID);
 
 
     }
@@ -30,7 +33,19 @@ namespace DWDW_Service.Repositories
         {
             return this.dbContext.Set<Shift>().OrderByDescending(x => x.ShiftId).First();
         }
+        public void DisableOldSameShift(ShiftCreateModel shift)
+        {
+            var OldShift = dbContext.Set<Shift>().Where(x => x.ArrangementId == shift.ArrangementId
+                && x.RoomId == shift.RoomId && x.Date == shift.Date
+                && x.ShiftType == shift.ShiftType).ToList();
+            OldShift.ForEach(a => a.IsActive = false);
+            dbContext.SaveChanges();
+        }
 
+        public List<Shift> GetShiftSubAccount(List<int?> arrangementID)
+        {
+            return dbContext.Set<Shift>().Where(x => arrangementID.Contains(x.ArrangementId)).ToList();
+        }
     }
 
 }
