@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DWDW_API.Core.Infrastructure;
 using DWDW_API.Providers;
 using DWDW_Service.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,5 +20,27 @@ namespace DWDW_API.Controllers
             this.recordService = recordService;
         }
 
+        [Route("SaveRecord")]
+        [Authorize(Roles   = "aasd")]
+        [HttpPost]
+        public IActionResult SaveRecord(int deviceId)
+        {
+            IActionResult result;
+            try
+            {
+                var record = recordService.SaveRecord(deviceId);
+                return Ok(record);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
     }
 }

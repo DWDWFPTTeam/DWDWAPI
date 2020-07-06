@@ -209,7 +209,7 @@ namespace DWDW_API.Controllers
                 if (user != null)
                 {
 
-                    string accessToken = jwtTokenProvider.CreateAccesstoken(user);
+                    string accessToken = jwtTokenProvider.CreateUserAccessToken(user);
 
                     result = Ok(accessToken);
                 }

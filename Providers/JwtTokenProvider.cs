@@ -19,7 +19,7 @@ namespace DWDW_API.Providers
         {
             this.extensionSettings = extensionSettings;
         }
-        public string CreateAccesstoken(User user)
+        public string CreateUserAccessToken(User user)
         {
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -28,7 +28,8 @@ namespace DWDW_API.Providers
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                     new Claim(ClaimTypes.Name ,user.UserName),
-                    new Claim(ClaimTypes.Role, user.RoleId.ToString())
+                    new Claim(ClaimTypes.Role, user.RoleId.ToString()),
+                    new Claim(ClaimTypes.System, "asdasd")
                 };
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -43,5 +44,10 @@ namespace DWDW_API.Providers
             var token = tokenHandler.CreateJwtSecurityToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        //public string CreateDeviceAccessToken(Device device)
+        //{
+
+        //}
     }
 }

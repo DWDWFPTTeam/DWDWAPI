@@ -1,4 +1,5 @@
 ﻿using DWDW_API.Core.Entities;
+using DWDW_API.Core.ViewModels;
 using DWDW_Service.Repositories;
 using DWDW_Service.UnitOfWorks;
 using System;
@@ -9,7 +10,7 @@ namespace DWDW_Service.Services
 {
     public interface IRecordService : IBaseService<Record>
     {
-
+        RecordViewModel SaveRecord(int deviceId);
     }
 
     public class RecordService : BaseService<Record>, IRecordService
@@ -20,6 +21,9 @@ namespace DWDW_Service.Services
             this.recordRepository = recordRepository;
         }
 
-       
+        public RecordViewModel SaveRecord(int deviceId)
+        {
+            return null;
+        }
     }
 }
