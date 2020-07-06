@@ -16,6 +16,8 @@ namespace DWDW_Service.Repositories
         List<Room> GetRoomFromLocation(int locationID);
         List<Room> DisableRoomFromLocation(int locationID);
         bool CheckRoomLocation(int? roomID, int? ArrangementID);
+        List<Room> SearchRoomByRoomCode(string roomCode);
+        List<Room> SearchRoomByRoomCode(int locationId, string roomCode);
     }
     public class RoomRepository : BaseRepository<Room>, IRoomRepository
     {
@@ -26,7 +28,9 @@ namespace DWDW_Service.Repositories
 
         public List<Room> GetRoomFromLocation(int locationID)
         {
-            return this.dbContext.Set<Room>().Where(x => x.LocationId == locationID).ToList();
+            return this.dbContext.Set<Room>()
+                .Where(x => x.LocationId == locationID)
+                .ToList();
         }
         public Room GetRoomByRoomCode(string roomCode)
         {
@@ -61,7 +65,7 @@ namespace DWDW_Service.Repositories
                 {
                     result = true;
                 }
-            }    
+            }
             return result;
         }
 
@@ -71,6 +75,21 @@ namespace DWDW_Service.Repositories
             rooms.ForEach(r => r.IsActive = false);
             this.dbContext.SaveChanges();
             return rooms;
+        }
+
+        public List<Room> SearchRoomByRoomCode(string roomCode)
+        {
+            return this.dbContext.Set<Room>()
+                    .Where(r => r.RoomCode.Contains(roomCode))
+                    .ToList();
+        }
+
+        public List<Room> SearchRoomByRoomCode(int locationId, string roomCode)
+        {
+            return this.dbContext.Set<Room>()
+                    .Where(r => r.LocationId == locationId)
+                    .Where(r => r.RoomCode.Contains(roomCode))
+                    .ToList();
         }
     }
 }

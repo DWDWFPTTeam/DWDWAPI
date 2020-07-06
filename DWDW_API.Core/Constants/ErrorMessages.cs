@@ -16,6 +16,8 @@ namespace DWDW_API.Core.Constants
         public const string DEACTIVE_ERROR = "Deactive failed";
         public const string EMPTY_LIST = "Your list is empty";
 
+        public const string INVALID_USERID_OR_LOCATIONID = "User Id or Location Id is invalid";
+
         //Role Message
         public const string ROLE_IS_NOT_EXISTED = "Role is not existed";
         public const string ROLE_IS_EXISTED = "Role is existed";

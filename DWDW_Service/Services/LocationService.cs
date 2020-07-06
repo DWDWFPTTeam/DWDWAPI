@@ -7,7 +7,6 @@ using DWDW_Service.UnitOfWorks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace DWDW_Service.Services
 {
@@ -15,10 +14,11 @@ namespace DWDW_Service.Services
     {
         IEnumerable<LocationViewModel> GetLocations();
         LocationViewModel GetLocationById(int locationId);
+        IEnumerable<LocationViewModel> SearchLocationByLocationCode(string locationCode);
         LocationViewModel InsertLocation(LocationInsertModel locationInsert);
         LocationViewModel UpdateLocation(LocationUpdateModel locationUpdate);
         LocationViewModel DeactiveLocation(int locationId);
-        IEnumerable<Location> GetAssignedLocations(int userId);
+        IEnumerable<LocationViewModel> GetLocationsByManager(int userId);
     }
     public class LocationService : BaseService<Location>, ILocationService
     {
@@ -54,7 +54,6 @@ namespace DWDW_Service.Services
                         //disable arrangements, rooms
                         var arrangements = arrangementRepository.DisableArrangementFromLocation(locationId);
                         var rooms = roomRepository.DisableRoomFromLocation(locationId);
-
                         foreach (var a in arrangements)
                         {
                             //disable shifts
@@ -80,18 +79,6 @@ namespace DWDW_Service.Services
             else
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
-            }
-            return result;
-        }
-
-        public IEnumerable<Location> GetAssignedLocations(int userId)
-        {
-            var result = locationRepository.GetAll()
-                    .Where(a => a.Arrangement.Any(u => u.UserId == userId))
-                    .ToList();
-            if (result == null)
-            {
-                throw new BaseException(ErrorMessages.GET_LIST_FAIL);
             }
             return result;
         }
@@ -136,7 +123,6 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_EXISTED);
             }
-          
             return result;
         }
 
@@ -156,6 +142,24 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
             }
+            return result;
+        }
+
+        public IEnumerable<LocationViewModel> GetLocationsByManager(int userId)
+        {
+            var arrangementRepository = this.unitOfWork.ArrangementRepository;
+            //get Arrangement of Manager 
+            var arrangementsOfManager = arrangementRepository.GetArrangementOfUser(userId);
+            //get Location which the manager is manage
+            var locations = arrangementsOfManager.Select(a => a.Location.ToViewModel<LocationViewModel>());
+            return locations;
+        }
+
+        public IEnumerable<LocationViewModel> SearchLocationByLocationCode(string locationCode)
+        {
+            IEnumerable<LocationViewModel> result;
+            var locations = locationRepository.SearchByLocationCode(locationCode);
+            result = locations.Select(l => l.ToViewModel<LocationViewModel>());
             return result;
         }
     }

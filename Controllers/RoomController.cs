@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DWDW_API.Core.Constants;
-using DWDW_API.Core.Entities;
+﻿using DWDW_API.Core.Constants;
 using DWDW_API.Core.Infrastructure;
 using DWDW_API.Core.ViewModels;
 using DWDW_API.Providers;
@@ -11,6 +6,7 @@ using DWDW_Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace DWDW_API.Controllers
 {
@@ -48,29 +44,6 @@ namespace DWDW_API.Controllers
             return result;
         }
 
-        //[HttpGet]
-        //[Authorize(Roles = Constant.MANAGER)]
-        //[Route("GetRoomsForManager")]
-        //public IActionResult GetRoomsForManager()
-        //{
-        //    IActionResult result;
-        //    try
-        //    {
-        //        int managerId = int.Parse(CurrentUserId);
-        //        var list = roomService.GetRooms();
-        //        return Ok(list);
-        //    }
-        //    catch (BaseException e)
-        //    {
-        //        result = BadRequest(e.Message);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-        //    }
-        //    return result;
-        //}
-
         [HttpGet]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("GetRoomsFromLocation/{locationId}")]
@@ -95,13 +68,35 @@ namespace DWDW_API.Controllers
 
         [HttpGet]
         [Route("GetRoomById")]
-        [Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN + "," + Constant.MANAGER)]
         public IActionResult GetRoomById(int RoomId)
         {
             IActionResult result;
             try
             {
                 var room = roomService.GetRoomById(RoomId);
+                return Ok(room);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
+        [HttpGet]
+        [Route("SearchRoomCodeByAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        public IActionResult SearchRoomCodeByAdmin(string roomCode)
+        {
+            IActionResult result;
+            try
+            {
+                var room = roomService.SearchRoomCode(roomCode);
                 return Ok(room);
             }
             catch (BaseException e)
@@ -172,6 +167,52 @@ namespace DWDW_API.Controllers
             {
                 var roomDeactived = roomService.DeactiveRoom(roomId);
                 return Ok(roomDeactived);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
+        [HttpGet]
+        [Authorize(Roles = Constant.MANAGER)]
+        [Route("GetRoomsFromLocationByManager/{locationId}")]
+        public IActionResult GetRoomsFromLocationByManager(int locationId)
+        {
+            IActionResult result;
+            try
+            {
+                int userId = int.Parse(CurrentUserId);
+                var list = roomService.GetRoomsFromLocationByManager(userId, locationId);
+                return Ok(list);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
+        [HttpGet]
+        [Route("SearchRoomCodeByManager")]
+        [Authorize(Roles = Constant.MANAGER)]
+        public IActionResult SearchRoomCodeByManager(string roomCode)
+        {
+            IActionResult result;
+            try
+            {
+                int userId = int.Parse(CurrentUserId);
+                var room = roomService.SearchRoomCodeByManager(userId, roomCode);
+                return Ok(room);
             }
             catch (BaseException e)
             {

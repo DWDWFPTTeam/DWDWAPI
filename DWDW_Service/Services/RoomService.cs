@@ -13,16 +13,15 @@ namespace DWDW_Service.Services
 {
     public interface IRoomService : IBaseService<Room>
     {
-        //admin
         IEnumerable<RoomViewModel> GetRooms();
         RoomViewModel GetRoomById(int roomId);
         RoomViewModel InsertRoom(RoomInsertModel roomInsert);
         RoomViewModel UpdateRoom(RoomUpdateModel roomUpdate);
         RoomViewModel DeactiveRoom(int roomId);
         IEnumerable<RoomViewModel> GetRoomsFromLocation(int locationId);
-
-        //manager
-        IEnumerable<RoomViewModel> GetRoomsForManager(int managerId);
+        IEnumerable<RoomViewModel> SearchRoomCode(string roomCode);
+        IEnumerable<RoomViewModel> GetRoomsFromLocationByManager(int userId, int locationId);
+        IEnumerable<RoomViewModel> SearchRoomCodeByManager(int userId, string roomCode);
     }
     public class RoomService : BaseService<Room>, IRoomService
     {
@@ -43,7 +42,7 @@ namespace DWDW_Service.Services
             RoomViewModel result;
             //validate
             var room = roomRepository.Find(roomId);
-            if (room!=null)
+            if (room != null)
             {
                 using (var transaction = unitOfWork.CreateTransaction())
                 {
@@ -60,7 +59,7 @@ namespace DWDW_Service.Services
                         throw new BaseException(ErrorMessages.DEACTIVE_ERROR);
                     }
                 }
-                
+
                 result = room.ToViewModel<RoomViewModel>();
             }
             else
@@ -74,7 +73,7 @@ namespace DWDW_Service.Services
         {
             RoomViewModel result = null;
             var room = roomRepository.Find(roomId);
-            if (room!=null)
+            if (room != null)
             {
                 result = room.ToViewModel<RoomViewModel>();
             }
@@ -95,9 +94,10 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        public IEnumerable<RoomViewModel> GetRoomsForManager(int managerId)
+        public IEnumerable<RoomViewModel> GetRoomsFromLocation(int locationId)
         {
-            var result = roomRepository.GetAll().Select(r => r.ToViewModel<RoomViewModel>());
+            var result = roomRepository.GetRoomFromLocation(locationId)
+                .Select(r => r.ToViewModel<RoomViewModel>());
             if (result == null)
             {
                 throw new BaseException(ErrorMessages.GET_LIST_FAIL);
@@ -105,13 +105,33 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        public IEnumerable<RoomViewModel> GetRoomsFromLocation(int locationId)
+        public IEnumerable<RoomViewModel> GetRoomsFromLocationByManager(int userId, int locationId)
         {
-            var result = roomRepository.GetRoomFromLocation(locationId)
-                .Select(r => r.ToViewModel<RoomViewModel>());
-            if (result==null)
+            IEnumerable<RoomViewModel> result = null;
+            if (userId != 0 && locationId != 0)
             {
-                throw new BaseException(ErrorMessages.GET_LIST_FAIL);
+                var arrangementRepository = this.unitOfWork.ArrangementRepository;
+                //get Arrangement of Manager 
+                var arrangementsOfManager = arrangementRepository.GetArrangementOfUser(userId);
+                //get Location which the manager is manage
+                var location = arrangementsOfManager
+                                .Where(a => a.LocationId == locationId)
+                                .Select(a => a.Location.LocationId)
+                                .FirstOrDefault();
+                if (location != null)
+                {
+                    result = roomRepository
+                        .GetRoomFromLocation((int)location)
+                        .Select(r => r.ToViewModel<RoomViewModel>());
+                }
+                else
+                {
+                    throw new BaseException(ErrorMessages.LOCATION_USER_NOT_EXISTED);
+                }
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.INVALID_USERID_OR_LOCATIONID);
             }
             return result;
         }
@@ -119,12 +139,12 @@ namespace DWDW_Service.Services
         public RoomViewModel InsertRoom(RoomInsertModel roomInsert)
         {
             RoomViewModel result = null;
-            Room room; 
+            Room room;
 
             var checkRoom = roomRepository.GetRoomByRoomCode(roomInsert.RoomCode);
             var checkLocation = locationRepository.Find(roomInsert.LocationId);
-            
-            if (checkRoom == null && checkLocation != null )
+
+            if (checkRoom == null && checkLocation != null)
             {
                 room = new Room()
                 {
@@ -150,6 +170,34 @@ namespace DWDW_Service.Services
             return result;
         }
 
+        public IEnumerable<RoomViewModel> SearchRoomCode(string roomCode)
+        {
+            IEnumerable<RoomViewModel> result;
+            var rooms = roomRepository.SearchRoomByRoomCode(roomCode);
+            result = rooms.Select(r => r.ToViewModel<RoomViewModel>());
+            return result;
+        }
+
+        public IEnumerable<RoomViewModel> SearchRoomCodeByManager(int userId, string roomCode)
+        {
+            List<RoomViewModel> list = new List<RoomViewModel>();
+            var arrangementRepository = this.unitOfWork.ArrangementRepository;
+            //get Arrangement of Manager 
+            var arrangementsOfManager = arrangementRepository.GetArrangementOfUser(userId);
+            //get Location which the manager is manage
+            var listLocationId = arrangementsOfManager.Select(a => a.Location.LocationId);
+            foreach (var locationId in listLocationId)
+            {
+                var rooms = roomRepository
+                    .SearchRoomByRoomCode((int)locationId, roomCode)
+                    .Select(r => r.ToViewModel<RoomViewModel>());
+                foreach (var room in rooms)
+                {
+                    list.Add(room);
+                }
+            }
+            return list;
+        }
 
         public RoomViewModel UpdateRoom(RoomUpdateModel roomUpdate)
         {
