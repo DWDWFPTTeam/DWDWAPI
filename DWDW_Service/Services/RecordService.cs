@@ -36,7 +36,7 @@ namespace DWDW_Service.Services
         {
             string deviceToken = GetDeviceToken(deviceID);
             string now = DateTime.Now.ToString("H:mm");
-
+            string room = recordRepository.GetRoom(deviceID);
             string titleText = "Detect drowsiness!";
             string bodyText = "There was a drowsiness in " + room + " at " + now;
             var data = new
