@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DWDW_API.Core.Constants;
 using DWDW_API.Core.Infrastructure;
@@ -273,7 +274,32 @@ namespace DWDW_API.Controllers
             }
             return result;
         }
- 
-    }
+
+        [Route("UpdateManagerDeviceToken")]
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpDelete]
+        public IActionResult UpdateManagerDeviceToken(string deviceToken)
+        {
+            IActionResult result;
+            var identity = (ClaimsIdentity)User.Identity;
+            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userID = int.Parse(ID);
+            try
+            {
+                var managerDeviceToken = userService.UpdateManagerDeviceToken(userID ,deviceToken);
+                result = Ok(managerDeviceToken);
+            }
+            catch(BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
+        }
 
 }

@@ -15,6 +15,9 @@ namespace DWDW_API.Core.Constants
         public const string BEARER = "Bearer";
         public const string OAUTH2 = "oauth2";
         public const string PROJECTNAME = "DWDW API";
+        public const string FIREBASE_AUTHORIZATION_KEY = "AAAA2d4Cw1E:APA91bEvIFr0lk6FOBIvwKnIn9qITwnf" +
+                "U7w15j2X0IBoREUCzmcwuLH-TmC93vlhhBlF1XwO170pc7I2HuEEYvHiqAeWr5f2pGiW3AuuNORcn1ikDdyjipHdBHVthG5qdeCoHLw6-v8_";
+        public const string FIREBASE_SENDER_ID = "935732626257";
 
         //roles
         public const string ADMIN = "1";

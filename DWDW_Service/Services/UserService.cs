@@ -25,6 +25,7 @@ namespace DWDW_Service.Services
         IEnumerable<UserViewModel> GetUserFromLocationsByManager(int userId);
         IEnumerable<UserViewModel> GetUserFromOneLocationByManager(int userId, int locationId);
         UserViewModel GetUserById(int userId);
+        UserViewModel UpdateManagerDeviceToken(int userID, string deviceToken);
     }
     public class UserService : BaseService<User>, IUserService
     {
@@ -243,6 +244,23 @@ namespace DWDW_Service.Services
         public UserViewModel GetUserById(int userId)
         {
             return userRepository.Find(userId).ToViewModel<UserViewModel>();
+        }
+
+        public UserViewModel UpdateManagerDeviceToken(int userID , string deviceToken)
+        {
+            var result = new UserViewModel();
+            var manager = userRepository.Find(userID);
+            if (manager != null)
+            {
+                manager.DeviceToken = deviceToken;
+                userRepository.Update(manager);
+                result = manager.ToViewModel<UserViewModel>();
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
+            }
+            return result;
         }
     }
 }

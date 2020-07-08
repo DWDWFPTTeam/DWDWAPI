@@ -12,9 +12,9 @@ namespace DWDW_Service.Services
     }
     public class TestService
     {
-        private static string authorizationKey = "AAAA2d4Cw1E:APA91bEvIFr0lk6FOBIvwKnIn9qITwnfU7w15j2X0IBoREUCzmcwuLH-TmC93vlhhBlF1XwO170pc7I2HuEEYvHiqAeWr5f2pGiW3AuuNORcn1ikDdyjipHdBHVthG5qdeCoHLw6-v8_";
         public void SendNotification(byte[] byteArray)
         {
+            string authorizationKey = "AAAA2d4Cw1E:APA91bEvIFr0lk6FOBIvwKnIn9qITwnfU7w15j2X0IBoREUCzmcwuLH-TmC93vlhhBlF1XwO170pc7I2HuEEYvHiqAeWr5f2pGiW3AuuNORcn1ikDdyjipHdBHVthG5qdeCoHLw6-v8_";
             try
             {
                 string sender_id = "935732626257";
