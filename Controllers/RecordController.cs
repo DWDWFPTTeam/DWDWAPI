@@ -42,5 +42,27 @@ namespace DWDW_API.Controllers
             }
             return result;
         }
+        [Route("SendNotify")]
+        [Authorize(Roles = "aasd")]
+        [HttpPost]
+        public IActionResult SendNotify(int deviceId)
+        {
+            IActionResult result;
+            try
+            {
+                var record = recordService.SaveRecord(deviceId);
+                return Ok(record);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
     }
 }
