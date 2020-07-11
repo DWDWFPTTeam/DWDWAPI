@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Login Page</title>
+</head>
+<body>
+    <input type="text" id="txtUsername" placeholder="Username..." /><br />
+    <input type="text" id="txtPassword" placeholder="Password..." /><br />
+    <input type="button" id="btnLogin" value="Login" />
+
+
+    <script src="jquery-3.5.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#btnLogin').click(function () {
+                $.ajax({
+                    url: '/api/User/LoginAsync',
+                    method: 'POST',
+                    
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        userName: $('#txtUsername').val(),
+                        password: $('#txtPassword').val()
+                    }),
+                    // Khi đăng nhập thành công, lưu token vào sessionStorage
+                    success: function (response) {
+                        localStorage.setItem("accessToken", response);
+                        window.location.href = "UserAccountPage.html";
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
