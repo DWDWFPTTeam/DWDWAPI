@@ -23,5 +23,9 @@ namespace DWDW_API.Core.Constants
         public const string ADMIN = "1";
         public const string MANAGER = "2";
         public const string WORKER = "3";
+
+        public const string DEVICE_HOANG_MOBILETOKEN = "cAF8JeveS9av5pIdQtge0-:APA91bGvzkAno7ycM_fIzqwEjhIUTBy-la9u71_" +
+               "vYocHFhnnuGIO0PyfAMU2ph0cae6YuRGpYTAnbw9KtcKgN-aENmED3Bz4KLHnjrpU9HgfRHhBcTBP_" +
+               "gbd41-tcsMD4kC9Vl0dnHC2";
     }
 }

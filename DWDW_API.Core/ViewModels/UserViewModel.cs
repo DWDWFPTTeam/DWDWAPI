@@ -60,5 +60,9 @@ namespace DWDW_API.Core.ViewModels
         public string Password { get; set; }
     }
 
+    public class TokenResponseModel
+    {
+        public string AccessToken { get; set; }
+    }
 
 }
