@@ -21,14 +21,14 @@ namespace DWDW_API.Controllers
         }
 
         [Route("SaveRecord")]
-        [Authorize(Roles   = "aasd")]
+        [AllowAnonymous]
         [HttpPost]
-        public IActionResult SaveRecord(int deviceId)
+        public IActionResult SaveRecord(int deviceId, string image)
         {
             IActionResult result;
             try
             {
-                var record = recordService.SaveRecord(deviceId);
+                var record = recordService.SaveRecord(deviceId, image);
                 return Ok(record);
             }
             catch (BaseException e)
@@ -42,27 +42,6 @@ namespace DWDW_API.Controllers
             }
             return result;
         }
-        [Route("SendNotify")]
-        [Authorize(Roles = "aasd")]
-        [HttpPost]
-        public IActionResult SendNotify(int deviceId)
-        {
-            IActionResult result;
-            try
-            {
-                var record = recordService.SaveRecord(deviceId);
-                return Ok(record);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(e.Message);
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
-            return result;
-        }
+        
     }
 }

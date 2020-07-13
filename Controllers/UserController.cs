@@ -208,10 +208,9 @@ namespace DWDW_API.Controllers
                 var user = await userService.LoginAsync(info.UserName, info.Password);
                 if (user != null)
                 {
-
-                    string accessToken = jwtTokenProvider.CreateUserAccessToken(user);
-
-                    result = Ok(accessToken);
+                    var tokenModel = new TokenResponseModel();
+                    tokenModel.AccessToken = jwtTokenProvider.CreateUserAccessToken(user);
+                    result = Ok(tokenModel);
                 }
                 else
                 {

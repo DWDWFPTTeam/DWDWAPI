@@ -56,5 +56,6 @@ namespace DWDW_API.Core.Constants
         public static string LOCATION_DEVICE_EMPTY = "There is no device in this location";
 
         public static string LOCATION_USER_NOT_EXISTED = "This location does not belong to the current manager";
+        public static string DEVICE_IS_NOT_BELONG_ROOM = "This device is not belong this this room";
     }
 }
