@@ -15,6 +15,7 @@ namespace DWDW_API.Core.ViewModels
         public DateTime? DateOfBirth { get; set; }
         public int? Gender { get; set; }
         public int? RoleId { get; set; }
+        public string DeviceToken { get; set; }
         public bool? IsActive { get; set; }
     }
     public class UserCreateModel : BaseModel
@@ -58,6 +59,8 @@ namespace DWDW_API.Core.ViewModels
         [Required]
         [MinLength(1, ErrorMessage = ErrorMessages.PASSWORD_LEN_NOT_VALID)]
         public string Password { get; set; }
+        [Required]
+        public string DeviceToken { get; set; }
     }
 
     public class TokenResponseModel

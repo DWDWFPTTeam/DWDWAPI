@@ -63,18 +63,38 @@ namespace DWDW_Service.Services
             return result;
         }
 
+        //public DeviceViewModel CreateDevice(DeviceCreateModel device)
+        //{
+        //    var result = new DeviceViewModel();
+        //    var checkDevice = deviceRepository.CheckDeviceCodeExisted(device.DeviceCode);
+        //    if (checkDevice == null)
+        //    {
+        //        deviceRepository.Add(new Device
+        //        {
+        //            DeviceCode = device.DeviceCode,
+        //            IsActive = true
+        //        });
+        //        result = deviceRepository.GetDeviceCode(device.DeviceCode).ToViewModel<DeviceViewModel>();
+        //    }
+        //    else
+        //    {
+        //        throw new BaseException(ErrorMessages.DEVICE_IS_EXISTED);
+        //    }
+        //    return result;
+        //}
+        
+
+        //DatNDD refactors this function
         public DeviceViewModel CreateDevice(DeviceCreateModel device)
         {
-            var result = new DeviceViewModel();
+            DeviceViewModel result;
             var checkDevice = deviceRepository.CheckDeviceCodeExisted(device.DeviceCode);
             if (checkDevice == null)
             {
-                deviceRepository.Add(new Device
-                {
-                    DeviceCode = device.DeviceCode,
-                    IsActive = true
-                });
-                result = deviceRepository.GetDeviceCode(device.DeviceCode).ToViewModel<DeviceViewModel>();
+                var deviceEntity = device.ToEntity<Device>();
+                deviceEntity.IsActive = true;
+                deviceRepository.Add(deviceEntity);
+                result = deviceEntity.ToViewModel<DeviceViewModel>();
             }
             else
             {

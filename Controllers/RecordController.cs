@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DWDW_API.Core.Infrastructure;
 using DWDW_API.Providers;
 using DWDW_Service.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,15 +20,16 @@ namespace DWDW_API.Controllers
             this.recordService = recordService;
         }
 
-        [Route("SendNotify")]
+        [Route("SaveRecord")]
+        [AllowAnonymous]
         [HttpGet]
-        public IActionResult GetManagerFromLocation(int deviceID)
+        public IActionResult SaveRecord(string deviceCode, string image)
         {
             IActionResult result;
             try
             {
-                recordService.SendNotification(deviceID);
-                result = Ok();
+                var record = recordService.SaveRecord(deviceCode, image);
+                result = Ok(record);
             }
             catch (BaseException e)
             {

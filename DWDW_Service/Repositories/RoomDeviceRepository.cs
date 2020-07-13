@@ -36,5 +36,6 @@ namespace DWDW_Service.Repositories
         {
             return this.dbContext.Set<RoomDevice>().OrderByDescending(x => x.RoomDeviceId).First();
         }
+     
     }
 }

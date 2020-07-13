@@ -209,6 +209,7 @@ namespace DWDW_API.Controllers
                 var user = await userService.LoginAsync(info.UserName, info.Password);
                 if (user != null)
                 {
+                    userService.UpdateUserDeviceToken(user.UserId.Value, info.DeviceToken);
                     var tokenModel = new TokenResponseModel();
                     tokenModel.AccessToken = jwtTokenProvider.CreateUserAccessToken(user);
                     result = Ok(tokenModel);
@@ -228,7 +229,6 @@ namespace DWDW_API.Controllers
             }
             return result;
         }
-
 
         [Route("UpdateUserByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
@@ -285,7 +285,7 @@ namespace DWDW_API.Controllers
             int userID = int.Parse(ID);
             try
             {
-                var managerDeviceToken = userService.UpdateManagerDeviceToken(userID ,deviceToken);
+                var managerDeviceToken = userService.UpdateUserDeviceToken(userID ,deviceToken);
                 result = Ok(managerDeviceToken);
             }
             catch(BaseException e)

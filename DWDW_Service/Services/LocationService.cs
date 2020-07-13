@@ -115,9 +115,18 @@ namespace DWDW_Service.Services
             var check = locationRepository.GetLocationByLocationCode(locationInsert.LocationCode);
             if (check == null)
             {
-                locationRepository.Add(locationInsert.ToEntity<Location>());
-                result = locationRepository.GetLocationByLocationCode(locationInsert.LocationCode)
-                                           .ToViewModel<LocationViewModel>();
+                var locationEntity = locationInsert.ToEntity<Location>();
+                //DatNDD refactors this code line
+                locationEntity.IsActive = true;
+
+                locationRepository.Add(locationEntity);
+
+                //DatNDD refactors this code line
+
+                //result = locationRepository.GetLocationByLocationCode(locationInsert.LocationCode)
+                //                           .ToViewModel<LocationViewModel>();
+
+                result = locationEntity.ToViewModel<LocationViewModel>();
             }
             else
             {
