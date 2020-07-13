@@ -83,7 +83,10 @@ namespace DWDW_Service.Services
                                                                 .FirstOrDefault().Room;
             //Get Manager who manage the room
             var user = unitOfWork.ArrangementRepository.Get(a => a.LocationId == room.LocationId
-                                                            && a.IsActive == true, null, "User").FirstOrDefault().User;
+                                                            && a.IsActive == true, null, "User")
+                                                            .Select(a => a.User)
+                                                            .Where(u => u.RoleId.ToString().Equals(Constant.MANAGER))
+                                                            .FirstOrDefault();
             //Prepare message and destination
             var byteArray = generateNotify(user, room);
 
