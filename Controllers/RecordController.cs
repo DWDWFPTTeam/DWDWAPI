@@ -43,5 +43,28 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [Route("GetRecordsByLocationId")]
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult GetRecordsByLocationId(int locationId)
+        {
+            IActionResult result;
+            try
+            {
+                var record = recordService.GetRecordByLocationId(locationId);
+                result = Ok(record.Count());
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+            }
+            return result;
+        }
+
     }
 }

@@ -17,6 +17,7 @@ namespace DWDW_Service.Services
     public interface IRecordService : IBaseService<Record>
     {
         RecordViewModel SaveRecord(string deviceCode, string image);
+        IEnumerable<Record> GetRecordByLocationId(int locationId);
     }
 
     public class RecordService : BaseService<Record>, IRecordService
@@ -55,6 +56,12 @@ namespace DWDW_Service.Services
             var xc = JsonConvert.SerializeObject(data);
             var byteArray = Encoding.UTF8.GetBytes(xc);
             return byteArray;
+        }
+
+        public IEnumerable<Record> GetRecordByLocationId(int locationId)
+        {
+            var record = recordRepository.GetRecordsByLocationId(locationId);
+            return record;
         }
 
         public RecordViewModel SaveRecord(string deviceCode, string image)
