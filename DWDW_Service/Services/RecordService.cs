@@ -20,6 +20,8 @@ namespace DWDW_Service.Services
         IEnumerable<RecordViewModel> GetRecordByLocationId(int locationId);
         IEnumerable<RecordViewModel> GetRecordsByLocationIdBetweenTime
             (int locationId, DateTime startDate, DateTime endDate);
+        IEnumerable<RecordViewModel> GetRecordsByLocationIdAndTime
+            (int locationId, DateTime date);
     }
 
     public class RecordService : BaseService<Record>, IRecordService
@@ -71,6 +73,14 @@ namespace DWDW_Service.Services
         {
             var record = recordRepository
                 .GetRecordsByLocationIdBetweenTime(locationId, startDate, endDate)
+                .Select(r => r.ToViewModel<RecordViewModel>());
+            return record;
+        }
+
+        public IEnumerable<RecordViewModel> GetRecordsByLocationIdAndTime(int locationId, DateTime date)
+        {
+            var record = recordRepository
+                .GetRecordsByLocationIdAndTime(locationId, date)
                 .Select(r => r.ToViewModel<RecordViewModel>());
             return record;
         }
