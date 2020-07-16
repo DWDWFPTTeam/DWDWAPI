@@ -49,9 +49,7 @@ namespace DWDW_API.Controllers
         {
             IActionResult result = Ok();
 
-            string deviceToken = "cAF8JeveS9av5pIdQtge0-:APA91bGvzkAno7ycM_fIzqwEjhIUTBy-la9u71_" +
-                "vYocHFhnnuGIO0PyfAMU2ph0cae6YuRGpYTAnbw9KtcKgN-aENmED3Bz4KLHnjrpU9HgfRHhBcTBP_" +
-                "gbd41-tcsMD4kC9Vl0dnHC2";
+            string deviceToken = "dMr1J7MRSZWVtHmM4B3Fbb:APA91bH9UeX9X9ExRyBvi3clNiUlfO6lTGG8L8oS2o6zXHWpMDXFj8AmKx95Sc_hFiPejsVKx_i4sXkHIAAgXeZxWn61EWqbEu-QdL0ZjDli1gDPppTnUjo4Vt1ySDw7iQE0Vv6Imve3";
             string now = DateTime.Now.ToString("H:mm");
 
             string titleText = "Detect drowsiness!";

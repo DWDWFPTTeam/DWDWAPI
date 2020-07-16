@@ -44,10 +44,10 @@ namespace DWDW_Service.Services
             var bodyText = "Worker " + user.UserName + " has a drowsiness in room: " + room.RoomCode + " at " + now;
             var data = new
             {
-                notification = new
+                data = new
                 {
                     title = titleText,
-                    body = bodyText
+                    message = bodyText
                 },
                 to = user.DeviceToken
             };
