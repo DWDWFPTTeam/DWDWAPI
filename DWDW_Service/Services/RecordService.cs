@@ -17,7 +17,9 @@ namespace DWDW_Service.Services
     public interface IRecordService : IBaseService<Record>
     {
         RecordViewModel SaveRecord(string deviceCode, string image);
-        IEnumerable<Record> GetRecordByLocationId(int locationId);
+        IEnumerable<RecordViewModel> GetRecordByLocationId(int locationId);
+        IEnumerable<RecordViewModel> GetRecordsByLocationIdBetweenTime
+            (int locationId, DateTime startDate, DateTime endDate);
     }
 
     public class RecordService : BaseService<Record>, IRecordService
@@ -58,9 +60,18 @@ namespace DWDW_Service.Services
             return byteArray;
         }
 
-        public IEnumerable<Record> GetRecordByLocationId(int locationId)
+        public IEnumerable<RecordViewModel> GetRecordByLocationId(int locationId)
         {
-            var record = recordRepository.GetRecordsByLocationId(locationId);
+            var record = recordRepository.GetRecordsByLocationId(locationId)
+                .Select(r => r.ToViewModel<RecordViewModel>());
+            return record;
+        }
+
+        public IEnumerable<RecordViewModel> GetRecordsByLocationIdBetweenTime(int locationId, DateTime startDate, DateTime endDate)
+        {
+            var record = recordRepository
+                .GetRecordsByLocationIdBetweenTime(locationId, startDate, endDate)
+                .Select(r => r.ToViewModel<RecordViewModel>());
             return record;
         }
 

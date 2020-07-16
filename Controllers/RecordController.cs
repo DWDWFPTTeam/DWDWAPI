@@ -8,6 +8,7 @@ using DWDW_Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 
 namespace DWDW_API.Controllers
 {
@@ -52,7 +53,7 @@ namespace DWDW_API.Controllers
             try
             {
                 var record = recordService.GetRecordByLocationId(locationId);
-                result = Ok(record.Count());
+                result = Ok(record);
             }
             catch (BaseException e)
             {
@@ -61,7 +62,33 @@ namespace DWDW_API.Controllers
             catch (Exception e)
             {
                 result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-
+            }
+            return result;
+        }
+        [Route("GetRecordsByLocationIdAndTime")]
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult GetRecordsByLocationIdAndTime(
+            int locationId, string start, string end)
+        {
+            IActionResult result;
+            try
+            {
+                DateTime startDate, endDate;
+                bool check = false;
+                string pattern = "dd/MM/yyyy";
+                check = DateTime.TryParseExact(start, pattern, null, DateTimeStyles.None, out startDate);
+                check = DateTime.TryParseExact(end, pattern, null, DateTimeStyles.None, out endDate);
+                var record = recordService.GetRecordsByLocationIdBetweenTime(locationId, startDate, endDate);
+                result = Ok(record);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
             return result;
         }
