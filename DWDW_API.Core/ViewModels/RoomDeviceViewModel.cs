@@ -27,4 +27,16 @@ namespace DWDW_API.Core.ViewModels
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
         public DateTime? EndDate { get; set; }
     }
+
+    public class RoomDeviceAssignModel : BaseModel
+    {
+        public int RoomDeviceId { get; set; }
+        public int? RoomId { get; set; }
+        public int? DeviceId { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public bool? IsActive { get; set; }
+        public string RoomCode { get; set; }
+        public string DeviceCode { get; set; }
+    }
 }

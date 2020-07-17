@@ -24,7 +24,7 @@ namespace DWDW_Service.Services
         IEnumerable<DeviceViewModel> GetActiveDeviceFromLocationManager(int userID, int locationID);
         DeviceViewModel GetActiveDeviceFromRoom(int roomID);
         DeviceViewModel GetActiveDeviceFromRoomManager(int userID, int roomID);
-        RoomDeviceViewModel AssignDeviceToRoom(RoomDeviceCreateModel roomDevice);
+        RoomDeviceAssignModel AssignDeviceToRoom(RoomDeviceCreateModel roomDevice);
     }
     public class DeviceService : BaseService<Device>, IDeviceService
     {
@@ -262,10 +262,12 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        public RoomDeviceViewModel AssignDeviceToRoom(RoomDeviceCreateModel roomDevice)
+        public RoomDeviceAssignModel AssignDeviceToRoom(RoomDeviceCreateModel roomDevice)
         {
-            var result = new RoomDeviceViewModel();
+            var result = new RoomDeviceAssignModel();
             var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
+            var roomRepo = unitOfWork.RoomRepository;
+            var deviceRepo = unitOfWork.DeviceRepository;
             roomDeviceRepo.DisableDeviceRoom(roomDevice.DeviceId);
             roomDeviceRepo.DisableRoomDevice(roomDevice.RoomId);
             roomDeviceRepo.Add(new RoomDevice
@@ -276,7 +278,11 @@ namespace DWDW_Service.Services
                 EndDate = roomDevice.EndDate,
                 IsActive = true
             });
-            result = roomDeviceRepo.GetLatest().ToViewModel<RoomDeviceViewModel>();
+            result = roomDeviceRepo.GetLatest().ToViewModel<RoomDeviceAssignModel>();
+            var room = roomRepo.Find(result.RoomId);
+            var device = deviceRepo.Find(result.DeviceId);
+            result.RoomCode = room.RoomCode;
+            result.DeviceCode = device.DeviceCode;
             return result;
         }
     }
