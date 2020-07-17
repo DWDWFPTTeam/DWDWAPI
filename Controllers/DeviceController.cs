@@ -190,7 +190,7 @@ namespace DWDW_API.Controllers
         //Get device belong to manager location
         [Authorize(Roles = Constant.MANAGER)]
         [HttpGet]
-        [Route("GetActiveDeviceFromLocationManager")]
+        [Route("GetActiveDeviceFromLocationManager/{locationID}")]
         public IActionResult GetDeviceFromLocationManager(int locationID)
         {
             IActionResult result;
