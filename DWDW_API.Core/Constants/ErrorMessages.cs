@@ -15,6 +15,8 @@ namespace DWDW_API.Core.Constants
         public const string INSERT_ERROR = "Insert failed";
         public const string DEACTIVE_ERROR = "Deactive failed";
         public const string EMPTY_LIST = "Your list is empty";
+        public const string START_END_DATE_REQUIRED = "Start date and end date is required";
+        public const string INVALID_DATE_FORMAT = "Invalid date format! Date format is'dd-MM-yyyy'";
 
         public const string INVALID_USERID_OR_LOCATIONID = "User Id or Location Id is invalid";
 

@@ -25,7 +25,6 @@ namespace DWDW_API.Core.ViewModels
         [MinLength(3)]
         [MaxLength(10)]
         public string LocationCode { get; set; }
-
         public float TotalRecord { get; set; }
     }
     public class LocationUpdateModel : BaseModel

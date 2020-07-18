@@ -19,7 +19,7 @@ namespace DWDW_Service.Services
         LocationViewModel UpdateLocation(LocationUpdateModel locationUpdate);
         LocationViewModel DeactiveLocation(int locationId);
         IEnumerable<LocationViewModel> GetLocationsByManager(int userId);
-        List<LocationRecordViewModel> GetLocationsRecord();
+        List<LocationRecordViewModel> GetLocationsRecordBetweenDate(DateTime start, DateTime end);
     }
     public class LocationService : BaseService<Location>, ILocationService
     {
@@ -173,7 +173,7 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        public List<LocationRecordViewModel> GetLocationsRecord()
+        public List<LocationRecordViewModel> GetLocationsRecordBetweenDate(DateTime start, DateTime end)
         {
             List<LocationRecordViewModel> result = new List<LocationRecordViewModel>();
             var locations = locationRepository.GetAll().ToList();
@@ -182,16 +182,36 @@ namespace DWDW_Service.Services
                 throw new BaseException(ErrorMessages.GET_LIST_FAIL);
             }
             var recordRepo = this.unitOfWork.RecordRepository;
-
+            float recordNumber = 0;
             foreach (var item in locations)
             {
-                float recordNumber =(float) recordRepo.GetRecordsByLocationId((int)item.LocationId).Count();
-                result.Add(new LocationRecordViewModel
+                if (start == end)
                 {
-                    LocationId = (int)item.LocationId,
-                    LocationCode = item.LocationCode,
-                    TotalRecord = recordNumber
-                });
+                    recordNumber = (float)recordRepo.GetRecordsByLocationIdAndTime((int)item.LocationId, start).Count();
+                    result.Add(new LocationRecordViewModel
+                    {
+                        LocationId = (int)item.LocationId,
+                        LocationCode = item.LocationCode,
+                        TotalRecord = recordNumber
+                    });
+                }
+                else
+                {
+                    if (start.Date > end.Date)
+                    {
+                        DateTime f;
+                        f = start;
+                        start = end;
+                        end = f;
+                    }
+                    recordNumber = (float)recordRepo.GetRecordsByLocationIdBetweenTime((int)item.LocationId, start, end).Count();
+                    result.Add(new LocationRecordViewModel
+                    {
+                        LocationId = (int)item.LocationId,
+                        LocationCode = item.LocationCode,
+                        TotalRecord = recordNumber
+                    });
+                }
             }
             return result;
         }
