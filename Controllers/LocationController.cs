@@ -180,5 +180,29 @@ namespace DWDW_API.Controllers
             }
             return result;
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        
+        //[Authorize(Roles = Constant.ADMIN)]
+        [Route("GetLocationsRecord")]
+        public IActionResult GetLocationsRecord()
+        {
+            IActionResult result;
+            try
+            {
+                var list = locationService.GetLocationsRecord();
+                return Ok(list);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
     }
 }

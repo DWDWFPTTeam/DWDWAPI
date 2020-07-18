@@ -19,6 +19,7 @@ namespace DWDW_Service.Services
         LocationViewModel UpdateLocation(LocationUpdateModel locationUpdate);
         LocationViewModel DeactiveLocation(int locationId);
         IEnumerable<LocationViewModel> GetLocationsByManager(int userId);
+        List<LocationRecordViewModel> GetLocationsRecord();
     }
     public class LocationService : BaseService<Location>, ILocationService
     {
@@ -169,6 +170,29 @@ namespace DWDW_Service.Services
             IEnumerable<LocationViewModel> result;
             var locations = locationRepository.SearchByLocationCode(locationCode);
             result = locations.Select(l => l.ToViewModel<LocationViewModel>());
+            return result;
+        }
+
+        public List<LocationRecordViewModel> GetLocationsRecord()
+        {
+            List<LocationRecordViewModel> result = new List<LocationRecordViewModel>();
+            var locations = locationRepository.GetAll().ToList();
+            if (locations == null)
+            {
+                throw new BaseException(ErrorMessages.GET_LIST_FAIL);
+            }
+            var recordRepo = this.unitOfWork.RecordRepository;
+
+            foreach (var item in locations)
+            {
+                float recordNumber =(float) recordRepo.GetRecordsByLocationId((int)item.LocationId).Count();
+                result.Add(new LocationRecordViewModel
+                {
+                    LocationId = (int)item.LocationId,
+                    LocationCode = item.LocationCode,
+                    TotalRecord = recordNumber
+                });
+            }
             return result;
         }
     }
