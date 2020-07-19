@@ -8,6 +8,7 @@ namespace DWDW_API.Core.Entities
         public User()
         {
             Arrangement = new HashSet<Arrangement>();
+            Notifications = new HashSet<Notifications>();
         }
 
         public int? UserId { get; set; }
@@ -22,5 +23,6 @@ namespace DWDW_API.Core.Entities
 
         public virtual Role Role { get; set; }
         public virtual ICollection<Arrangement> Arrangement { get; set; }
+        public virtual ICollection<Notifications> Notifications { get; set; }
     }
 }

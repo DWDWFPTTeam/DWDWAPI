@@ -25,6 +25,7 @@ namespace DWDW_API.Core.Entities
         public virtual DbSet<RoomDevice> RoomDevice { get; set; }
         public virtual DbSet<Shift> Shift { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<Notifications> Notifications { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -55,6 +56,18 @@ namespace DWDW_API.Core.Entities
                     .WithMany(p => p.Arrangement)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK_UserLocation_User");
+            });
+
+            modelBuilder.Entity<Notifications>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.MessageTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Notifications)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK_Notifications_User");
             });
 
             modelBuilder.Entity<Device>(entity =>
