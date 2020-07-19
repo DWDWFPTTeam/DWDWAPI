@@ -1,8 +1,10 @@
 ﻿using DWDW_API.Core.Entities;
+using DWDW_API.Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace DWDW_Service.Repositories
@@ -15,12 +17,48 @@ namespace DWDW_Service.Repositories
         Device GetDeviceFromRoom(int? roomID);
         bool CheckUserLocation(int userID, int locationID);
         bool CheckUserRoom(int userID, int roomID);
+
+        string GetRoomCode(int? deviceID);
+        string GetLocationCode(int? deviceID);
     }
     public class DeviceRepository : BaseRepository<Device>, IDeviceRepository
     {
         public DeviceRepository(DbContext dbContext) : base(dbContext)
         {
 
+        }
+
+        public string GetRoomCode(int? deviceID)
+        {
+            string roomCode;
+            var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.DeviceId == deviceID && x.IsActive == true);
+            if (roomDevice != null)
+            {
+                var room = dbContext.Set<Room>().Find(roomDevice.RoomId);
+                roomCode = room.RoomCode;
+            }
+            else
+            {
+                roomCode = "";
+            }
+            return roomCode;
+
+        }
+        public string GetLocationCode(int? deviceID)
+        {
+            string locationCode;
+            var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.DeviceId == deviceID && x.IsActive == true);
+            if (roomDevice != null)
+            {
+                var room = dbContext.Set<Room>().Find(roomDevice.RoomId);
+                var location = dbContext.Set<Location>().Find(room.LocationId);
+                locationCode = location.LocationCode;
+            }
+            else
+            {
+                locationCode = "";
+            }
+            return locationCode;
         }
 
         public List<Device> GetDeviceByCode(string deviceCode)

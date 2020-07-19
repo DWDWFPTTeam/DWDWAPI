@@ -11,6 +11,8 @@ namespace DWDW_API.Core.ViewModels
         public int? DeviceId { get; set; }
         public string DeviceCode { get; set; }
         public bool? IsActive { get; set; }
+        public string RoomCode { get; set; }
+        public string LocationCode { get; set; }
     }
 
     public class DeviceCreateModel : BaseModel
