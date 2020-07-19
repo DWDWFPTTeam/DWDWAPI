@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace DWDW_API.Controllers
 {
@@ -158,6 +160,29 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [HttpPut]
+        [Authorize(Roles = Constant.ADMIN)]
+        [Route("UpdateLocationStatus")]
+        public IActionResult UpdateLocationStatus(LocationUpdateStatusModel location)
+        {
+            //if (!ModelState.IsValid) return BadRequest(ModelState);
+            IActionResult result;
+            try
+            {
+                var locationDeactived = locationService.UpdateLocationStatus(location);
+                return Ok(locationDeactived);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
         [HttpGet]
         [Authorize(Roles = Constant.MANAGER)]
         [Route("GetLocationsByManager")]
@@ -168,6 +193,46 @@ namespace DWDW_API.Controllers
             {
                 int userId = int.Parse(CurrentUserId);
                 var list = locationService.GetLocationsByManager(userId);
+                return Ok(list);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Authorize(Roles = Constant.ADMIN)]
+        [Route("GetLocationsRecord")]
+        public IActionResult GetLocationsRecord(string startDate, string endDate)
+        {
+            if (string.IsNullOrEmpty(startDate) || string.IsNullOrEmpty(endDate))
+            {
+                return BadRequest(ErrorMessages.START_END_DATE_REQUIRED);
+            }
+            IActionResult result;
+            try
+            {
+                DateTime start, end;
+                bool check = false;
+                string pattern = "dd-MM-yyyy";
+                //parse input
+                check = DateTime.TryParseExact
+                    (startDate, pattern, null, DateTimeStyles.None, out start);
+                check = DateTime.TryParseExact
+                    (endDate, pattern, null, DateTimeStyles.None, out end);
+                if (check == false) return BadRequest(ErrorMessages.INVALID_DATE_FORMAT);
+                DateTime end_lastDate = end.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
+                //check date is valid
+
+                List<LocationRecordViewModel> list = new List<LocationRecordViewModel>();
+                list = locationService.GetLocationsRecordBetweenDate(start, end_lastDate);
                 return Ok(list);
             }
             catch (BaseException e)
