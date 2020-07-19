@@ -190,6 +190,10 @@ namespace DWDW_API
                 //User Mapping
                 cfg.CreateMap<User, UserViewModel>();
                 cfg.CreateMap<UserViewModel, User>();
+
+                //Notification Mapping
+                cfg.CreateMap<Notifications, NotificationViewModel>() ;
+                cfg.CreateMap<NotificationViewModel, Notifications>() ;
             });
         }
 

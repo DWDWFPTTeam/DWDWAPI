@@ -16,13 +16,12 @@ namespace DWDW_Service.Services
 {
     public interface IRecordService : IBaseService<Record>
     {
-        RecordViewModel SaveRecord(string deviceCode, string image);
+        RecordViewModel SaveRecord(RecordReceivedModel record);
         IEnumerable<RecordViewModel> GetRecordByLocationId(int locationId);
         IEnumerable<RecordViewModel> GetRecordsByLocationIdBetweenTime
             (int locationId, DateTime startDate, DateTime endDate);
         IEnumerable<RecordViewModel> GetRecordsByLocationIdAndTime
             (int locationId, DateTime date);
-        void Notify(string deviceCode);
     }
 
     public class RecordService : BaseService<Record>, IRecordService
@@ -40,7 +39,7 @@ namespace DWDW_Service.Services
         //    return managerDeviceToken;
         //}
 
-      
+
 
         public IEnumerable<RecordViewModel> GetRecordByLocationId(int locationId)
         {
@@ -65,32 +64,30 @@ namespace DWDW_Service.Services
             return record;
         }
 
-        public RecordViewModel SaveRecord(string deviceCode, string image)
+        public RecordViewModel SaveRecord(RecordReceivedModel record)
         {
             RecordViewModel result;
-            var device = unitOfWork.DeviceRepository.GetDeviceCode(deviceCode);
+            var device = unitOfWork.DeviceRepository.GetDeviceCode(record.DeviceCode);
             if (device != null)
             {
+                var recordEntity = new Record
+                {
+                    DeviceId = device.DeviceId,
+                    Type = record.Type,
+                    Image = record.Image,
+                    RecordDateTime = DateTime.Now
+                };
+                var notificationFCM = this.CreateNotificationFCM(recordEntity, device.DeviceCode);
                 using (var transaction = unitOfWork.CreateTransaction())
                 {
                     try
                     {
-                        
-                        var record = new Record
-                        {
-                            DeviceId = device.DeviceId,
-                            Image = image,
-                            RecordDateTime = DateTime.Now,
-                        };
                         //save record
-                        recordRepository.Add(record);
-                        result = record.ToViewModel<RecordViewModel>();
-
-                        //save notify
-                        var notificationRepo = unitOfWork.NotificationRepository;
-                       
-
+                        recordRepository.Add(recordEntity);
+                        //save noti
+                        unitOfWork.NotificationRepository.Add(notificationFCM.NotificationVM.ToEntity<Notifications>());
                         transaction.Commit();
+                        result = recordEntity.ToViewModel<RecordViewModel>();
                     }
                     catch (Exception e)
                     {
@@ -98,6 +95,7 @@ namespace DWDW_Service.Services
                         throw e;
                     }
                 }
+                this.SendNotify(notificationFCM);
 
             }
             else
@@ -107,29 +105,61 @@ namespace DWDW_Service.Services
 
             return result;
         }
-
-        public void Notify(string deviceCode)
+        
+        private NotificationFCMViewModel CreateNotificationFCM(Record record, string deviceCode)
         {
-            var device = unitOfWork.DeviceRepository.GetDeviceCode(deviceCode);
-            if(device == null)
-            {
-                throw new BaseException(ErrorMessages.DEVICE_IS_NOT_EXISTED);
-            }
+         
             //Get room from device is placed
-            var room = unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == device.DeviceId
+            var room = unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == record.DeviceId
                                                                  && rd.IsActive == true, null, "Room")
                                                                 .FirstOrDefault().Room;
             //Get Manager who manage the room
-            var user = unitOfWork.ArrangementRepository.Get(a => a.LocationId == room.LocationId
+            var manager = unitOfWork.ArrangementRepository.Get(a => a.LocationId == room.LocationId
                                                             && a.IsActive == true, null, "User")
                                                             .Select(a => a.User)
                                                             .Where(u => u.RoleId.ToString().Equals(Constant.MANAGER))
                                                             .FirstOrDefault();
-            //Prepare message and destination
-            var byteArray = generateNotify(user, room);
+
+            //Get the shift of room and time
+            var shift = unitOfWork.ShiftRepository.GetShiftByRoomDate(room.RoomId, record.RecordDateTime);
+
+            var worker = unitOfWork.UserRepository.Find(shift.Arrangement.UserId);
+            var notification = unitOfWork.NotificationRepository.CreateNotification(record, room, manager, worker, deviceCode);
+
+            return new NotificationFCMViewModel {
+                Title = notification.MessageTitle,
+                Message = notification.MessageContent,
+                DeviceToken = manager.DeviceToken,
+                NotificationVM = notification.ToViewModel<NotificationViewModel>()
+            };
+        }
+
+        private byte[] generateNotify(NotificationFCMViewModel notificationFCM)
+        {
+            var data = new
+            {
+                data = new
+                {
+                    title = notificationFCM.Title,
+                    message = notificationFCM.Message
+                },
+                to = notificationFCM.DeviceToken
+            };
+
+            var xc = JsonConvert.SerializeObject(data);
+            var byteArray = Encoding.UTF8.GetBytes(xc);
+            return byteArray;
+        }
+
+        private void SendNotify(NotificationFCMViewModel notificationFCM)
+        {
+
+            var byteArray = generateNotify(notificationFCM);
 
             var authorizationKey = Constant.FIREBASE_AUTHORIZATION_KEY;
             var sender_id = Constant.FIREBASE_SENDER_ID;
+
+
 
             var tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
             tRequest.Method = "POST";
@@ -152,30 +182,8 @@ namespace DWDW_Service.Services
             tReader.Close();
             dataStream.Close();
             tResponse.Close();
-
         }
 
-        private byte[] generateNotify(User user, Room room)
-        {
-            //string deviceToken = GetDeviceToken(deviceID);
-
-            //prepare data for message
-            var now = DateTime.Now.ToString("H:mm");
-            var titleText = "Detect drowsiness!";
-            var bodyText = "Worker " + user.UserName + " has a drowsiness in room: " + room.RoomCode + " at " + now;
-            var data = new
-            {
-                data = new
-                {
-                    title = titleText,
-                    message = bodyText
-                },
-                to = user.DeviceToken
-            };
-
-            var xc = JsonConvert.SerializeObject(data);
-            var byteArray = Encoding.UTF8.GetBytes(xc);
-            return byteArray;
-        }
+       
     }
 }

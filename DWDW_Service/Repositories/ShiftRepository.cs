@@ -15,8 +15,7 @@ namespace DWDW_Service.Repositories
         void DisableShiftsByArrangementId(int? arrangementId);
         void DisableOldSameShift(ShiftCreateModel shift);
         List<Shift> GetShiftSubAccount(List<int?> arrangementID);
-
-
+        Shift GetShiftByRoomDate(int? roomId, DateTime? recordDateTime);
     }
     public class ShiftRepository : BaseRepository<Shift>, IShiftRepository
     {
@@ -56,6 +55,14 @@ namespace DWDW_Service.Repositories
         public List<Shift> GetShiftSubAccount(List<int?> arrangementID)
         {
             return dbContext.Set<Shift>().Where(x => arrangementID.Contains(x.ArrangementId)).ToList();
+        }
+
+        public Shift GetShiftByRoomDate(int? roomId, DateTime? recordDateTime)
+        {
+
+            return Get(s => s.RoomId == roomId.Value 
+                       && s.Date.Value.CompareTo(recordDateTime.Value.Date) == 0, null, "Arrangement")
+                       .FirstOrDefault();
         }
     }
 

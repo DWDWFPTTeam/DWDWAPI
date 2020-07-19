@@ -1,6 +1,7 @@
 ﻿using DWDW_API.Core.Constants;
 using DWDW_API.Core.Entities;
 using DWDW_API.Core.Infrastructure;
+using DWDW_API.Core.ViewModels;
 using DWDW_API.Providers;
 using DWDW_Service.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -24,13 +25,13 @@ namespace DWDW_API.Controllers
         [Route("SaveRecord")]
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult SaveRecord(string deviceCode, string image)
+        public IActionResult SaveRecord(RecordReceivedModel recordReceived)
         {
             IActionResult result;
             try
             {
-                var record = recordService.SaveRecord(deviceCode, image);
-                result = Ok(record);
+                var recordViewModel = recordService.SaveRecord(recordReceived);
+                result = Ok(recordViewModel);
             }
             catch (BaseException e)
             {
@@ -41,21 +42,7 @@ namespace DWDW_API.Controllers
                 result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
 
             }
-            finally
-            {
-                try
-                {
-                    recordService.Notify(deviceCode);
-                }
-                catch (BaseException e)
-                {
-                    result = result = BadRequest(e.Message);
-                }
-                catch (Exception e)
-                {
-                    result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-                }
-            }
+           
             return result;
         }
 

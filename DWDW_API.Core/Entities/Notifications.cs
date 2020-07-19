@@ -8,6 +8,9 @@ namespace DWDW_API.Core.Entities
     {
         public int Id { get; set; }
         public int? UserId { get; set; }
+
+        public string MessageTitle { get; set; }
+        public DateTime? MessageTime { get; set; }
         public string MessageContent { get; set; }
         public int? Type { get; set; }
         public bool? IsRead { get; set; }
