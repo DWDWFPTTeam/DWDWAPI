@@ -60,8 +60,6 @@ namespace DWDW_API.Core.Entities
 
             modelBuilder.Entity<Notifications>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.MessageTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.User)

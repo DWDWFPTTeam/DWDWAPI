@@ -42,12 +42,12 @@ namespace DWDW_Service.Repositories
                     break;
                 case Constant.DROWSINESS:
                     notification.MessageTitle = "Device " + deviceCode + " at room " + room.RoomCode + " detects drowsiness";
-                    notification.MessageContent = "Worker + " + worker.UserName + " is drowsy at"
+                    notification.MessageContent = "Worker + " + worker.UserName + " is drowsy at "
                         + record.RecordDateTime.ToString();
                     break;
                 case Constant.REST:
                     notification.MessageTitle = "Device " + deviceCode + " at room " + room.RoomCode + " temporarily rests";
-                    notification.MessageContent = "Worker + " + worker.UserName + " turns off drowsiness detection mode for rest at"
+                    notification.MessageContent = "Worker + " + worker.UserName + " turns off drowsiness detection mode for rest at "
                         + record.RecordDateTime.ToString();
                     break;
                 case Constant.WORK:

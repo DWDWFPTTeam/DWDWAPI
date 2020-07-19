@@ -23,6 +23,8 @@ namespace DWDW_API.Core.Constants
         //Role Message
         public const string ROLE_IS_NOT_EXISTED = "Role is not existed";
         public const string ROLE_IS_EXISTED = "Role is existed";
+        public const string ROLE_IS_NOT_MANAGER = "Role is not manager";
+
 
         //Device Message
         public const string DEVICE_LIST_EMPTY = "This device is not existed";
@@ -61,5 +63,8 @@ namespace DWDW_API.Core.Constants
 
         public static string LOCATION_USER_NOT_EXISTED = "This location does not belong to the current manager";
         public static string DEVICE_IS_NOT_BELONG_ROOM = "This device is not belong this this room";
+
+        //Notification Message
+        public static string NOTI_ID_IS_NOT_EXISTED = "NotificationId is not exitsted";
     }
 }
