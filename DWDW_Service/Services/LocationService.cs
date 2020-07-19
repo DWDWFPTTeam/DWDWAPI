@@ -17,6 +17,7 @@ namespace DWDW_Service.Services
         IEnumerable<LocationViewModel> SearchLocationByLocationCode(string locationCode);
         LocationViewModel InsertLocation(LocationInsertModel locationInsert);
         LocationViewModel UpdateLocation(LocationUpdateModel locationUpdate);
+        LocationViewModel UpdateLocationStatus(LocationUpdateStatusModel locationStatus);
         LocationViewModel DeactiveLocation(int locationId);
         IEnumerable<LocationViewModel> GetLocationsByManager(int userId);
         List<LocationRecordViewModel> GetLocationsRecordBetweenDate(DateTime start, DateTime end);
@@ -66,6 +67,55 @@ namespace DWDW_Service.Services
                             roomDeviceRepository.DisableRoomDevice(r.RoomId);
                         }
                         location.IsActive = false;
+                        locationRepository.Update(location);
+                        transaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        throw e;
+                    }
+                }
+                result = location.ToViewModel<LocationViewModel>();
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
+            }
+            return result;
+        }
+
+        public LocationViewModel UpdateLocationStatus(LocationUpdateStatusModel locationStatus)
+        {
+            LocationViewModel result;
+            var location = locationRepository.Find(locationStatus.LocationId);
+            if (location != null)
+            {
+                using (var transaction = unitOfWork.CreateTransaction())
+                {
+                    try
+                    {
+                        if (locationStatus.IsActive == false)
+                        {
+                            //disable arrangements, rooms
+                            var arrangements = arrangementRepository.DisableArrangementFromLocation(locationStatus.LocationId);
+                            var rooms = roomRepository.DisableRoomFromLocation(locationStatus.LocationId);
+                            foreach (var a in arrangements)
+                            {
+                                //disable shifts
+                                shiftRepository.DisableShiftsByArrangementId(a.ArrangementId);
+                            }
+                            foreach (var r in rooms)
+                            {
+                                //disable roomDevice
+                                roomDeviceRepository.DisableRoomDevice(r.RoomId);
+                            }
+                            location.IsActive = false;
+                        }
+                        else
+                        {
+                            location.IsActive = true;
+                        }
                         locationRepository.Update(location);
                         transaction.Commit();
                     }
