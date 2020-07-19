@@ -1,4 +1,5 @@
 ﻿using DWDW_API.Core.Constants;
+using DWDW_API.Core.Entities;
 using DWDW_API.Core.Infrastructure;
 using DWDW_API.Providers;
 using DWDW_Service.Services;
@@ -22,7 +23,7 @@ namespace DWDW_API.Controllers
 
         [Route("SaveRecord")]
         [AllowAnonymous]
-        [HttpGet]
+        [HttpPost]
         public IActionResult SaveRecord(string deviceCode, string image)
         {
             IActionResult result;
@@ -39,6 +40,21 @@ namespace DWDW_API.Controllers
             {
                 result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
 
+            }
+            finally
+            {
+                try
+                {
+                    recordService.Notify(deviceCode);
+                }
+                catch (BaseException e)
+                {
+                    result = result = BadRequest(e.Message);
+                }
+                catch (Exception e)
+                {
+                    result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+                }
             }
             return result;
         }

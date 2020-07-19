@@ -22,6 +22,7 @@ namespace DWDW_Service.Services
             (int locationId, DateTime startDate, DateTime endDate);
         IEnumerable<RecordViewModel> GetRecordsByLocationIdAndTime
             (int locationId, DateTime date);
+        void Notify(string deviceCode);
     }
 
     public class RecordService : BaseService<Record>, IRecordService
@@ -39,28 +40,7 @@ namespace DWDW_Service.Services
         //    return managerDeviceToken;
         //}
 
-        public byte[] generateNotify(User user, Room room)
-        {
-            //string deviceToken = GetDeviceToken(deviceID);
-
-            //prepare data for message
-            var now = DateTime.Now.ToString("H:mm");
-            var titleText = "Detect drowsiness!";
-            var bodyText = "Worker " + user.UserName + " has a drowsiness in room: " + room.RoomCode + " at " + now;
-            var data = new
-            {
-                data = new
-                {
-                    title = titleText,
-                    message = bodyText
-                },
-                to = user.DeviceToken
-            };
-
-            var xc = JsonConvert.SerializeObject(data);
-            var byteArray = Encoding.UTF8.GetBytes(xc);
-            return byteArray;
-        }
+      
 
         public IEnumerable<RecordViewModel> GetRecordByLocationId(int locationId)
         {
@@ -91,9 +71,34 @@ namespace DWDW_Service.Services
             var device = unitOfWork.DeviceRepository.GetDeviceCode(deviceCode);
             if (device != null)
             {
-                var record = SendNotification(device.DeviceId.Value, image);
-                recordRepository.Add(record);
-                result = record.ToViewModel<RecordViewModel>();
+                using (var transaction = unitOfWork.CreateTransaction())
+                {
+                    try
+                    {
+                        
+                        var record = new Record
+                        {
+                            DeviceId = device.DeviceId,
+                            Image = image,
+                            RecordDateTime = DateTime.Now,
+                        };
+                        //save record
+                        recordRepository.Add(record);
+                        result = record.ToViewModel<RecordViewModel>();
+
+                        //save notify
+                        var notificationRepo = unitOfWork.NotificationRepository;
+                       
+
+                        transaction.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        throw e;
+                    }
+                }
+
             }
             else
             {
@@ -103,10 +108,15 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        public Record SendNotification(int deviceID, string image)
+        public void Notify(string deviceCode)
         {
+            var device = unitOfWork.DeviceRepository.GetDeviceCode(deviceCode);
+            if(device == null)
+            {
+                throw new BaseException(ErrorMessages.DEVICE_IS_NOT_EXISTED);
+            }
             //Get room from device is placed
-            var room = unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == deviceID
+            var room = unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == device.DeviceId
                                                                  && rd.IsActive == true, null, "Room")
                                                                 .FirstOrDefault().Room;
             //Get Manager who manage the room
@@ -143,14 +153,29 @@ namespace DWDW_Service.Services
             dataStream.Close();
             tResponse.Close();
 
-            return new Record
+        }
+
+        private byte[] generateNotify(User user, Room room)
+        {
+            //string deviceToken = GetDeviceToken(deviceID);
+
+            //prepare data for message
+            var now = DateTime.Now.ToString("H:mm");
+            var titleText = "Detect drowsiness!";
+            var bodyText = "Worker " + user.UserName + " has a drowsiness in room: " + room.RoomCode + " at " + now;
+            var data = new
             {
-                DeviceId = deviceID,
-                Image = image,
-                RecordDateTime = DateTime.Now,
+                data = new
+                {
+                    title = titleText,
+                    message = bodyText
+                },
+                to = user.DeviceToken
             };
 
-
+            var xc = JsonConvert.SerializeObject(data);
+            var byteArray = Encoding.UTF8.GetBytes(xc);
+            return byteArray;
         }
     }
 }

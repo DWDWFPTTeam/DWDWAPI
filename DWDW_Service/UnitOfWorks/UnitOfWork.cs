@@ -25,6 +25,14 @@ namespace DWDW_Service.UnitOfWorks
             return dbContext.Database.BeginTransaction();
         }
 
+        public INotificationRepository NotificationRepository
+        {
+            get
+            {
+                return new NotificationRepository(dbContext);
+            }
+        }
+
         public IArrangementRepository ArrangementRepository
         {
             get

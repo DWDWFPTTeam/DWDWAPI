@@ -66,6 +66,11 @@ namespace DWDW_API
             services.AddScoped<DbContext, DWDBContext>();
 
             //initialize implement instances
+            //Notification instances
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<INotificationService, NotificationService>();
+
+
             //Arrangement instances
             services.AddScoped<IArrangementRepository, ArrangementRepository>();
 

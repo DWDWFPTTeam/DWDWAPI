@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DWDW_API.Core.ViewModels
+namespace DWDW_API.Core.Entities
 {
-    class NotificationViewModel
+    public partial class Notifications
     {
         public int Id { get; set; }
         public int? UserId { get; set; }
@@ -12,6 +12,6 @@ namespace DWDW_API.Core.ViewModels
         public int? Type { get; set; }
         public bool? IsRead { get; set; }
 
-
+        public virtual User User { get; set; }
     }
 }

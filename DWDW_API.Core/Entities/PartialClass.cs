@@ -45,5 +45,9 @@ namespace DWDW_API.Core.Entities
     {
 
     }
+    public partial class Notifications : BaseEntity
+    {
+
+    }
 
 }
