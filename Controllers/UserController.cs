@@ -252,6 +252,28 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [Route("AssignUserToLocationByAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpPut]
+        public IActionResult AssignUserToLocation(ArrangementReceivedViewModel arrangement)
+        {
+            IActionResult result;
+            try
+            {
+                var assignUser = userService.AssignUserToLocation(arrangement);
+                return Ok(assignUser);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
         [Route("UpdatePersonalInfo")]
         [Authorize(Roles = Constant.ADMIN + ", " + Constant.MANAGER + ", " + Constant.WORKER)]
         [HttpPut]
@@ -276,8 +298,9 @@ namespace DWDW_API.Controllers
             }
             return result;
         }
+ 
 
-            [Route("DeActiveUserByAdmin")]
+        [Route("DeActiveUserByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpDelete]
         public IActionResult DeActiveUserByAdmin(int id)
@@ -310,10 +333,10 @@ namespace DWDW_API.Controllers
             int userID = int.Parse(ID);
             try
             {
-                var managerDeviceToken = userService.UpdateUserDeviceToken(userID ,deviceToken);
+                var managerDeviceToken = userService.UpdateUserDeviceToken(userID, deviceToken);
                 result = Ok(managerDeviceToken);
             }
-            catch(BaseException e)
+            catch (BaseException e)
             {
                 result = BadRequest(e.Message);
             }
@@ -324,6 +347,7 @@ namespace DWDW_API.Controllers
             return result;
         }
 
-        }
+
+    }
 
 }

@@ -132,7 +132,7 @@ namespace DWDW_API
             });
         }
 
-        private void SetupAutoMapper() 
+        private void SetupAutoMapper()
         {
             Mapper.Initialize(cfg =>
             {
@@ -160,6 +160,9 @@ namespace DWDW_API
                 //Arrangement Mapping
                 cfg.CreateMap<Arrangement, ArrangementViewModel>();
                 cfg.CreateMap<ArrangementViewModel, Arrangement>();
+                cfg.CreateMap<Arrangement, ArrangementReceivedViewModel>();
+                cfg.CreateMap<ArrangementReceivedViewModel, Arrangement>();
+
 
                 //Record Mapping
                 cfg.CreateMap<Record, RecordViewModel>();
@@ -193,10 +196,12 @@ namespace DWDW_API
                 cfg.CreateMap<User, UserViewModel>();
                 cfg.CreateMap<UserViewModel, User>();
                 cfg.CreateMap<UserPersonalUpdateModel, User>();
+                cfg.CreateMap<UserAssignViewModel, User>();
+                cfg.CreateMap<User, UserAssignViewModel>();
 
                 //Notification Mapping
-                cfg.CreateMap<Notifications, NotificationViewModel>() ;
-                cfg.CreateMap<NotificationViewModel, Notifications>() ;
+                cfg.CreateMap<Notifications, NotificationViewModel>();
+                cfg.CreateMap<NotificationViewModel, Notifications>();
             });
         }
 
@@ -216,7 +221,7 @@ namespace DWDW_API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = Constant.PROJECTNAME, Version = "v1" });
                 c.AddSecurityDefinition(Constant.BEARER, new OpenApiSecurityScheme
                 {
-                    
+
                     Description = Constant.JWT_DESCRIPTION,
                     Name = Constant.AUTHORIZATION,
                     In = ParameterLocation.Header,

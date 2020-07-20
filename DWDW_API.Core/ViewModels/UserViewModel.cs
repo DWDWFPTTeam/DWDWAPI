@@ -18,6 +18,19 @@ namespace DWDW_API.Core.ViewModels
         public string DeviceToken { get; set; }
         public bool? IsActive { get; set; }
     }
+    public class UserAssignViewModel : BaseModel
+    {
+        public int UserId { get; set; }
+        public string UserName { get; set; }
+        public string Phone { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public int? Gender { get; set; }
+        public int? RoleId { get; set; }
+        public string DeviceToken { get; set; }
+        public bool? IsActive { get; set; }
+        public string LocationCode { get; set; }
+    }
+   
     public class UserCreateModel : BaseModel
     {
         [Required]
