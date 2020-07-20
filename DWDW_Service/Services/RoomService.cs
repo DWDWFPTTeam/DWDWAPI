@@ -48,8 +48,15 @@ namespace DWDW_Service.Services
                 {
                     try
                     {
-                        room.IsActive = false;
-                        roomDeviceRepository.DisableRoomDevice(roomId);
+                        if (room.IsActive == true)
+                        {
+                            room.IsActive = false;
+                            roomDeviceRepository.DisableRoomDevice(roomId);
+                        }
+                        else
+                        {
+                            room.IsActive = true;
+                        }
                         roomRepository.Update(room);
                         transaction.Commit();
                     }
@@ -59,7 +66,6 @@ namespace DWDW_Service.Services
                         throw new BaseException(ErrorMessages.DEACTIVE_ERROR);
                     }
                 }
-
                 result = room.ToViewModel<RoomViewModel>();
             }
             else
@@ -122,6 +128,7 @@ namespace DWDW_Service.Services
                 {
                     result = roomRepository
                         .GetRoomFromLocation((int)location)
+                        .Where(r => r.IsActive == true)
                         .Select(r => r.ToViewModel<RoomViewModel>());
                 }
                 else
@@ -207,7 +214,7 @@ namespace DWDW_Service.Services
             if ((room != null) && (location != null))
             {
                 room.RoomCode = roomUpdate.RoomCode;
-                room.LocationId = room.LocationId;
+                room.LocationId = roomUpdate.LocationId;
                 room.IsActive = true;
                 roomRepository.Update(room);
                 result = room.ToViewModel<RoomViewModel>();

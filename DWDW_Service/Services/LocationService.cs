@@ -53,20 +53,31 @@ namespace DWDW_Service.Services
                 {
                     try
                     {
-                        //disable arrangements, rooms
-                        var arrangements = arrangementRepository.DisableArrangementFromLocation(locationId);
-                        var rooms = roomRepository.DisableRoomFromLocation(locationId);
-                        foreach (var a in arrangements)
+                        List<Room> rooms = new List<Room>();
+                        if (location.IsActive == true)
                         {
-                            //disable shifts
-                            shiftRepository.DisableShiftsByArrangementId(a.ArrangementId);
+                            //disable arrangements, rooms
+                            var arrangements = arrangementRepository.DisableArrangementFromLocation(locationId);
+                            rooms = roomRepository.DisableRoomFromLocation(locationId);
+                            foreach (var a in arrangements)
+                            {
+                                //disable shifts
+                                shiftRepository.DisableShiftsByArrangementId(a.ArrangementId);
+                            }
+                            foreach (var r in rooms)
+                            {
+                                //disable roomDevice
+                                roomDeviceRepository.DisableRoomDevice(r.RoomId);
+                            }
+                            location.IsActive = false;
                         }
-                        foreach (var r in rooms)
+                        else
                         {
-                            //disable roomDevice
-                            roomDeviceRepository.DisableRoomDevice(r.RoomId);
+                            //enable rooms
+                            rooms = roomRepository.EnableRoomFromLocation(locationId);
+                            location.IsActive = true;
                         }
-                        location.IsActive = false;
+                        
                         locationRepository.Update(location);
                         transaction.Commit();
                     }
