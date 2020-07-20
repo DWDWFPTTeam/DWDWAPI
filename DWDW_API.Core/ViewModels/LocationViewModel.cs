@@ -25,6 +25,14 @@ namespace DWDW_API.Core.ViewModels
         [MaxLength(10)]
         public string LocationCode { get; set; }
     }
+    public class LocationUpdateStatusModel : BaseModel
+    {
+        [Required]
+        public int LocationId { get; set; }
+        [Required]
+        public bool? IsActive { get; set; }
+
+    }
     public class LocationInsertModel : BaseModel
     {
         [Required]

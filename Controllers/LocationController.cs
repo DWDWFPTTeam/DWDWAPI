@@ -158,6 +158,29 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [HttpPut]
+        [Authorize(Roles = Constant.ADMIN)]
+        [Route("UpdateLocationStatus")]
+        public IActionResult UpdateLocationStatus(LocationUpdateStatusModel location)
+        {
+            //if (!ModelState.IsValid) return BadRequest(ModelState);
+            IActionResult result;
+            try
+            {
+                var locationDeactived = locationService.UpdateLocationStatus(location);
+                return Ok(locationDeactived);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
         [HttpGet]
         [Authorize(Roles = Constant.MANAGER)]
         [Route("GetLocationsByManager")]
