@@ -1,14 +1,16 @@
 ﻿CREATE TABLE [dbo].[RoomDevice] (
-    [RoomDeviceId] INT      IDENTITY (1, 1) NOT NULL,
-    [RoomId]       INT      NULL,
-    [DeviceId]     INT      NULL,
-    [StartDate]    DATETIME NULL,
-    [EndDate]      DATETIME NULL,
-    [IsActive]     BIT      NULL,
-    PRIMARY KEY CLUSTERED ([RoomDeviceId] ASC),
-    CONSTRAINT [FK_RoomDevice_Device] FOREIGN KEY ([DeviceId]) REFERENCES [dbo].[Device] ([DeviceId]),
-    CONSTRAINT [FK_RoomDevice_Room] FOREIGN KEY ([RoomId]) REFERENCES [dbo].[Room] ([RoomId])
+    [roomDeviceId] INT  IDENTITY (1, 1) NOT NULL,
+    [roomId]       INT  NULL,
+    [deviceId]     INT  NULL,
+    [startDate]    DATE NULL,
+    [endDate]      DATE NULL,
+    [isActive]     BIT  NULL,
+    CONSTRAINT [PK__RoomDevi__3384D64BB5FD3955] PRIMARY KEY CLUSTERED ([roomDeviceId] ASC),
+    CONSTRAINT [FK_RoomDevice_Device] FOREIGN KEY ([deviceId]) REFERENCES [dbo].[Device] ([deviceId]),
+    CONSTRAINT [FK_RoomDevice_Room] FOREIGN KEY ([roomId]) REFERENCES [dbo].[Room] ([roomId])
 );
+
+
 
 
 GO

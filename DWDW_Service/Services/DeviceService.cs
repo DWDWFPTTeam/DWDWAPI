@@ -43,6 +43,10 @@ namespace DWDW_Service.Services
                 int? deviceID = element.DeviceId;
                 element.RoomCode = deviceRepository.GetRoomCode(deviceID);
                 element.LocationCode = deviceRepository.GetLocationCode(deviceID);
+                element.RoomId = deviceRepository.GetRoomID(deviceID);
+                element.LocationId = deviceRepository.GetLocationID(deviceID);
+                element.StartDate = deviceRepository.GetStartDate(deviceID);
+                element.EndDate = deviceRepository.GetEndDate(deviceID);
             }
             return result;
         }
@@ -65,6 +69,10 @@ namespace DWDW_Service.Services
                 result = device.ToViewModel<DeviceViewModel>();
                 result.RoomCode = deviceRepository.GetRoomCode(deviceID);
                 result.LocationCode = deviceRepository.GetLocationCode(deviceID);
+                result.RoomId = deviceRepository.GetRoomID(deviceID);
+                result.LocationId = deviceRepository.GetLocationID(deviceID);
+                result.StartDate = deviceRepository.GetStartDate(deviceID);
+                result.EndDate = deviceRepository.GetEndDate(deviceID);
             }
             else
             {
@@ -189,6 +197,10 @@ namespace DWDW_Service.Services
                     int? deviceID = element.DeviceId;
                     element.RoomCode = deviceRepository.GetRoomCode(deviceID);
                     element.LocationCode = deviceRepository.GetLocationCode(deviceID);
+                    element.RoomId = deviceRepository.GetRoomID(deviceID);
+                    element.LocationId = deviceRepository.GetLocationID(deviceID);
+                    element.StartDate = deviceRepository.GetStartDate(deviceID);
+                    element.EndDate = deviceRepository.GetEndDate(deviceID);
                 }
             }
             else
@@ -225,6 +237,10 @@ namespace DWDW_Service.Services
                     int? deviceID = element.DeviceId;
                     element.RoomCode = deviceRepository.GetRoomCode(deviceID);
                     element.LocationCode = deviceRepository.GetLocationCode(deviceID);
+                    element.RoomId = deviceRepository.GetRoomID(deviceID);
+                    element.LocationId = deviceRepository.GetLocationID(deviceID);
+                    element.StartDate = deviceRepository.GetStartDate(deviceID);
+                    element.EndDate = deviceRepository.GetEndDate(deviceID);
                 }
             }
             else
@@ -247,6 +263,10 @@ namespace DWDW_Service.Services
                     result = devices.ToViewModel<DeviceViewModel>();
                     result.RoomCode = deviceRepository.GetRoomCode(result.DeviceId);
                     result.LocationCode = deviceRepository.GetLocationCode(result.DeviceId);
+                    result.RoomId = deviceRepository.GetRoomID(result.DeviceId);
+                    result.LocationId = deviceRepository.GetLocationID(result.DeviceId);
+                    result.StartDate = deviceRepository.GetStartDate(result.DeviceId);
+                    result.EndDate = deviceRepository.GetEndDate(result.DeviceId);
                 }
                 else
                 {
@@ -275,6 +295,10 @@ namespace DWDW_Service.Services
                     result = devices.ToViewModel<DeviceViewModel>();
                     result.RoomCode = deviceRepository.GetRoomCode(result.DeviceId);
                     result.LocationCode = deviceRepository.GetLocationCode(result.DeviceId);
+                    result.RoomId = deviceRepository.GetRoomID(result.DeviceId);
+                    result.LocationId = deviceRepository.GetLocationID(result.DeviceId);
+                    result.StartDate = deviceRepository.GetStartDate(result.DeviceId);
+                    result.EndDate = deviceRepository.GetEndDate(result.DeviceId);
                 }
                 else
                 {

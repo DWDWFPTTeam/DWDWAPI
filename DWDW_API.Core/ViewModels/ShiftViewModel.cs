@@ -13,7 +13,6 @@ namespace DWDW_API.Core.ViewModels
         public int? ArrangementId { get; set; }
         public DateTime? Date { get; set; }
         public int? RoomId { get; set; }
-        public int? ShiftType { get; set; }
         public bool? IsActive { get; set; }
     }
     public class ShiftCreateModel : BaseModel
@@ -24,8 +23,6 @@ namespace DWDW_API.Core.ViewModels
         public DateTime? Date { get; set; }
         [Required]
         public int? RoomId { get; set; }
-        [Required]
-        public int? ShiftType { get; set; }
     }
     public class ShiftUpdateModel : BaseModel
     {
@@ -37,8 +34,6 @@ namespace DWDW_API.Core.ViewModels
         public DateTime? Date { get; set; }
         [Required]
         public int? RoomId { get; set; }
-        [Required]
-        public int? ShiftType { get; set; }
     }
     public class ShiftActiveModel : BaseModel
     {
