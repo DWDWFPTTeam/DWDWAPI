@@ -15,6 +15,7 @@ namespace DWDW_Service.Repositories
         RoomDevice GetLatest();
         List<Room> GetRoomFromLocation(int locationID);
         List<Room> DisableRoomFromLocation(int locationID);
+        List<Room> EnableRoomFromLocation(int locationID);
         bool CheckRoomLocation(int? roomID, int? ArrangementID);
         List<Room> SearchRoomByRoomCode(string roomCode);
         List<Room> SearchRoomByRoomCode(int locationId, string roomCode);
@@ -89,7 +90,16 @@ namespace DWDW_Service.Repositories
             return this.dbContext.Set<Room>()
                     .Where(r => r.LocationId == locationId)
                     .Where(r => r.RoomCode.Contains(roomCode))
+                    .Where(r => r.IsActive == true)
                     .ToList();
+        }
+
+        public List<Room> EnableRoomFromLocation(int locationID)
+        {
+            var rooms = this.dbContext.Set<Room>().Where(x => x.LocationId == locationID).ToList();
+            rooms.ForEach(r => r.IsActive = true);
+            this.dbContext.SaveChanges();
+            return rooms;
         }
     }
 }
