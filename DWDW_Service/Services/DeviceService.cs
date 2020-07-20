@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace DWDW_Service.Services
@@ -36,7 +37,14 @@ namespace DWDW_Service.Services
 
         public IEnumerable<DeviceViewModel> GetAll()
         {
-            return deviceRepository.GetAll().Select(x => x.ToViewModel<DeviceViewModel>());
+            var result = deviceRepository.GetAll().Select(x => x.ToViewModel<DeviceViewModel>()).ToList();
+            foreach (var element in result)
+            {
+                int? deviceID = element.DeviceId;
+                element.RoomCode = deviceRepository.GetRoomCode(deviceID);
+                element.LocationCode = deviceRepository.GetLocationCode(deviceID);
+            }
+            return result;
         }
 
         public IEnumerable<DeviceViewModel> GetDeviceCode(string deviceCode)
@@ -55,6 +63,8 @@ namespace DWDW_Service.Services
             if (device != null)
             {
                 result = device.ToViewModel<DeviceViewModel>();
+                result.RoomCode = deviceRepository.GetRoomCode(deviceID);
+                result.LocationCode = deviceRepository.GetLocationCode(deviceID);
             }
             else
             {
@@ -173,7 +183,13 @@ namespace DWDW_Service.Services
                         deviceList.Add(deviceListAt);
                     }
                 }
-                result = deviceList.Select(x => x.ToViewModel<DeviceViewModel>());
+                result = deviceList.Select(x => x.ToViewModel<DeviceViewModel>()).ToList();
+                foreach (var element in result)
+                {
+                    int? deviceID = element.DeviceId;
+                    element.RoomCode = deviceRepository.GetRoomCode(deviceID);
+                    element.LocationCode = deviceRepository.GetLocationCode(deviceID);
+                }
             }
             else
             {
@@ -203,7 +219,13 @@ namespace DWDW_Service.Services
                         deviceList.Add(deviceListAt);
                     }
                 }
-                result = deviceList.Select(x => x.ToViewModel<DeviceViewModel>());
+                result = deviceList.Select(x => x.ToViewModel<DeviceViewModel>()).ToList();
+                foreach (var element in result)
+                {
+                    int? deviceID = element.DeviceId;
+                    element.RoomCode = deviceRepository.GetRoomCode(deviceID);
+                    element.LocationCode = deviceRepository.GetLocationCode(deviceID);
+                }
             }
             else
             {
@@ -223,6 +245,8 @@ namespace DWDW_Service.Services
                 if (devices != null)
                 {
                     result = devices.ToViewModel<DeviceViewModel>();
+                    result.RoomCode = deviceRepository.GetRoomCode(result.DeviceId);
+                    result.LocationCode = deviceRepository.GetLocationCode(result.DeviceId);
                 }
                 else
                 {
@@ -249,6 +273,8 @@ namespace DWDW_Service.Services
                 if (devices != null)
                 {
                     result = devices.ToViewModel<DeviceViewModel>();
+                    result.RoomCode = deviceRepository.GetRoomCode(result.DeviceId);
+                    result.LocationCode = deviceRepository.GetLocationCode(result.DeviceId);
                 }
                 else
                 {
