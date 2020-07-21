@@ -105,7 +105,6 @@ namespace DWDW_Service.Services
                     ArrangementId = shift.ArrangementId,
                     Date = shift.Date,
                     RoomId = shift.RoomId,
-                    ShiftType = shift.ShiftType,
                     IsActive = true
                 });
                 result = shiftRepository.GetLatest().ToViewModel<ShiftViewModel>();
@@ -135,7 +134,6 @@ namespace DWDW_Service.Services
                         shiftU.ArrangementId = shift.ArrangementId;
                         shiftU.Date = shift.Date;
                         shiftU.RoomId = shift.RoomId;
-                        shiftU.ShiftType = shift.ShiftType;
                         shiftRepository.Update(shiftU);
                         result = shiftU.ToViewModel<ShiftViewModel>();
                     }

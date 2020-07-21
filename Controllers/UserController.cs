@@ -252,6 +252,54 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [Route("AssignUserToLocationByAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpPut]
+        public IActionResult AssignUserToLocation(ArrangementReceivedViewModel arrangement)
+        {
+            IActionResult result;
+            try
+            {
+                var assignUser = userService.AssignUserToLocation(arrangement);
+                return Ok(assignUser);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
+        [Route("UpdatePersonalInfo")]
+        [Authorize(Roles = Constant.ADMIN + ", " + Constant.MANAGER + ", " + Constant.WORKER)]
+        [HttpPut]
+        public IActionResult UpdatePersonalInfo(UserPersonalUpdateModel userUpdate)
+        {
+            IActionResult result;
+            var identity = (ClaimsIdentity)User.Identity;
+            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userID = int.Parse(ID);
+            try
+            {
+                var userUpdated = userService.UpdatePersonalInfo(userID, userUpdate);
+                return Ok(userUpdated);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+ 
+
         [Route("DeActiveUserByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpDelete]
@@ -285,10 +333,10 @@ namespace DWDW_API.Controllers
             int userID = int.Parse(ID);
             try
             {
-                var managerDeviceToken = userService.UpdateUserDeviceToken(userID ,deviceToken);
+                var managerDeviceToken = userService.UpdateUserDeviceToken(userID, deviceToken);
                 result = Ok(managerDeviceToken);
             }
-            catch(BaseException e)
+            catch (BaseException e)
             {
                 result = BadRequest(e.Message);
             }
@@ -299,6 +347,7 @@ namespace DWDW_API.Controllers
             return result;
         }
 
-        }
+
+    }
 
 }

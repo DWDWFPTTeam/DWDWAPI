@@ -26,6 +26,8 @@ namespace DWDW_Service.Services
         IEnumerable<UserViewModel> GetUserFromOneLocationByManager(int userId, int locationId);
         UserViewModel GetUserById(int userId);
         UserViewModel UpdateUserDeviceToken(int userID, string deviceToken);
+        UserViewModel UpdatePersonalInfo(int userID, UserPersonalUpdateModel updateUser);
+        ArrangementViewModel AssignUserToLocation(ArrangementReceivedViewModel arrangement);
     }
     public class UserService : BaseService<User>, IUserService
     {
@@ -132,7 +134,7 @@ namespace DWDW_Service.Services
                         var arrangementRepo = unitOfWork.ArrangementRepository;
                         var arrangements = arrangementRepo.GetArrangementOfUser(userId);
                         //Check If the user does not belong to any arrangements so we do not need to DeActive Arrangement
-                        if(arrangements.Count() > 0) 
+                        if (arrangements.Count() > 0)
                         {
                             foreach (var arrangement in arrangements)
                             {
@@ -246,7 +248,7 @@ namespace DWDW_Service.Services
             return userRepository.Find(userId).ToViewModel<UserViewModel>();
         }
 
-        public UserViewModel UpdateUserDeviceToken(int userID , string deviceToken)
+        public UserViewModel UpdateUserDeviceToken(int userID, string deviceToken)
         {
             var result = new UserViewModel();
             var user = userRepository.Find(userID);
@@ -261,6 +263,44 @@ namespace DWDW_Service.Services
                 throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
             }
             return result;
+        }
+
+        public UserViewModel UpdatePersonalInfo(int userID, UserPersonalUpdateModel updateUser)
+        {
+            var result = new UserViewModel();
+            var user = userRepository.Find(userID);
+            if (user != null)
+            {
+                user.Password = updateUser.Password;
+                user.Phone = updateUser.Phone;
+                user.DateOfBirth = updateUser.DateOfBirth;
+                user.Gender = updateUser.Gender;
+                userRepository.Update(user);
+                result = user.ToViewModel<UserViewModel>();
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
+            }
+            return result;
+        }
+
+        public ArrangementViewModel AssignUserToLocation(ArrangementReceivedViewModel arrangement)
+        {
+            var location = unitOfWork.LocationRepository.Find(arrangement.LocationId);
+            if (location == null)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
+            }
+            var user = this.userRepository.Find(arrangement.UserId);
+            if (user == null)
+            {
+                throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
+            }
+            var arrangementEntity = arrangement.ToEntity<Arrangement>();
+            arrangementEntity.IsActive = true;
+            unitOfWork.ArrangementRepository.Add(arrangementEntity);
+            return arrangementEntity.ToViewModel<ArrangementViewModel>();
         }
     }
 }

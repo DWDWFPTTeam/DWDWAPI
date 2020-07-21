@@ -18,6 +18,19 @@ namespace DWDW_API.Core.ViewModels
         public string DeviceToken { get; set; }
         public bool? IsActive { get; set; }
     }
+    public class UserAssignViewModel : BaseModel
+    {
+        public int UserId { get; set; }
+        public string UserName { get; set; }
+        public string Phone { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public int? Gender { get; set; }
+        public int? RoleId { get; set; }
+        public string DeviceToken { get; set; }
+        public bool? IsActive { get; set; }
+        public string LocationCode { get; set; }
+    }
+   
     public class UserCreateModel : BaseModel
     {
         [Required]
@@ -50,6 +63,21 @@ namespace DWDW_API.Core.ViewModels
         [Range(1, 3, ErrorMessage = ErrorMessages.ROLE_IS_NOT_EXISTED)]
         public int? RoleId { get; set; }
 
+    }
+
+    public class UserPersonalUpdateModel : BaseModel
+    {
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+        [Required]
+        [DataType(DataType.PhoneNumber, ErrorMessage = ErrorMessages.WRONG_PHONE_FORMAT)]
+        public string Phone { get; set; }
+        [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.BIRTHDAY_WRONG_DATETIME_FORMAT)]
+        public DateTime? DateOfBirth { get; set; }
+        [Required]
+        [Range(1, 3, ErrorMessage = ErrorMessages.GENDER_IS_NOT_EXISTED)]
+        public int? Gender { get; set; }
     }
 
     public class UserLoginInfo
