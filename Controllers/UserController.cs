@@ -252,7 +252,32 @@ namespace DWDW_API.Controllers
             return result;
         }
 
-        [Route("DeActiveUserByAdmin")]
+        [Route("UpdatePersonalInfo")]
+        [Authorize(Roles = Constant.ADMIN + ", " + Constant.MANAGER + ", " + Constant.WORKER)]
+        [HttpPut]
+        public IActionResult UpdatePersonalInfo(UserPersonalUpdateModel userUpdate)
+        {
+            IActionResult result;
+            var identity = (ClaimsIdentity)User.Identity;
+            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userID = int.Parse(ID);
+            try
+            {
+                var userUpdated = userService.UpdatePersonalInfo(userID, userUpdate);
+                return Ok(userUpdated);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
+            [Route("DeActiveUserByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpDelete]
         public IActionResult DeActiveUserByAdmin(int id)
