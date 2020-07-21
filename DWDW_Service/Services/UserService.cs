@@ -46,8 +46,8 @@ namespace DWDW_Service.Services
             if (user == null)
             {
                 //chi check role existed
-                var roleRepo = this.unitOfWork.RoleRepository;
-                var role = roleRepo.GetRoleByID(create.RoleId);
+                //check role is Existed
+                var role = this.unitOfWork.RoleRepository.Find(create.RoleId);
                 if (role == null)
                 {
                     throw new BaseException(ErrorMessages.ROLE_IS_NOT_EXISTED);
@@ -60,10 +60,10 @@ namespace DWDW_Service.Services
                 userEntity.IsActive = true;
 
                 //add user to database
-                userRepository.AddAsync(userEntity);
+                userRepository.Add(userEntity);
 
                 //get User to response
-                var userResponse = userRepository.GetUserByUsername(user.UserName);
+                var userResponse = userRepository.GetUserByUsername(create.UserName);
 
                 //map User => UserViewModel to API
                 result = userResponse.ToViewModel<UserViewModel>();
