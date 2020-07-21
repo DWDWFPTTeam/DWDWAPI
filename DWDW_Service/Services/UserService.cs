@@ -21,7 +21,7 @@ namespace DWDW_Service.Services
         IEnumerable<User> GetAllAllowAnonymous();
         UserViewModel UpdateUser(UserUpdateModel userUpdate);
         UserViewModel DeActiveUserByAdmin(int id);
-        IEnumerable<UserViewModel> GetUserFromLocationByAdmin(int locationId);
+        List<UserGetAllViewModel> GetUserFromLocationByAdmin(int locationId);
         IEnumerable<UserViewModel> GetUserFromLocationsByManager(int userId);
         IEnumerable<UserViewModel> GetUserFromOneLocationByManager(int userId, int locationId);
         UserViewModel GetUserById(int userId);
@@ -222,26 +222,51 @@ namespace DWDW_Service.Services
         }
 
         //unfinished
-        public IEnumerable<UserViewModel> GetUserFromLocationByAdmin(int locationId)
+        public List<UserGetAllViewModel> GetUserFromLocationByAdmin(int locationId)
         {
-            IEnumerable<UserViewModel> result = new List<UserViewModel>();
+            //IEnumerable<UserViewModel> result = new List<UserViewModel>();
+            List<UserGetAllViewModel> list = new List<UserGetAllViewModel>();
+            UserGetAllViewModel user = new UserGetAllViewModel();
             //check validated
             var locationRepo = this.unitOfWork.LocationRepository;
-            if (locationRepo.Find(locationId) != null)
+            var location = locationRepo.Find(locationId);
+            if (location != null)
             {
                 var arrangementRepo = this.unitOfWork.ArrangementRepository;
+                var roleRepo = this.unitOfWork.RoleRepository;
                 //get User from Arrangement (UserLocation) with locationID
-                var arrangements = arrangementRepo.GetArrangementFromLocation(locationId);
-                var users = arrangements.Select(a => a.User);
-
-                result = users.Select(u => u.ToViewModel<UserViewModel>());
+                var arrangements = arrangementRepo.GetArrangementUserFromLocation(locationId);
+                foreach (var item in arrangements)
+                {
+                    Role role = new Role();
+                    var userDetail = userRepository.Find(item.UserId);
+                    if (userDetail!=null)
+                    {
+                        role = roleRepo.Find(userDetail.RoleId);
+                    }
+                    user = new UserGetAllViewModel()
+                    {
+                        UserId = item.UserId,
+                        UserName = userDetail.UserName,
+                        Phone = userDetail.Phone,
+                        DateOfBirth = userDetail.DateOfBirth,
+                        Gender = userDetail.Gender,
+                        DeviceToken = userDetail.DeviceToken,
+                        RoleId = userDetail.RoleId,
+                        RoleName = role.RoleName,
+                        LocationId = location.LocationId,
+                        LocationCode = location.LocationCode,
+                        StartDate = item.StartDate,
+                        EndDate = item.EndDate
+                    };
+                    list.Add(user);
+                }
             }
             else
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
-
             }
-            return result;
+            return list;
 
         }
         public IEnumerable<UserViewModel> GetUserFromLocationsByManager(int userId)

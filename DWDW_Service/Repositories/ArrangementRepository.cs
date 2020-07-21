@@ -13,7 +13,10 @@ namespace DWDW_Service.Repositories
         IEnumerable<Arrangement> GetArrangementFromLocation(int locationId);
         //this function for MANAGER and WORKER
         IEnumerable<Arrangement> GetArrangementOfUser(int userId);
+        //start chi 
         ArrangementLocationViewModel GetArrangementLocationOfUser(int userId);
+        List<ArrangementUserViewModel> GetArrangementUserFromLocation(int locationId);
+        //end chi
         Arrangement GetArrangementOfUserInThisLocation(int userId, int locationId);
         bool CheckUserShift(int userID, int? ArrangementID);
         List<Arrangement> DisableArrangementFromLocation(int locationId);
@@ -115,6 +118,17 @@ namespace DWDW_Service.Repositories
                     StartDate = a.StartDate,
                     EndDate = a.EndDate
                 }).FirstOrDefault();
+        }
+
+        public List<ArrangementUserViewModel> GetArrangementUserFromLocation(int locationId)
+        {
+            return Get(a => a.LocationId.Equals(locationId) && a.IsActive == true, null, "User")
+                .Select(a => new ArrangementUserViewModel()
+                {
+                    UserId = (int) a.UserId,
+                    StartDate = a.StartDate,
+                    EndDate = a.EndDate
+                }).ToList();
         }
     }
 }
