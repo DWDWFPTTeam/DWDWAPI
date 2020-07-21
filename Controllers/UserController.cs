@@ -174,11 +174,11 @@ namespace DWDW_API.Controllers
 
 
 
-
-        [Route("CraeteUserByAdmin")]
+        //chi fix Craete -> Create
+        [Route("CreateUserByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpPost]
-        public IActionResult CraeteUserByAdmin(UserCreateModel userCreated)
+        public IActionResult CreateUserByAdmin(UserCreateModel userCreated)
         {
             IActionResult result;
             try

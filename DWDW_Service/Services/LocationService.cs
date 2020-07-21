@@ -205,7 +205,7 @@ namespace DWDW_Service.Services
             if (location != null)
             {
                 location.LocationCode = locationUpdate.LocationCode;
-                location.IsActive = true;
+                location.IsActive = location.IsActive;
                 locationRepository.Update(location);
                 result = location.ToViewModel<LocationViewModel>();
             }

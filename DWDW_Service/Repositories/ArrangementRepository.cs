@@ -1,4 +1,5 @@
 ﻿using DWDW_API.Core.Entities;
+using DWDW_API.Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace DWDW_Service.Repositories
         IEnumerable<Arrangement> GetArrangementFromLocation(int locationId);
         //this function for MANAGER and WORKER
         IEnumerable<Arrangement> GetArrangementOfUser(int userId);
+        ArrangementLocationViewModel GetArrangementLocationOfUser(int userId);
         Arrangement GetArrangementOfUserInThisLocation(int userId, int locationId);
         bool CheckUserShift(int userID, int? ArrangementID);
         List<Arrangement> DisableArrangementFromLocation(int locationId);
@@ -101,6 +103,18 @@ namespace DWDW_Service.Repositories
             }
 
             return qualifyWorkerRelated;
+        }
+
+        public ArrangementLocationViewModel GetArrangementLocationOfUser(int userId)
+        {
+            return Get(a => a.UserId.Equals(userId) && a.IsActive == true, null, "Location")
+                .Select(a => new ArrangementLocationViewModel()
+                {
+                    LocationId = a.LocationId,
+                    LocationCode = a.Location.LocationCode,
+                    StartDate = a.StartDate,
+                    EndDate = a.EndDate
+                }).FirstOrDefault();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace DWDW_Service.Services
     {
         UserViewModel CreateUserAsync(UserCreateModel user);
         Task<User> LoginAsync(string username, string password);
-        IEnumerable<UserViewModel> GetAllByAdmin();
+        List<UserGetAllViewModel> GetAllByAdmin();
         IEnumerable<User> GetAllAllowAnonymous();
         UserViewModel UpdateUser(UserUpdateModel userUpdate);
         UserViewModel DeActiveUserByAdmin(int id);
@@ -42,9 +42,17 @@ namespace DWDW_Service.Services
             UserViewModel result;
             //checkValid to created
             var user = userRepository.GetUserByUsername(create.UserName);
-
-            if (user != null)
+            //chi fix != -> ==
+            if (user == null)
             {
+                //chi check role existed
+                var roleRepo = this.unitOfWork.RoleRepository;
+                var role = roleRepo.GetRoleByID(create.RoleId);
+                if (role == null)
+                {
+                    throw new BaseException(ErrorMessages.ROLE_IS_NOT_EXISTED);
+                }
+
                 //Map userCreateModel => userEntity to insert to database
                 var userEntity = create.ToEntity<User>();
 
@@ -69,10 +77,55 @@ namespace DWDW_Service.Services
             return result;
 
         }
-
-        public IEnumerable<UserViewModel> GetAllByAdmin()
+        //chi them field tra ve
+        public List<UserGetAllViewModel> GetAllByAdmin()
         {
-            return userRepository.GetAll().Select(x => x.ToViewModel<UserViewModel>());
+            List<UserGetAllViewModel> list = new List<UserGetAllViewModel>();
+            var users = userRepository.GetAll()
+                .Select(x => x.ToViewModel<UserViewModel>()).ToList();
+
+            var arrangementRepo = this.unitOfWork.ArrangementRepository;
+            var roleRepo = this.unitOfWork.RoleRepository;
+            UserGetAllViewModel user = new UserGetAllViewModel();
+            foreach (var item in users)
+            {
+                var location = arrangementRepo.GetArrangementLocationOfUser(item.UserId);
+                var role = roleRepo.GetRoleByID((int)item.RoleId);
+                if (location!=null)
+                {
+                    user = new UserGetAllViewModel()
+                    {
+                        UserId = item.UserId,
+                        UserName = item.UserName,
+                        Phone = item.Phone,
+                        DateOfBirth = item.DateOfBirth,
+                        Gender = item.Gender,
+                        DeviceToken = item.DeviceToken,
+                        RoleId = item.RoleId,
+                        RoleName = role.RoleName,
+                        LocationId = location.LocationId,
+                        LocationCode = location.LocationCode,
+                        StartDate = location.StartDate,
+                        EndDate = location.EndDate
+                    };
+                }
+                else
+                {
+                    user = new UserGetAllViewModel()
+                    {
+                        UserId = item.UserId,
+                        UserName = item.UserName,
+                        Phone = item.Phone,
+                        DateOfBirth = item.DateOfBirth,
+                        Gender = item.Gender,
+                        DeviceToken = item.DeviceToken,
+                        RoleId = item.RoleId,
+                        RoleName = role.RoleName,
+                    };
+                }
+                list.Add(user);
+            }
+            return list;
         }
 
 

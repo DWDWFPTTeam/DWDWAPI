@@ -25,4 +25,11 @@ namespace DWDW_API.Core.ViewModels
         [Required]
         public DateTime EndDate { get; set; }
     }
+    public class ArrangementLocationViewModel : BaseModel
+    {
+        public int? LocationId { get; set; }
+        public string LocationCode { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+    }
 }

@@ -42,8 +42,9 @@ namespace DWDW_API.Core.ViewModels
         public string Phone { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.BIRTHDAY_WRONG_DATETIME_FORMAT)]
         public DateTime? DateOfBirth { get; set; }
-        [Required]
         public int? Gender { get; set; }
+        [Required]
+        public int RoleId { get; set; }
     }
     public class UserUpdateModel : BaseModel
     {
@@ -94,6 +95,22 @@ namespace DWDW_API.Core.ViewModels
     public class TokenResponseModel
     {
         public string AccessToken { get; set; }
+    }
+    public class UserGetAllViewModel : BaseModel
+    {
+        public int UserId { get; set; }
+        public string UserName { get; set; }
+        public string Phone { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public int? Gender { get; set; }
+        public string DeviceToken { get; set; }
+        public bool? IsActive { get; set; }
+        public int? RoleId { get; set; }
+        public string RoleName { get; set; }
+        public int? LocationId { get; set; }
+        public string LocationCode { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
     }
 
 }

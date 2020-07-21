@@ -11,8 +11,6 @@ namespace DWDW_API.Core.ViewModels
         [Required]
         public int LocationId { get; set; }
         [Required]
-        [MinLength(3)]
-        [MaxLength(10)]
         public string LocationCode { get; set; }
         public bool? IsActive { get; set; }
     }
@@ -22,8 +20,6 @@ namespace DWDW_API.Core.ViewModels
         [Required]
         public int LocationId { get; set; }
         [Required]
-        [MinLength(3)]
-        [MaxLength(10)]
         public string LocationCode { get; set; }
         public float TotalRecord { get; set; }
     }
@@ -32,8 +28,6 @@ namespace DWDW_API.Core.ViewModels
         [Required]
         public int LocationId { get; set; }
         [Required]
-        [MinLength(3)]
-        [MaxLength(10)]
         public string LocationCode { get; set; }
     }
     public class LocationUpdateStatusModel : BaseModel
@@ -47,8 +41,6 @@ namespace DWDW_API.Core.ViewModels
     public class LocationInsertModel : BaseModel
     {
         [Required]
-        [MinLength(3)]
-        [MaxLength(10)]
         public string LocationCode { get; set; }
 
     }

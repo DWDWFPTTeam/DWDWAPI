@@ -1,10 +1,6 @@
 ﻿using DWDW_API.Core.Entities;
-using DWDW_API.Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DWDW_Service.Repositories
@@ -21,7 +17,6 @@ namespace DWDW_Service.Repositories
 
         }
 
-
         public User GetUserByUsername(string username)
         {
             return this.dbContext.Set<User>().FirstOrDefault(x => x.UserName.Trim().ToLower()
@@ -36,6 +31,5 @@ namespace DWDW_Service.Repositories
             return user;
         }
 
-       
     }
 }
