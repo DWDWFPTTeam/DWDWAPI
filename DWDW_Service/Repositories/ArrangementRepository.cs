@@ -12,6 +12,7 @@ namespace DWDW_Service.Repositories
     {
         IEnumerable<Arrangement> GetArrangementFromLocation(int locationId);
         //this function for MANAGER and WORKER
+        Arrangement CheckLocationManagerWorker(int userId, int locationID);
         IEnumerable<Arrangement> GetArrangementOfUser(int userId);
         //start chi 
         ArrangementLocationViewModel GetArrangementLocationOfUser(int userId);
@@ -29,7 +30,13 @@ namespace DWDW_Service.Repositories
         {
 
         }
-
+        public Arrangement CheckLocationManagerWorker(int userId, int locationID)
+        {
+            var result = new Arrangement();
+            result = dbContext.Set<Arrangement>().FirstOrDefault(x => x.UserId == userId && x.LocationId == locationID
+            && x.IsActive == true);
+            return result;
+        }
         public IEnumerable<Arrangement> GetArrangementFromLocation(int locationId)
         {
             return Get(a => a.LocationId.Equals(locationId) && a.IsActive == true, null, "User");

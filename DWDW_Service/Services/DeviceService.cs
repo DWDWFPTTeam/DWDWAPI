@@ -127,9 +127,17 @@ namespace DWDW_Service.Services
             var deviceUpdate = deviceRepository.Find(device.DeviceId);
             if (deviceUpdate != null)
             {
-                deviceUpdate.DeviceCode = device.DeviceCode;
-                deviceRepository.Update(deviceUpdate);
-                result = deviceUpdate.ToViewModel<DeviceViewModel>();
+                var checkDevice = deviceRepository.CheckDeviceCodeExisted(device.DeviceCode);
+                if (checkDevice == null)
+                {
+                    deviceUpdate.DeviceCode = device.DeviceCode;
+                    deviceRepository.Update(deviceUpdate);
+                    result = deviceUpdate.ToViewModel<DeviceViewModel>();
+                }
+                else
+                {
+                    throw new BaseException(ErrorMessages.DEVICE_IS_EXISTED);
+                }
             }
             else
             {

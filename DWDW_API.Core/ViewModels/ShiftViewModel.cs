@@ -11,14 +11,17 @@ namespace DWDW_API.Core.ViewModels
     {
         public int ShiftId { get; set; }
         public int? ArrangementId { get; set; }
+        public int? UserId { get; set; }
+        public string UserName { get; set; }
         public DateTime? Date { get; set; }
         public int? RoomId { get; set; }
+        public string RoomCode { get; set; }
         public bool? IsActive { get; set; }
     }
     public class ShiftCreateModel : BaseModel
     {
         [Required]
-        public int? ArrangementId { get; set; }
+        public int WorkerID { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
         public DateTime? Date { get; set; }
         [Required]
@@ -29,7 +32,7 @@ namespace DWDW_API.Core.ViewModels
         [Required]
         public int ShiftId { get; set; }
         [Required]
-        public int? ArrangementId { get; set; }
+        public int WorkerID { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
         public DateTime? Date { get; set; }
         [Required]
