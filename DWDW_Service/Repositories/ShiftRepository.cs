@@ -17,6 +17,7 @@ namespace DWDW_Service.Repositories
         List<Shift> GetShiftSubAccount(List<int?> arrangementID);
         Shift GetShiftByRoomDate(int? roomId, DateTime? recordDateTime);
         IEnumerable<ShiftViewModel> GetShiftFromLocation(int locationID);
+        IEnumerable<ShiftViewModel> GetShiftFromLocationWorker(int userID, int locationID);
     }
     public class ShiftRepository : BaseRepository<Shift>, IShiftRepository
     {
@@ -73,6 +74,23 @@ namespace DWDW_Service.Repositories
             var arrangement = dbContext.Set<Arrangement>().Where(x => x.LocationId == locationID && x.IsActive == true).ToList();
             List<int?> arrangementID = new List<int?>();
             for(int i = 0; i < arrangement.Count; i++)
+            {
+                int? a = arrangement.ElementAt(i).ArrangementId;
+                arrangementID.Add(a);
+            }
+            var shiftLocation = dbContext.Set<Shift>().Where(x => arrangementID.Contains(x.ArrangementId)).ToList();
+            result = shiftLocation.Select(x => x.ToViewModel<ShiftViewModel>());
+            return result;
+        }
+
+        public IEnumerable<ShiftViewModel> GetShiftFromLocationWorker(int userID, int locationID)
+        {
+            IEnumerable<ShiftViewModel> result = new List<ShiftViewModel>();
+            //var result = new List<Shift>();
+            var arrangement = dbContext.Set<Arrangement>().Where(x => x.LocationId == locationID && x.UserId == userID
+            && x.IsActive == true).ToList();
+            List<int?> arrangementID = new List<int?>();
+            for (int i = 0; i < arrangement.Count; i++)
             {
                 int? a = arrangement.ElementAt(i).ArrangementId;
                 arrangementID.Add(a);

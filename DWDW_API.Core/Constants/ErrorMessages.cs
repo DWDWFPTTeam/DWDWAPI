@@ -59,6 +59,7 @@ namespace DWDW_API.Core.Constants
         public const string LOCATION_IS_NOT_EXISTED = "Location is not existed";
         public const string LOCATION_IS_EXISTED = "Location is existed";
         public const string LOCATION_IS_NOT_BELONG_TO_MANAGER = "Location Is not belong to manager";
+        public const string LOCATION_IS_NOT_BELONG_TO_WORKER = "Location Is not belong to worker";
         public static string LOCATION_DEVICE_EMPTY = "There is no device in this location";
 
         public static string LOCATION_USER_NOT_EXISTED = "This location does not belong to the current manager";

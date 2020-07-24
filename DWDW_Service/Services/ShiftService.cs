@@ -20,6 +20,7 @@ namespace DWDW_Service.Services
         IEnumerable<ShiftViewModel> GetShiftManager(int userID);
         IEnumerable<ShiftViewModel> GetShiftFromLocationByDate(int locationID, DateTime date);
         IEnumerable<ShiftViewModel> GetShiftFromLocationByDateManager(int userID, int locationID, DateTime date);
+        IEnumerable<ShiftViewModel> GetShiftFromLocationByDateWorker(int userID, int locationID, DateTime date);
         IEnumerable<ShiftViewModel> GetShiftByDateManager(int userID, DateTime date);
         IEnumerable<ShiftViewModel> GetShiftWorker(int userID);
         ShiftViewModel CreateShift(int userID, int locationID, ShiftCreateModel shift);
@@ -95,7 +96,7 @@ namespace DWDW_Service.Services
         {
             IEnumerable<ShiftViewModel> result = new List<ShiftViewModel>();
             var arrangementRepo = unitOfWork.ArrangementRepository;
-            var arrangement = arrangementRepo.CheckLocationManager(userID, locationID);
+            var arrangement = arrangementRepo.CheckLocationManagerWorker(userID, locationID);
             if (arrangement != null)
             {
                 var shiftLocation = shiftRepository.GetShiftFromLocation(locationID);
@@ -104,6 +105,23 @@ namespace DWDW_Service.Services
             else
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_MANAGER);
+            }
+            return result;
+        }
+
+        public IEnumerable<ShiftViewModel> GetShiftFromLocationByDateWorker(int userID, int locationID, DateTime date)
+        {
+            IEnumerable<ShiftViewModel> result = new List<ShiftViewModel>();
+            var arrangementRepo = unitOfWork.ArrangementRepository;
+            var arrangement = arrangementRepo.CheckLocationManagerWorker(userID, locationID);
+            if (arrangement != null)
+            {
+                var shiftLocation = shiftRepository.GetShiftFromLocationWorker(userID, locationID);
+                result = shiftLocation.Where(x => x.Date == date.Date).ToList();
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
             }
             return result;
         }

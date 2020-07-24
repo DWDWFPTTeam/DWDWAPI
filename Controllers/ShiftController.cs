@@ -294,5 +294,31 @@ namespace DWDW_API.Controllers
             }
             return result;
         }
+
+        [Authorize(Roles = Constant.WORKER)]
+        [HttpGet]
+        [Route("GetShiftFromLocationByDateWorker")]
+        public IActionResult GetShiftFromLocationByDateWorker(int locationId, DateTime date)
+        {
+            IActionResult result;
+            var identity = (ClaimsIdentity)User.Identity;
+            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userID = int.Parse(ID);
+            try
+            {
+                var shifts = shiftService.GetShiftFromLocationByDateWorker(userID, locationId, date);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+            }
+            return result;
+        }
     }
 }
