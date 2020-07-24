@@ -18,6 +18,7 @@ namespace DWDW_Service.Services
         ShiftViewModel GetByID(int id);
         IEnumerable<ShiftViewModel> GetShiftByDate(DateTime date);
         IEnumerable<ShiftViewModel> GetShiftManager(int userID);
+        IEnumerable<ShiftViewModel> GetShiftFromLocationByDate(int locationID, DateTime date);
         IEnumerable<ShiftViewModel> GetShiftFromLocationByDateManager(int userID, int locationID, DateTime date);
         IEnumerable<ShiftViewModel> GetShiftByDateManager(int userID, DateTime date);
         IEnumerable<ShiftViewModel> GetShiftWorker(int userID);
@@ -69,6 +70,24 @@ namespace DWDW_Service.Services
             List<int?> arrangementRelated = arrangementRepo.GetArrangementBelongToManager(userID);
             var shiftManager = shiftRepository.GetShiftSubAccount(arrangementRelated);
             result = shiftManager.Select(x => x.ToViewModel<ShiftViewModel>());
+            return result;
+        }
+
+        public IEnumerable<ShiftViewModel> GetShiftFromLocationByDate(int locationID, DateTime date)
+        {
+            IEnumerable<ShiftViewModel> result = new List<ShiftViewModel>();
+            var arrangementRepo = unitOfWork.ArrangementRepository;
+            var locationRepo = unitOfWork.LocationRepository;
+            var location = locationRepo.Find(locationID);
+            if (location != null)
+            {
+                var shiftLocation = shiftRepository.GetShiftFromLocation(locationID);
+                result = shiftLocation.Where(x => x.Date == date.Date).ToList();
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
+            }
             return result;
         }
 

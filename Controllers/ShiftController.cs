@@ -246,6 +246,29 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpGet]
+        [Route("GetShiftFromLocationByDate")]
+        public IActionResult GetShiftFromLocationByDate(int locationId, DateTime date)
+        {
+            IActionResult result;
+            try
+            {
+                var shifts = shiftService.GetShiftFromLocationByDate(locationId, date);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+            }
+            return result;
+        }
+
         [Authorize(Roles = Constant.MANAGER)]
         [HttpGet]
         [Route("GetShiftFromLocationByDateManager")]
