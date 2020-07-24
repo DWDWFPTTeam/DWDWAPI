@@ -1,4 +1,5 @@
 ﻿using DWDW_API.Core.Infrastructure;
+using DWDW_API.Core.Constants;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -42,6 +43,20 @@ namespace DWDW_API.Core.ViewModels
     {
         [Required]
         public string LocationCode { get; set; }
+    }
+    public class LocationReceiveDateModel : BaseModel
+    {
+        [Required(ErrorMessage = ErrorMessages.START_DATE_REQUIRED)]
+        [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
+        [DisplayFormat(DataFormatString = "yyyy-MM-dd")]
+        public DateTime startDate { get; set; }
+
+        [Required(ErrorMessage = ErrorMessages.END_DATE_REQUIRED)]
+        [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
+        [DisplayFormat(DataFormatString = "yyyy-MM-dd")]
+        public DateTime endDate { get; set; }
+
 
     }
+
 }

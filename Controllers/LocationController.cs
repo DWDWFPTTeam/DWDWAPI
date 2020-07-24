@@ -210,29 +210,15 @@ namespace DWDW_API.Controllers
         [AllowAnonymous]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("GetLocationsRecord")]
-        public IActionResult GetLocationsRecord(string startDate, string endDate)
+        public IActionResult GetLocationsRecord([FromQuery] LocationReceiveDateModel receiveDateModel)
         {
-            if (string.IsNullOrEmpty(startDate) || string.IsNullOrEmpty(endDate))
-            {
-                return BadRequest(ErrorMessages.START_END_DATE_REQUIRED);
-            }
             IActionResult result;
             try
             {
-                DateTime start, end;
-                bool check = false;
-                string pattern = "dd-MM-yyyy";
-                //parse input
-                check = DateTime.TryParseExact
-                    (startDate, pattern, null, DateTimeStyles.None, out start);
-                check = DateTime.TryParseExact
-                    (endDate, pattern, null, DateTimeStyles.None, out end);
-                if (check == false) return BadRequest(ErrorMessages.INVALID_DATE_FORMAT);
-                DateTime end_lastDate = end.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
+                DateTime end_lastDate = receiveDateModel.endDate.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
                 //check date is valid
-
                 List<LocationRecordViewModel> list = new List<LocationRecordViewModel>();
-                list = locationService.GetLocationsRecordBetweenDate(start, end_lastDate);
+                list = locationService.GetLocationsRecordBetweenDate(receiveDateModel.startDate, end_lastDate);
                 return Ok(list);
             }
             catch (BaseException e)
