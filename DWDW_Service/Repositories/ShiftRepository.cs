@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace DWDW_Service.Repositories
@@ -18,6 +19,8 @@ namespace DWDW_Service.Repositories
         Shift GetShiftByRoomDate(int? roomId, DateTime? recordDateTime);
         IEnumerable<ShiftViewModel> GetShiftFromLocation(int locationID);
         IEnumerable<ShiftViewModel> GetShiftFromLocationWorker(int userID, int locationID);
+        string GetRoomCode(int? roomID);
+        string GetUsername(int? arrangementID);
     }
     public class ShiftRepository : BaseRepository<Shift>, IShiftRepository
     {
@@ -97,6 +100,28 @@ namespace DWDW_Service.Repositories
             }
             var shiftLocation = dbContext.Set<Shift>().Where(x => arrangementID.Contains(x.ArrangementId)).ToList();
             result = shiftLocation.Select(x => x.ToViewModel<ShiftViewModel>());
+            return result;
+        }
+
+        public string GetRoomCode(int? roomID)
+        {
+            string result = "";
+            var room = dbContext.Set<Room>().Find(roomID);
+            if (room != null)
+            {
+                result = room.RoomCode;
+            }
+            return result;
+        }
+        public string GetUsername(int? arrangementID)
+        {
+            string result = "";
+            var arrangement = dbContext.Set<Arrangement>().FirstOrDefault(x => x.ArrangementId == arrangementID && x.IsActive == true);
+            if (arrangement != null)
+            {
+                var user = dbContext.Set<User>().Find(arrangement.UserId);
+                result = user.UserName;
+            }
             return result;
         }
     }

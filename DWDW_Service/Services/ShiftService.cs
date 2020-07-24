@@ -38,7 +38,15 @@ namespace DWDW_Service.Services
 
         public IEnumerable<ShiftViewModel> GetAll()
         {
-            return shiftRepository.GetAll().Select(x => x.ToViewModel<ShiftViewModel>());
+            var result = shiftRepository.GetAll().Select(x => x.ToViewModel<ShiftViewModel>()).ToList();
+            foreach (var element in result)
+            {
+                int? arrangementID = element.ArrangementId;
+                int? roomID = element.RoomId;
+                element.RoomCode = shiftRepository.GetRoomCode(roomID);
+                element.UserName = shiftRepository.GetUsername(arrangementID);
+            }
+            return result;
         }
 
         public ShiftViewModel GetByID(int id)
@@ -48,6 +56,10 @@ namespace DWDW_Service.Services
             if (shift != null)
             {
                 result = shift.ToViewModel<ShiftViewModel>();
+                int? arrangementID = result.ArrangementId;
+                int? roomID = result.RoomId;
+                result.RoomCode = shiftRepository.GetRoomCode(roomID);
+                result.UserName = shiftRepository.GetUsername(arrangementID);
             }
             else
             {
@@ -60,7 +72,14 @@ namespace DWDW_Service.Services
         {
             IEnumerable<ShiftViewModel> result = new List<ShiftViewModel>();
             var test = shiftRepository.GetShiftByDate(date);
-            result = test.Select(x => x.ToViewModel<ShiftViewModel>());
+            result = test.Select(x => x.ToViewModel<ShiftViewModel>()).ToList();
+            foreach (var element in result)
+            {
+                int? arrangementID = element.ArrangementId;
+                int? roomID = element.RoomId;
+                element.RoomCode = shiftRepository.GetRoomCode(roomID);
+                element.UserName = shiftRepository.GetUsername(arrangementID);
+            }
             return result;
         }
 
@@ -70,7 +89,14 @@ namespace DWDW_Service.Services
             var arrangementRepo = unitOfWork.ArrangementRepository;
             List<int?> arrangementRelated = arrangementRepo.GetArrangementBelongToManager(userID);
             var shiftManager = shiftRepository.GetShiftSubAccount(arrangementRelated);
-            result = shiftManager.Select(x => x.ToViewModel<ShiftViewModel>());
+            result = shiftManager.Select(x => x.ToViewModel<ShiftViewModel>()).ToList();
+            foreach (var element in result)
+            {
+                int? arrangementID = element.ArrangementId;
+                int? roomID = element.RoomId;
+                element.RoomCode = shiftRepository.GetRoomCode(roomID);
+                element.UserName = shiftRepository.GetUsername(arrangementID);
+            }
             return result;
         }
 
@@ -84,6 +110,13 @@ namespace DWDW_Service.Services
             {
                 var shiftLocation = shiftRepository.GetShiftFromLocation(locationID);
                 result = shiftLocation.Where(x => x.Date == date.Date).ToList();
+                foreach (var element in result)
+                {
+                    int? arrangementID = element.ArrangementId;
+                    int? roomID = element.RoomId;
+                    element.RoomCode = shiftRepository.GetRoomCode(roomID);
+                    element.UserName = shiftRepository.GetUsername(arrangementID);
+                }
             }
             else
             {
@@ -101,6 +134,13 @@ namespace DWDW_Service.Services
             {
                 var shiftLocation = shiftRepository.GetShiftFromLocation(locationID);
                 result = shiftLocation.Where(x => x.Date == date.Date).ToList();
+                foreach (var element in result)
+                {
+                    int? arrangementID = element.ArrangementId;
+                    int? roomID = element.RoomId;
+                    element.RoomCode = shiftRepository.GetRoomCode(roomID);
+                    element.UserName = shiftRepository.GetUsername(arrangementID);
+                }
             }
             else
             {
@@ -118,6 +158,13 @@ namespace DWDW_Service.Services
             {
                 var shiftLocation = shiftRepository.GetShiftFromLocationWorker(userID, locationID);
                 result = shiftLocation.Where(x => x.Date == date.Date).ToList();
+                foreach (var element in result)
+                {
+                    int? arrangementID = element.ArrangementId;
+                    int? roomID = element.RoomId;
+                    element.RoomCode = shiftRepository.GetRoomCode(roomID);
+                    element.UserName = shiftRepository.GetUsername(arrangementID);
+                }
             }
             else
             {
@@ -132,6 +179,13 @@ namespace DWDW_Service.Services
             var availableShift = GetShiftManager(userID);
             //result = availableShift.Select(x => x.Date == date.Date).ToList();
             result = availableShift.Where(x => x.Date == date.Date).ToList();
+            foreach (var element in result)
+            {
+                int? arrangementID = element.ArrangementId;
+                int? roomID = element.RoomId;
+                element.RoomCode = shiftRepository.GetRoomCode(roomID);
+                element.UserName = shiftRepository.GetUsername(arrangementID);
+            }
             return result;
         }
 
@@ -141,7 +195,14 @@ namespace DWDW_Service.Services
             var arrangementRepo = unitOfWork.ArrangementRepository;
             List<int?> arrangementRelated = arrangementRepo.GetArrangementBelongToWorker(userID);
             var shiftManager = shiftRepository.GetShiftSubAccount(arrangementRelated);
-            result = shiftManager.Select(x => x.ToViewModel<ShiftViewModel>());
+            result = shiftManager.Select(x => x.ToViewModel<ShiftViewModel>()).ToList();
+            foreach (var element in result)
+            {
+                int? arrangementID = element.ArrangementId;
+                int? roomID = element.RoomId;
+                element.RoomCode = shiftRepository.GetRoomCode(roomID);
+                element.UserName = shiftRepository.GetUsername(arrangementID);
+            }
             return result;
         }
 

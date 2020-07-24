@@ -11,8 +11,10 @@ namespace DWDW_API.Core.ViewModels
     {
         public int ShiftId { get; set; }
         public int? ArrangementId { get; set; }
+        public string UserName { get; set; }
         public DateTime? Date { get; set; }
         public int? RoomId { get; set; }
+        public string RoomCode { get; set; }
         public bool? IsActive { get; set; }
     }
     public class ShiftCreateModel : BaseModel
