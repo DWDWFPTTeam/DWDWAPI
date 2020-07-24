@@ -45,6 +45,7 @@ namespace DWDW_Service.Services
                 int? roomID = element.RoomId;
                 element.RoomCode = shiftRepository.GetRoomCode(roomID);
                 element.UserName = shiftRepository.GetUsername(arrangementID);
+                element.UserId = shiftRepository.GetWorkerID(arrangementID);
             }
             return result;
         }
@@ -60,6 +61,7 @@ namespace DWDW_Service.Services
                 int? roomID = result.RoomId;
                 result.RoomCode = shiftRepository.GetRoomCode(roomID);
                 result.UserName = shiftRepository.GetUsername(arrangementID);
+                result.UserId = shiftRepository.GetWorkerID(arrangementID);
             }
             else
             {
@@ -79,6 +81,8 @@ namespace DWDW_Service.Services
                 int? roomID = element.RoomId;
                 element.RoomCode = shiftRepository.GetRoomCode(roomID);
                 element.UserName = shiftRepository.GetUsername(arrangementID);
+                element.UserId = shiftRepository.GetWorkerID(arrangementID);
+
             }
             return result;
         }
@@ -96,6 +100,8 @@ namespace DWDW_Service.Services
                 int? roomID = element.RoomId;
                 element.RoomCode = shiftRepository.GetRoomCode(roomID);
                 element.UserName = shiftRepository.GetUsername(arrangementID);
+                element.UserId = shiftRepository.GetWorkerID(arrangementID);
+
             }
             return result;
         }
@@ -116,6 +122,8 @@ namespace DWDW_Service.Services
                     int? roomID = element.RoomId;
                     element.RoomCode = shiftRepository.GetRoomCode(roomID);
                     element.UserName = shiftRepository.GetUsername(arrangementID);
+                    element.UserId = shiftRepository.GetWorkerID(arrangementID);
+
                 }
             }
             else
@@ -140,6 +148,8 @@ namespace DWDW_Service.Services
                     int? roomID = element.RoomId;
                     element.RoomCode = shiftRepository.GetRoomCode(roomID);
                     element.UserName = shiftRepository.GetUsername(arrangementID);
+                    element.UserId = shiftRepository.GetWorkerID(arrangementID);
+
                 }
             }
             else
@@ -164,6 +174,8 @@ namespace DWDW_Service.Services
                     int? roomID = element.RoomId;
                     element.RoomCode = shiftRepository.GetRoomCode(roomID);
                     element.UserName = shiftRepository.GetUsername(arrangementID);
+                    element.UserId = shiftRepository.GetWorkerID(arrangementID);
+
                 }
             }
             else
@@ -185,6 +197,8 @@ namespace DWDW_Service.Services
                 int? roomID = element.RoomId;
                 element.RoomCode = shiftRepository.GetRoomCode(roomID);
                 element.UserName = shiftRepository.GetUsername(arrangementID);
+                element.UserId = shiftRepository.GetWorkerID(arrangementID);
+
             }
             return result;
         }
@@ -202,6 +216,8 @@ namespace DWDW_Service.Services
                 int? roomID = element.RoomId;
                 element.RoomCode = shiftRepository.GetRoomCode(roomID);
                 element.UserName = shiftRepository.GetUsername(arrangementID);
+                element.UserId = shiftRepository.GetWorkerID(arrangementID);
+
             }
             return result;
         }

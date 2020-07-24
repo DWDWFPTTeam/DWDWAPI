@@ -21,6 +21,7 @@ namespace DWDW_Service.Repositories
         IEnumerable<ShiftViewModel> GetShiftFromLocationWorker(int userID, int locationID);
         string GetRoomCode(int? roomID);
         string GetUsername(int? arrangementID);
+        int? GetWorkerID(int? arrangementID);
     }
     public class ShiftRepository : BaseRepository<Shift>, IShiftRepository
     {
@@ -121,6 +122,17 @@ namespace DWDW_Service.Repositories
             {
                 var user = dbContext.Set<User>().Find(arrangement.UserId);
                 result = user.UserName;
+            }
+            return result;
+        }
+        public int? GetWorkerID(int? arrangementID)
+        {
+            int? result = null;
+            var arrangement = dbContext.Set<Arrangement>().FirstOrDefault(x => x.ArrangementId == arrangementID && x.IsActive == true);
+            if (arrangement != null)
+            {
+                var user = dbContext.Set<User>().Find(arrangement.UserId);
+                result = user.UserId;
             }
             return result;
         }

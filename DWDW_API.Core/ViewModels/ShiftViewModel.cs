@@ -11,6 +11,7 @@ namespace DWDW_API.Core.ViewModels
     {
         public int ShiftId { get; set; }
         public int? ArrangementId { get; set; }
+        public int? UserId { get; set; }
         public string UserName { get; set; }
         public DateTime? Date { get; set; }
         public int? RoomId { get; set; }
