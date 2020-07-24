@@ -1,5 +1,6 @@
 ﻿using DWDW_API.Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace DWDW_Service.Repositories
     {
         Task<User> GetUserByUsernamePassword(string username, string password);
         User GetUserByUsername(string username);
+        IEnumerable<User> GetWorkerFromLocation(int locationId);
     }
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
@@ -31,5 +33,12 @@ namespace DWDW_Service.Repositories
             return user;
         }
 
+        public IEnumerable<User> GetWorkerFromLocation(int locationId)
+        {
+            IEnumerable<User> result = new List<User>();
+            result = dbContext.Set<User>().Where(x => x.Arrangement.Any(y => y.LocationId == locationId
+            && y.IsActive == true) && x.RoleId == 3).ToList();
+            return result;
+        }
     }
 }

@@ -18,7 +18,7 @@ namespace DWDW_API.Core.ViewModels
     public class ShiftCreateModel : BaseModel
     {
         [Required]
-        public int? ArrangementId { get; set; }
+        public int WorkerID { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
         public DateTime? Date { get; set; }
         [Required]
@@ -29,7 +29,7 @@ namespace DWDW_API.Core.ViewModels
         [Required]
         public int ShiftId { get; set; }
         [Required]
-        public int? ArrangementId { get; set; }
+        public int WorkerID { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
         public DateTime? Date { get; set; }
         [Required]

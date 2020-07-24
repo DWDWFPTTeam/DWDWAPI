@@ -173,7 +173,7 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.MANAGER)]
         [HttpPost]
         [Route("CreateShift")]
-        public IActionResult CreateShift(ShiftCreateModel shift)
+        public IActionResult CreateShift(int locationID, ShiftCreateModel shift)
         {
             IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
@@ -181,7 +181,7 @@ namespace DWDW_API.Controllers
             int userID = int.Parse(ID);
             try
             {
-                var shifts = shiftService.CreateShift(userID ,shift);
+                var shifts = shiftService.CreateShift(userID, locationID, shift);
                 result = Ok(shifts);
             }
             catch (BaseException e)
@@ -195,10 +195,11 @@ namespace DWDW_API.Controllers
             }
             return result;
         }
+
         [Authorize(Roles = Constant.MANAGER)]
         [HttpPut]
         [Route("UpdateShift")]
-        public IActionResult UpdateShift(ShiftUpdateModel shift)
+        public IActionResult UpdateShift(int locationID, ShiftUpdateModel shift)
         {
             IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
@@ -206,7 +207,7 @@ namespace DWDW_API.Controllers
             int userID = int.Parse(ID);
             try
             {
-                var shifts = shiftService.UpdateShift(userID, shift);
+                var shifts = shiftService.UpdateShift(userID, int locationID, shift);
                 result = Ok(shifts);
             }
             catch (BaseException e)
@@ -216,7 +217,6 @@ namespace DWDW_API.Controllers
             catch (Exception e)
             {
                 result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-
             }
             return result;
         }
@@ -246,6 +246,30 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpGet]
+        [Route("GetShiftFromLocationByDateManager")]
+        public IActionResult GetShiftFromLocationByDateManager(int locationId, DateTime date)
+        {
+            IActionResult result;
+            var identity = (ClaimsIdentity)User.Identity;
+            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userID = int.Parse(ID);
+            try
+            {
+                var shifts = shiftService.GetShiftFromLocationByDateManager(userID, locationId, date);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
 
+            }
+            return result;
+        }
     }
 }

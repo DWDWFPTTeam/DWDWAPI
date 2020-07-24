@@ -23,6 +23,7 @@ namespace DWDW_Service.Services
         UserViewModel DeActiveUserByAdmin(int id);
         IEnumerable<UserViewModel> GetUserFromLocationByAdmin(int locationId);
         IEnumerable<UserViewModel> GetUserFromLocationsByManager(int userId);
+        IEnumerable<UserViewModel> GetWorkerFromLocationsByManager(int userId, int locationID);
         IEnumerable<UserViewModel> GetUserFromOneLocationByManager(int userId, int locationId);
         UserViewModel GetUserById(int userId);
         UserViewModel UpdateUserDeviceToken(int userID, string deviceToken);
@@ -264,6 +265,23 @@ namespace DWDW_Service.Services
             }
             //toViewModel
             result = users.Select(u => u.ToViewModel<UserViewModel>());
+            return result;
+        }
+
+        public IEnumerable<UserViewModel> GetWorkerFromLocationsByManager(int userId, int locationID)
+        {
+            IEnumerable<UserViewModel> result = new List<UserViewModel>();
+            var arrangementRepo = this.unitOfWork.ArrangementRepository;
+            var arrangement = arrangementRepo.CheckLocationManager(userId,locationID);
+            if (arrangement != null)
+            {
+                var worker = userRepository.GetWorkerFromLocation(locationID);
+                result = worker.Select(a => a.ToViewModel<UserViewModel>());
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_MANAGER);
+            }
             return result;
         }
         public IEnumerable<UserViewModel> GetUserFromOneLocationByManager(int userId, int locationId)

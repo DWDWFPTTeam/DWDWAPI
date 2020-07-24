@@ -347,6 +347,31 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [Route("GetWorkerFromLocationsByManager")]
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpGet]
+        public IActionResult GetWorkerFromLocationsByManager(int locationID)
+        {
+            IActionResult result;
+            try
+            {
+                int userId = int.Parse(CurrentUserId);
+                var users = userService.GetWorkerFromLocationsByManager(userId, locationID);
+                result = Ok(users);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+
+            return result;
+        }
+
 
     }
 
