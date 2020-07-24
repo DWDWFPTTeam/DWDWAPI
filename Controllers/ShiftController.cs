@@ -207,7 +207,7 @@ namespace DWDW_API.Controllers
             int userID = int.Parse(ID);
             try
             {
-                var shifts = shiftService.UpdateShift(userID, int locationID, shift);
+                var shifts = shiftService.UpdateShift(userID, locationID, shift);
                 result = Ok(shifts);
             }
             catch (BaseException e)

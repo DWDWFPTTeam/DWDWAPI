@@ -272,7 +272,7 @@ namespace DWDW_Service.Services
         {
             IEnumerable<UserViewModel> result = new List<UserViewModel>();
             var arrangementRepo = this.unitOfWork.ArrangementRepository;
-            var arrangement = arrangementRepo.CheckLocationManager(userId,locationID);
+            var arrangement = arrangementRepo.CheckLocationManagerWorker(userId,locationID);
             if (arrangement != null)
             {
                 var worker = userRepository.GetWorkerFromLocation(locationID);
