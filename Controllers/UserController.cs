@@ -321,6 +321,27 @@ namespace DWDW_API.Controllers
             }
             return result;
         }
+        [Route("UpdateUserActiveByAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpPut]
+        public IActionResult ActiveUserByAdmin(UserActiveModel user)
+        {
+            IActionResult result;
+            try
+            {
+                var activeUser = userService.ActiveUserByAdmin(user);
+                result = Ok(activeUser);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
 
         [Route("UpdateManagerDeviceToken")]
         [Authorize(Roles = Constant.MANAGER)]

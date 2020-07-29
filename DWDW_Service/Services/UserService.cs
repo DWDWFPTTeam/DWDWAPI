@@ -21,6 +21,7 @@ namespace DWDW_Service.Services
         IEnumerable<User> GetAllAllowAnonymous();
         UserViewModel UpdateUser(UserUpdateModel userUpdate);
         UserViewModel DeActiveUserByAdmin(int id);
+        UserViewModel ActiveUserByAdmin(UserActiveModel user);
         List<UserGetAllViewModel> GetUserFromLocationByAdmin(int locationId);
         IEnumerable<UserViewModel> GetUserFromLocationsByManager(int userId);
         IEnumerable<UserViewModel> GetWorkerFromLocationsByManager(int userId, int locationID);
@@ -221,6 +222,62 @@ namespace DWDW_Service.Services
             return result;
 
         }
+        public UserViewModel ActiveUserByAdmin(UserActiveModel userActive)
+        {
+            UserViewModel result;
+            //check validation
+            var user = userRepository.Find(userActive.UserId);
+            if (user != null)
+            {
+                if (user.IsActive == true)
+                {
+                    user.IsActive = true;
+                    userRepository.Update(user);
+                    result = user.ToViewModel<UserViewModel>();
+                }
+                else
+                {
+                    using (var transaction = unitOfWork.CreateTransaction())
+                    {
+                        try
+                        {
+                            //DeActive all Arrangement of the user
+                            var arrangementRepo = unitOfWork.ArrangementRepository;
+                            var arrangements = arrangementRepo.GetArrangementOfUser(userActive.UserId);
+                            //Check If the user does not belong to any arrangements so we do not need to DeActive Arrangement
+                            if (arrangements.Count() > 0)
+                            {
+                                foreach (var arrangement in arrangements)
+                                {
+                                    arrangement.IsActive = false;
+                                    arrangementRepo.Update(arrangement);
+                                }
+                            }
+                            //DeActive user
+                            user.IsActive = false;
+                            userRepository.Update(user);
+                            transaction.Commit();
+                        }
+                        catch (Exception e)
+                        {
+
+                            transaction.Rollback();
+                            throw e;
+                        }
+
+                    }
+                    result = user.ToViewModel<UserViewModel>();
+                }
+                
+            }
+            //xx
+            else
+            {
+                throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
+            }
+            return result;
+        }
+
 
         //unfinished
         public List<UserGetAllViewModel> GetUserFromLocationByAdmin(int locationId)
