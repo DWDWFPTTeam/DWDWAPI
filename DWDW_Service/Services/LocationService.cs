@@ -19,7 +19,7 @@ namespace DWDW_Service.Services
         LocationViewModel UpdateLocation(LocationUpdateModel locationUpdate);
         LocationViewModel UpdateLocationStatus(LocationUpdateStatusModel locationStatus);
         LocationViewModel DeactiveLocation(int locationId);
-        IEnumerable<LocationViewModel> GetLocationsByManager(int userId);
+        IEnumerable<LocationViewModel> GetLocationsByManagerWorker(int userId);
         List<LocationRecordViewModel> GetLocationsRecordBetweenDate(DateTime start, DateTime end);
     }
     public class LocationService : BaseService<Location>, ILocationService
@@ -216,7 +216,7 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        public IEnumerable<LocationViewModel> GetLocationsByManager(int userId)
+        public IEnumerable<LocationViewModel> GetLocationsByManagerWorker(int userId)
         {
             var arrangementRepository = this.unitOfWork.ArrangementRepository;
             //get Arrangement of Manager 
