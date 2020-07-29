@@ -185,7 +185,7 @@ namespace DWDW_API.Controllers
 
         [HttpGet]
         [Authorize(Roles = Constant.MANAGER + ", " + Constant.WORKER)]
-        [Route("GetLocationsByManager")]
+        [Route("GetLocationsByManagerWorker")]
         public IActionResult GetLocationsByManagerWorker()
         {
             IActionResult result;
