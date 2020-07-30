@@ -103,6 +103,7 @@ namespace DWDW_Service.Services
                         DateOfBirth = item.DateOfBirth,
                         Gender = item.Gender,
                         DeviceToken = item.DeviceToken,
+                        IsActive = item.IsActive,
                         RoleId = item.RoleId,
                         RoleName = role.RoleName,
                         LocationId = location.LocationId,
@@ -121,6 +122,7 @@ namespace DWDW_Service.Services
                         DateOfBirth = item.DateOfBirth,
                         Gender = item.Gender,
                         DeviceToken = item.DeviceToken,
+                        IsActive = item.IsActive,
                         RoleId = item.RoleId,
                         RoleName = role.RoleName,
                     };
@@ -229,7 +231,7 @@ namespace DWDW_Service.Services
             var user = userRepository.Find(userActive.UserId);
             if (user != null)
             {
-                if (user.IsActive == true)
+                if (userActive.IsActive == true)
                 {
                     user.IsActive = true;
                     userRepository.Update(user);
