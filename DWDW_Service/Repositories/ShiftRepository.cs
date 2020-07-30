@@ -14,7 +14,7 @@ namespace DWDW_Service.Repositories
         List<Shift> GetShiftByDate(DateTime date);
         Shift GetLatest();
         void DisableShiftsByArrangementId(int? arrangementId);
-        void DisableOldSameShift(int? arrangementID, ShiftCreateModel shift);
+        void DisableOldSameShift(int? arrangementID, int? shiftRoomId, DateTime? shiftDate);
         List<Shift> GetShiftSubAccount(List<int?> arrangementID);
         Shift GetShiftByRoomDate(int? roomId, DateTime? recordDateTime);
         IEnumerable<ShiftViewModel> GetShiftFromLocation(int locationID);
@@ -40,10 +40,10 @@ namespace DWDW_Service.Repositories
             return this.dbContext.Set<Shift>().OrderByDescending(x => x.ShiftId).First();
         }
 
-        public void DisableOldSameShift(int? arrangementID, ShiftCreateModel shift)
+        public void DisableOldSameShift(int? arrangementID, int? shiftRoomId, DateTime? shiftDate)
         {
             var OldShift = dbContext.Set<Shift>().Where(x => x.ArrangementId == arrangementID
-                                                 && x.RoomId == shift.RoomId && x.Date == shift.Date)
+                                                 && x.RoomId == shiftRoomId && x.Date == shiftDate)
                                                  .ToList();
             OldShift.ForEach(a => a.IsActive = false);
             dbContext.SaveChanges();

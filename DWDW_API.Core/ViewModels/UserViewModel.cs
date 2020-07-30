@@ -65,6 +65,14 @@ namespace DWDW_API.Core.ViewModels
         public int? RoleId { get; set; }
 
     }
+    public class UserActiveModel : BaseModel
+    {
+        [Required]
+        public int UserId { get; set; }
+        [Required]
+        public bool? IsActive { get; set; }
+
+    }
 
     public class UserPersonalUpdateModel : BaseModel
     {

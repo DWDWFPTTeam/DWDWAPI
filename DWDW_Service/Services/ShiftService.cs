@@ -234,7 +234,7 @@ namespace DWDW_Service.Services
                 bool CheckRoomLocation = roomRepo.CheckRoomLocation(shift.RoomId, arrangementWorker.ArrangementId);
                 if (CheckManagerLocation == true && CheckRoomLocation == true)
                 {
-                    shiftRepository.DisableOldSameShift(arrangementWorker.ArrangementId, shift);
+                    shiftRepository.DisableOldSameShift(arrangementWorker.ArrangementId, shift.RoomId, shift.Date);
                     shiftRepository.Add(new Shift
                     {
                         ArrangementId = arrangementWorker.ArrangementId,
@@ -300,7 +300,7 @@ namespace DWDW_Service.Services
                     //Neu set cho shift nay tu Disable sang Active thi phai disable shift giong nhu vay.
                     if (shift.IsActive == true)
                     {
-                        shiftRepository.DisableOldSameShift(shiftActive.ArrangementId,shiftActive.ToViewModel<ShiftCreateModel>());
+                        shiftRepository.DisableOldSameShift(shiftActive.ArrangementId,shiftActive.RoomId, shiftActive.Date);
                     }
 
                     shiftActive.IsActive = shift.IsActive;

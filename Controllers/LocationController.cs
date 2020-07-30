@@ -184,15 +184,15 @@ namespace DWDW_API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = Constant.MANAGER)]
-        [Route("GetLocationsByManager")]
-        public IActionResult GetLocationsByManager()
+        [Authorize(Roles = Constant.MANAGER + ", " + Constant.WORKER)]
+        [Route("GetLocationsByManagerWorker")]
+        public IActionResult GetLocationsByManagerWorker()
         {
             IActionResult result;
             try
             {
                 int userId = int.Parse(CurrentUserId);
-                var list = locationService.GetLocationsByManager(userId);
+                var list = locationService.GetLocationsByManagerWorker(userId);
                 return Ok(list);
             }
             catch (BaseException e)
