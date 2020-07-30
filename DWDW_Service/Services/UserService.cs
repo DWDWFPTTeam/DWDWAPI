@@ -310,6 +310,7 @@ namespace DWDW_Service.Services
                         DateOfBirth = userDetail.DateOfBirth,
                         Gender = userDetail.Gender,
                         DeviceToken = userDetail.DeviceToken,
+                        IsActive = userDetail.IsActive,
                         RoleId = userDetail.RoleId,
                         RoleName = role.RoleName,
                         LocationId = location.LocationId,
