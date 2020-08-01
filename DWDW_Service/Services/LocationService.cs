@@ -13,6 +13,7 @@ namespace DWDW_Service.Services
     public interface ILocationService : IBaseService<Location>
     {
         IEnumerable<LocationViewModel> GetLocations();
+        IEnumerable<LocationViewModel> GetAllActiveLocations();
         LocationViewModel GetLocationById(int locationId);
         IEnumerable<LocationViewModel> SearchLocationByLocationCode(string locationCode);
         LocationViewModel InsertLocation(LocationInsertModel locationInsert);
@@ -164,6 +165,17 @@ namespace DWDW_Service.Services
         public IEnumerable<LocationViewModel> GetLocations()
         {
             var result = locationRepository.GetAll().Select(l => l.ToViewModel<LocationViewModel>());
+            if (result == null)
+            {
+                throw new BaseException(ErrorMessages.GET_LIST_FAIL);
+            }
+            return result;
+        }
+
+        public IEnumerable<LocationViewModel> GetAllActiveLocations()
+        {
+            var allLocation = locationRepository.GetAll().Select(l => l.ToViewModel<LocationViewModel>());
+            var result = allLocation.Where(x => x.IsActive == true).ToList();
             if (result == null)
             {
                 throw new BaseException(ErrorMessages.GET_LIST_FAIL);

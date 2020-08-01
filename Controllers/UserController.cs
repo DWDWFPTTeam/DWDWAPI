@@ -98,6 +98,28 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [Route("GetAllActive")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpGet]
+        public IActionResult GetAllActiveUserByAdmin()
+        {
+            IActionResult result;
+            try
+            {
+                var users = userService.GetAllActiveByAdmin();
+                result = Ok(users);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
 
         [Route("GetUserFromLocationByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]

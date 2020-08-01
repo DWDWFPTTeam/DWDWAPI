@@ -11,6 +11,7 @@ namespace DWDW_Service.Repositories
     {
         Location GetLocationByLocationCode(string locationCode);
         List<Location> SearchByLocationCode(string locationCode);
+        List<int?> GetLocationByUser(int userID);
     }
     public class LocationRepository : BaseRepository<Location>, ILocationRepository
     {
@@ -23,6 +24,18 @@ namespace DWDW_Service.Repositories
         {
             return this.dbContext.Set<Location>().FirstOrDefault
                  (l => l.LocationCode .Trim().ToLower().Equals(locationCode.Trim().ToLower()));
+        }
+
+        public List<int?> GetLocationByUser(int userID)
+        {
+            var arrangementUser = dbContext.Set<Arrangement>().Where(x => x.UserId == userID && x.IsActive == true).ToList();
+            List<int?> relatedLocation = new List<int?>();
+            for (int i = 0; i < arrangementUser.Count; i++)
+            {
+                int? a = arrangementUser.ElementAt(i).LocationId;
+                relatedLocation.Add(a);
+            }
+            return relatedLocation;
         }
 
         public List<Location> SearchByLocationCode(string locationCode)

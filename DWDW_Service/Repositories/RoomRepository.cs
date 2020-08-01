@@ -19,6 +19,8 @@ namespace DWDW_Service.Repositories
         bool CheckRoomLocation(int? roomID, int? ArrangementID);
         List<Room> SearchRoomByRoomCode(string roomCode);
         List<Room> SearchRoomByRoomCode(int locationId, string roomCode);
+
+        List<int?> GetRelatedRoomIDFromLocation(List<int?> locationRelatedID);
     }
     public class RoomRepository : BaseRepository<Room>, IRoomRepository
     {
@@ -100,6 +102,18 @@ namespace DWDW_Service.Repositories
             rooms.ForEach(r => r.IsActive = true);
             this.dbContext.SaveChanges();
             return rooms;
+        }
+
+        public List<int?> GetRelatedRoomIDFromLocation(List<int?> locationRelatedID)
+        {
+            List<int?> relatedRoom = new List<int?>();
+            var roomRelated = dbContext.Set<Room>().Where(x => locationRelatedID.Contains(x.LocationId) && x.IsActive == true).ToList();
+            for (int i = 0; i < roomRelated.Count; i++)
+            {
+                int? roomID = roomRelated.ElementAt(i).RoomId;
+                relatedRoom.Add(roomID);
+            }
+            return relatedRoom;
         }
     }
 }

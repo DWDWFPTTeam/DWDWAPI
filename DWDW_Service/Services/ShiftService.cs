@@ -115,16 +115,16 @@ namespace DWDW_Service.Services
             if (location != null)
             {
                 var shiftLocation = shiftRepository.GetShiftFromLocation(locationID);
-                result = shiftLocation.Where(x => x.Date == date.Date).ToList();
-                foreach (var element in result)
+                var shiftList = shiftLocation.Where(x => x.Date == date.Date).ToList();
+                foreach (var element in shiftList)
                 {
                     int? arrangementID = element.ArrangementId;
                     int? roomID = element.RoomId;
                     element.RoomCode = shiftRepository.GetRoomCode(roomID);
                     element.UserName = shiftRepository.GetUsername(arrangementID);
                     element.UserId = shiftRepository.GetWorkerID(arrangementID);
-
                 }
+                result = shiftList.Where(x => x.IsActive == true).ToList();
             }
             else
             {
@@ -141,8 +141,8 @@ namespace DWDW_Service.Services
             if (arrangement != null)
             {
                 var shiftLocation = shiftRepository.GetShiftFromLocation(locationID);
-                result = shiftLocation.Where(x => x.Date == date.Date).ToList();
-                foreach (var element in result)
+                var shiftList = shiftLocation.Where(x => x.Date == date.Date).ToList();
+                foreach (var element in shiftList)
                 {
                     int? arrangementID = element.ArrangementId;
                     int? roomID = element.RoomId;
@@ -151,6 +151,7 @@ namespace DWDW_Service.Services
                     element.UserId = shiftRepository.GetWorkerID(arrangementID);
 
                 }
+                result = shiftList.Where(x => x.IsActive == true).ToList();
             }
             else
             {
@@ -167,8 +168,8 @@ namespace DWDW_Service.Services
             if (arrangement != null)
             {
                 var shiftLocation = shiftRepository.GetShiftFromLocationWorker(userID, locationID);
-                result = shiftLocation.Where(x => x.Date == date.Date).ToList();
-                foreach (var element in result)
+                var shiftList = shiftLocation.Where(x => x.Date == date.Date).ToList();
+                foreach (var element in shiftList)
                 {
                     int? arrangementID = element.ArrangementId;
                     int? roomID = element.RoomId;
@@ -177,6 +178,7 @@ namespace DWDW_Service.Services
                     element.UserId = shiftRepository.GetWorkerID(arrangementID);
 
                 }
+                result = shiftList.Where(x => x.IsActive == true).ToList();
             }
             else
             {

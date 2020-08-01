@@ -67,6 +67,28 @@ namespace DWDW_API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = Constant.ADMIN)]
+        [Route("GetActiveRoomsFromLocation")]
+        public IActionResult GetActiveRoomsFromLocation(int locationId)
+        {
+            IActionResult result;
+            try
+            {
+                var list = roomService.GetActiveRoomsFromLocation(locationId);
+                return Ok(list);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
+        [HttpGet]
         [Route("GetRoomById")]
         [Authorize(Roles = Constant.ADMIN + "," + Constant.MANAGER)]
         public IActionResult GetRoomById(int RoomId)

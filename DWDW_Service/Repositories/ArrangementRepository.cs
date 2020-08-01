@@ -81,7 +81,7 @@ namespace DWDW_Service.Repositories
         }
         public List<int?> GetArrangementBelongToManager(int userID)
         {
-            var arrangementManager = dbContext.Set<Arrangement>().Where(x => x.UserId == userID).ToList();
+            var arrangementManager = dbContext.Set<Arrangement>().Where(x => x.UserId == userID && x.IsActive == true).ToList();
             List<int?> qualifyLocation = new List<int?>();
             List<int?> qualifyUserRelatedLocation = new List<int?>();
             //Lay ra danh sach nhung location thuoc ve manager
@@ -91,7 +91,7 @@ namespace DWDW_Service.Repositories
                 qualifyLocation.Add(a);
             }
             //Lay ra nhung arrangement co location duoi quyen manager
-            var arrangementRelated = dbContext.Set<Arrangement>().Where(x => qualifyLocation.Contains(x.LocationId)).ToList();
+            var arrangementRelated = dbContext.Set<Arrangement>().Where(x => qualifyLocation.Contains(x.LocationId) && x.IsActive == true).ToList();
             for (int i = 0; i < arrangementRelated.Count; i++)
             {
                 int? a = arrangementRelated.ElementAt(i).ArrangementId;
@@ -102,7 +102,7 @@ namespace DWDW_Service.Repositories
 
         public List<int?> GetArrangementBelongToWorker(int userID)
         {
-            var arrangementManager = dbContext.Set<Arrangement>().Where(x => x.UserId == userID).ToList();
+            var arrangementManager = dbContext.Set<Arrangement>().Where(x => x.UserId == userID && x.IsActive == true).ToList();
 
             List<int?> qualifyWorkerRelated = new List<int?>();
             //Lay ra danh sach nhung arrangement thuoc ve user

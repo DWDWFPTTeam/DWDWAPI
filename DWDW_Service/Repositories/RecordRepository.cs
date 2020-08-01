@@ -16,6 +16,8 @@ namespace DWDW_Service.Repositories
             (int locationId, DateTime startDate, DateTime endDate);
         List<Record> GetRecordsByLocationIdAndTime
             (int locationId, DateTime date);
+
+        List<Record> GetRecordByWorkerDate(List<int?> deviceRelated, DateTime date);
     }
     public class RecordRepository : BaseRepository<Record>, IRecordRepository
     {
@@ -91,6 +93,13 @@ namespace DWDW_Service.Repositories
             var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.DeviceId == deviceID && x.IsActive == true);
             var room = dbContext.Set<Room>().FirstOrDefault(x => x.RoomId == roomDevice.RoomId);
             return room.RoomCode;
+        }
+
+        public List<Record> GetRecordByWorkerDate(List<int?> deviceRelated, DateTime date)
+        {
+            var result = dbContext.Set<Record>().Where(x => deviceRelated.Contains(x.DeviceId) 
+            && x.RecordDateTime < date.AddDays(1) && x.RecordDateTime > date).ToList();
+            return result;
         }
     }
 }

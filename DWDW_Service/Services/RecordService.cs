@@ -22,6 +22,7 @@ namespace DWDW_Service.Services
             (int locationId, DateTime startDate, DateTime endDate);
         IEnumerable<RecordViewModel> GetRecordsByLocationIdAndTime
             (int locationId, DateTime date);
+        IEnumerable<RecordViewModel> GetRecordByWorkerDate(int workerID, DateTime date);
     }
 
     public class RecordService : BaseService<Record>, IRecordService
@@ -46,6 +47,24 @@ namespace DWDW_Service.Services
             var record = recordRepository.GetRecordsByLocationId(locationId)
                 .Select(r => r.ToViewModel<RecordViewModel>());
             return record;
+        }
+
+        public IEnumerable<RecordViewModel> GetRecordByWorkerDate(int workerID, DateTime date)
+        {
+            IEnumerable<RecordViewModel> result = new List<RecordViewModel>();
+            
+            var locationRepo = unitOfWork.LocationRepository;
+            var roomRepo = this.unitOfWork.RoomRepository;
+            var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
+
+            //Lay ra danh sach id cua cac item lien quan toi worker
+            List<int?> locationRelatedID = locationRepo.GetLocationByUser(workerID);
+            List<int?> roomRelatedID = roomRepo.GetRelatedRoomIDFromLocation(locationRelatedID);
+            List<int?> deviceRelatedID = roomDeviceRepo.GetRelatedDeviceIDFromRoom(roomRelatedID);
+
+            var recordList = recordRepository.GetRecordByWorkerDate(deviceRelatedID, date);
+            result = recordList.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+            return result;
         }
 
         public IEnumerable<RecordViewModel> GetRecordsByLocationIdBetweenTime(int locationId, DateTime startDate, DateTime endDate)

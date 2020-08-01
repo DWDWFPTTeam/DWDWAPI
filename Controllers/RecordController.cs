@@ -116,5 +116,27 @@ namespace DWDW_API.Controllers
             return result;
         }
 
+        [Route("GetRecordByWorkerDate")]
+        [Authorize(Roles = Constant.ADMIN + ", " + Constant.MANAGER)]
+        [HttpGet]
+        public IActionResult GetRecordByWorkerDate(int workerID, DateTime date)
+        {
+            IActionResult result;
+            try
+            {
+                var record = recordService.GetRecordByWorkerDate(workerID, date);
+                result = Ok(record);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
     }
 }

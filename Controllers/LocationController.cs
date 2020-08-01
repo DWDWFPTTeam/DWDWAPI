@@ -49,6 +49,28 @@ namespace DWDW_API.Controllers
 
         [HttpGet]
         [Authorize(Roles = Constant.ADMIN)]
+        [Route("GetAllActiveLocations")]
+        public IActionResult GetAllActiveLocations()
+        {
+            IActionResult result;
+            try
+            {
+                var list = locationService.GetAllActiveLocations();
+                return Ok(list);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
+        [HttpGet]
+        [Authorize(Roles = Constant.ADMIN)]
         [Route("GetLocationById")]
         public IActionResult GetLocationById(int locationId)
         {
