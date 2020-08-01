@@ -42,9 +42,16 @@ namespace DWDW_Service.Repositories
 
         public void DisableOldSameShift(int? arrangementID, int? shiftRoomId, DateTime? shiftDate)
         {
-            var OldShift = dbContext.Set<Shift>().Where(x => x.RoomId == shiftRoomId && x.Date == shiftDate)
+            //Same room, same time.
+            var OldShift1 = dbContext.Set<Shift>().Where(x => x.RoomId == shiftRoomId && x.Date == shiftDate)
                                                  .ToList();
-            OldShift.ForEach(a => a.IsActive = false);
+            OldShift1.ForEach(a => a.IsActive = false);
+
+            //Same worker, same time.
+            var OldShift2 = dbContext.Set<Shift>().Where(x => x.ArrangementId == arrangementID && x.Date == shiftDate)
+                                                 .ToList();
+            OldShift2.ForEach(b => b.IsActive = false);
+
             dbContext.SaveChanges();
         }
 
