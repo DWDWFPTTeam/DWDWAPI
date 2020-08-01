@@ -23,6 +23,7 @@ namespace DWDW_Service.Services
         IEnumerable<RecordViewModel> GetRecordsByLocationIdAndTime
             (int locationId, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByWorkerDate(int workerID, DateTime date);
+        IEnumerable<RecordViewModel> GetRecordByWorkerDateForManager(int managerID, int workerID, DateTime date);
     }
 
     public class RecordService : BaseService<Record>, IRecordService
@@ -64,6 +65,31 @@ namespace DWDW_Service.Services
 
             var recordList = recordRepository.GetRecordByWorkerDate(deviceRelatedID, date);
             result = recordList.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+            return result;
+        }
+
+        public IEnumerable<RecordViewModel> GetRecordByWorkerDateForManager(int managerID, int workerID, DateTime date)
+        {
+            IEnumerable<RecordViewModel> result = new List<RecordViewModel>();
+
+            var locationRepo = unitOfWork.LocationRepository;
+            var roomRepo = this.unitOfWork.RoomRepository;
+            var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
+
+            List<int?> locationManagerRelatedID = locationRepo.GetLocationByUser(workerID);
+            List<int?> locationUserRelatedID = locationRepo.GetLocationByUser(workerID);
+            
+            //User thuoc Manager
+            bool userChildManager = locationUserRelatedID.All(x => locationManagerRelatedID.Contains(x));
+            if (userChildManager == true)
+            {
+                //Lay ra danh sach id cua cac item lien quan toi worker
+                List<int?> roomRelatedID = roomRepo.GetRelatedRoomIDFromLocation(locationUserRelatedID);
+                List<int?> deviceRelatedID = roomDeviceRepo.GetRelatedDeviceIDFromRoom(roomRelatedID);
+
+                var recordList = recordRepository.GetRecordByWorkerDate(deviceRelatedID, date);
+                result = recordList.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+            }
             return result;
         }
 

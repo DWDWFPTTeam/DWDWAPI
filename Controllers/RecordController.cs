@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections;
 using System.Globalization;
+using System.Security.Claims;
 
 namespace DWDW_API.Controllers
 {
@@ -117,7 +118,7 @@ namespace DWDW_API.Controllers
         }
 
         [Route("GetRecordByWorkerDate")]
-        [Authorize(Roles = Constant.ADMIN + ", " + Constant.MANAGER)]
+        [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         public IActionResult GetRecordByWorkerDate(int workerID, DateTime date)
         {
@@ -125,6 +126,31 @@ namespace DWDW_API.Controllers
             try
             {
                 var record = recordService.GetRecordByWorkerDate(workerID, date);
+                result = Ok(record);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+            return result;
+        }
+
+        [Route("GetRecordByWorkerDateForManager")]
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpGet]
+        public IActionResult GetRecordByWorkerDateForManager(int workerID, DateTime date)
+        {
+            IActionResult result;
+            var identity = (ClaimsIdentity)User.Identity;
+            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userID = int.Parse(ID);
+            try
+            {
+                var record = recordService.GetRecordByWorkerDateForManager(userID,workerID, date);
                 result = Ok(record);
             }
             catch (BaseException e)
