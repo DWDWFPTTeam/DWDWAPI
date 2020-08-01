@@ -196,6 +196,10 @@ namespace DWDW_Service.Services
         public async Task<User> LoginAsync(string username, string password)
         {
             var user = await userRepository.GetUserByUsernamePassword(username, password);
+            if(user == null)
+            {
+                throw new BaseException(ErrorMessages.INVALID_USERNAME_PASSWORD);
+            }
             return user;
         }
 
