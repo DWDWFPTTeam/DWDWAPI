@@ -45,8 +45,15 @@ namespace DWDW_Service.Services
 
         public IEnumerable<RecordViewModel> GetRecordByLocationId(int locationId)
         {
+            var roomRepo = this.unitOfWork.RoomRepository;
             var record = recordRepository.GetRecordsByLocationId(locationId)
-                .Select(r => r.ToViewModel<RecordViewModel>());
+                .Select(r => r.ToViewModel<RecordViewModel>()).ToList();
+            foreach (var element in record)
+            {
+                int? deviceID = element.DeviceId;
+                var room = roomRepo.GetRoomFromDevice(deviceID);
+                element.RoomId = room.RoomId;
+            }
             return record;
         }
 
@@ -65,6 +72,12 @@ namespace DWDW_Service.Services
 
             var recordList = recordRepository.GetRecordByWorkerDate(deviceRelatedID, date);
             result = recordList.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+            foreach(var element in result)
+            {
+                int? deviceID = element.DeviceId;
+                var room = roomRepo.GetRoomFromDevice(deviceID);
+                element.RoomId = room.RoomId;
+            }
             return result;
         }
 
@@ -89,23 +102,43 @@ namespace DWDW_Service.Services
 
                 var recordList = recordRepository.GetRecordByWorkerDate(deviceRelatedID, date);
                 result = recordList.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+                foreach (var element in result)
+                {
+                    int? deviceID = element.DeviceId;
+                    var room = roomRepo.GetRoomFromDevice(deviceID);
+                    element.RoomId = room.RoomId;
+                }
             }
             return result;
         }
 
         public IEnumerable<RecordViewModel> GetRecordsByLocationIdBetweenTime(int locationId, DateTime startDate, DateTime endDate)
         {
+            var roomRepo = this.unitOfWork.RoomRepository;
             var record = recordRepository
                 .GetRecordsByLocationIdBetweenTime(locationId, startDate, endDate)
-                .Select(r => r.ToViewModel<RecordViewModel>());
+                .Select(r => r.ToViewModel<RecordViewModel>()).ToList();
+            foreach (var element in record)
+            {
+                int? deviceID = element.DeviceId;
+                var room = roomRepo.GetRoomFromDevice(deviceID);
+                element.RoomId = room.RoomId;
+            }
             return record;
         }
 
         public IEnumerable<RecordViewModel> GetRecordsByLocationIdAndTime(int locationId, DateTime date)
         {
+            var roomRepo = this.unitOfWork.RoomRepository;
             var record = recordRepository
                 .GetRecordsByLocationIdAndTime(locationId, date)
                 .Select(r => r.ToViewModel<RecordViewModel>());
+            foreach (var element in record)
+            {
+                int? deviceID = element.DeviceId;
+                var room = roomRepo.GetRoomFromDevice(deviceID);
+                element.RoomId = room.RoomId;
+            }
             return record;
         }
 

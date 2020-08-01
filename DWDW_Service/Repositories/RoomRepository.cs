@@ -20,6 +20,8 @@ namespace DWDW_Service.Repositories
         List<Room> SearchRoomByRoomCode(string roomCode);
         List<Room> SearchRoomByRoomCode(int locationId, string roomCode);
 
+        Room GetRoomFromDevice(int? deviceID);
+
         List<int?> GetRelatedRoomIDFromLocation(List<int?> locationRelatedID);
     }
     public class RoomRepository : BaseRepository<Room>, IRoomRepository
@@ -114,6 +116,13 @@ namespace DWDW_Service.Repositories
                 relatedRoom.Add(roomID);
             }
             return relatedRoom;
+        }
+
+        public Room GetRoomFromDevice(int? deviceID)
+        {
+            var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.DeviceId == deviceID && x.IsActive == true);
+            var result = dbContext.Set<Room>().Find(roomDevice.RoomId);
+            return result;
         }
     }
 }
