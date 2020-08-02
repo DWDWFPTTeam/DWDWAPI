@@ -35,11 +35,20 @@ namespace DWDW_API.Controllers
             }
             catch (BaseException e)
             {
-                result = BadRequest(e.Message);
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
             }
             catch (Exception e)
             {
-                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
             }
             return result;
         }
@@ -57,11 +66,20 @@ namespace DWDW_API.Controllers
             }
             catch (BaseException e)
             {
-                result = BadRequest(e.Message);
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
             }
             catch (Exception e)
             {
-                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
             }
             return result;
         }
@@ -79,11 +97,20 @@ namespace DWDW_API.Controllers
             }
             catch (BaseException e)
             {
-                result = BadRequest(e.Message);
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
             }
             catch (Exception e)
             {
-                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
             }
             return result;
         }
@@ -101,11 +128,20 @@ namespace DWDW_API.Controllers
             }
             catch (BaseException e)
             {
-                result = BadRequest(e.Message);
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
             }
             catch (Exception e)
             {
-                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
             }
             return result;
         }
@@ -123,11 +159,20 @@ namespace DWDW_API.Controllers
             }
             catch (BaseException e)
             {
-                result = BadRequest(e.Message);
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
             }
             catch (Exception e)
             {
-                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
             }
             return result;
         }
@@ -146,11 +191,20 @@ namespace DWDW_API.Controllers
             }
             catch (BaseException e)
             {
-                result = BadRequest(e.Message);
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
             }
             catch (Exception e)
             {
-                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
             }
             return result;
         }
@@ -169,11 +223,20 @@ namespace DWDW_API.Controllers
             }
             catch (BaseException e)
             {
-                result = BadRequest(e.Message);
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
             }
             catch (Exception e)
             {
-                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
             }
             return result;
         }
@@ -192,11 +255,20 @@ namespace DWDW_API.Controllers
             }
             catch (BaseException e)
             {
-                result = BadRequest(e.Message);
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
             }
             catch (Exception e)
             {
-                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
             }
             return result;
         }
@@ -215,11 +287,20 @@ namespace DWDW_API.Controllers
             }
             catch (BaseException e)
             {
-                result = BadRequest(e.Message);
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
             }
             catch (Exception e)
             {
-                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
             }
             return result;
         }
@@ -238,11 +319,20 @@ namespace DWDW_API.Controllers
             }
             catch (BaseException e)
             {
-                result = BadRequest(e.Message);
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
             }
             catch (Exception e)
             {
-                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
             }
             return result;
         }
