@@ -11,6 +11,8 @@ using DWDW_API.Providers;
 using DWDW_Service.Repositories;
 using DWDW_Service.Services;
 using DWDW_Service.UnitOfWorks;
+using Hangfire;
+using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -52,6 +54,10 @@ namespace DWDW_API
             SetupAuthentication(services);
             SetupDI(services);
 
+            //Hangfire
+            string ConnectionString = "Server=.;Database=DWDB;Trusted_Connection=True;User Id=sa;Password=123;";
+            services.AddHangfire(x => x.UseSqlServerStorage(ConnectionString));
+            services.AddHangfireServer();
 
         }
 
@@ -287,6 +293,21 @@ namespace DWDW_API
             app.UseAuthentication();
             app.UseAuthorization();
 
+            //Hangfire
+            var options = new BackgroundJobServerOptions
+            {
+                SchedulePollingInterval = TimeSpan.FromMilliseconds(1000)
+            };
+
+            app.UseHangfireServer(options);
+            app.UseHangfireDashboard(options: new DashboardOptions
+            {
+                Authorization = new List<IDashboardAuthorizationFilter>()
+            {
+                new HangfireDashboardFilter()
+            },
+                IsReadOnlyFunc = CapstoneContext => false
+            });
 
 
             app.UseEndpoints(endpoints =>

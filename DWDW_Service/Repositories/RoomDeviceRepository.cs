@@ -13,6 +13,8 @@ namespace DWDW_Service.Repositories
         void DisableRoomDevice(int? roomID);
         RoomDevice GetLatest();
         List<int?> GetRelatedDeviceIDFromRoom(List<int?> roomRelatedID);
+
+        List<RoomDevice> GetOverdue();
     }
     public class RoomDeviceRepository : BaseRepository<RoomDevice>, IRoomDeviceRepository
     {
@@ -48,6 +50,12 @@ namespace DWDW_Service.Repositories
                 relatedDevice.Add(deviceID);
             }
             return relatedDevice;
+        }
+
+        public List<RoomDevice> GetOverdue()
+        {
+            DateTime now = DateTime.Now;
+            return dbContext.Set<RoomDevice>().Where(x => x.EndDate < now && x.IsActive == true).ToList();
         }
     }
 }

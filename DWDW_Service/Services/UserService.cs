@@ -4,6 +4,7 @@ using DWDW_API.Core.Infrastructure;
 using DWDW_API.Core.ViewModels;
 using DWDW_Service.Repositories;
 using DWDW_Service.UnitOfWorks;
+using Hangfire;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -195,11 +196,18 @@ namespace DWDW_Service.Services
 
         public async Task<User> LoginAsync(string username, string password)
         {
+            var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
+            var arrangementRepo = unitOfWork.ArrangementRepository;
+
             var user = await userRepository.GetUserByUsernamePassword(username, password);
             if(user == null)
             {
                 throw new BaseException(ErrorMessages.INVALID_USERNAME_PASSWORD);
             }
+            var overdueRoomDevice = roomDeviceRepo.GetOverdue();
+            var overdueArrangement = arrangementRepo.GetOverdue();
+            RecurringJob.AddOrUpdate("DeactiveOverdue", () => DeactiveOverdue(overdueRoomDevice, overdueArrangement), "0 0 * * *", TimeZoneInfo.Local);
+
             return user;
         }
 
@@ -515,6 +523,25 @@ namespace DWDW_Service.Services
             arrangementEntity.IsActive = true;
             unitOfWork.ArrangementRepository.Add(arrangementEntity);
             return arrangementEntity.ToViewModel<ArrangementViewModel>();
+        }
+
+        public void DeactiveOverdue(List<RoomDevice> roomDeviceOverdue, List<Arrangement> arrangementOverdue)
+        {
+            var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
+            var arrangementRepo = unitOfWork.ArrangementRepository;
+
+            foreach (var element in roomDeviceOverdue)
+            {
+                element.IsActive = false;
+                roomDeviceRepo.Update(element);
+            }
+
+            foreach (var attribute in arrangementOverdue)
+            {
+                attribute.IsActive = false;
+                arrangementRepo.Update(attribute);
+            }
+
         }
     }
 }

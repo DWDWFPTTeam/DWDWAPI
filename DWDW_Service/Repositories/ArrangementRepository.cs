@@ -23,6 +23,8 @@ namespace DWDW_Service.Repositories
         List<Arrangement> DisableArrangementFromLocation(int locationId);
         List<int?> GetArrangementBelongToManager(int userID);
         List<int?> GetArrangementBelongToWorker(int userID);
+
+        List<Arrangement> GetOverdue();
     }
     public class ArrangementRepository : BaseRepository<Arrangement>, IArrangementRepository
     {
@@ -136,6 +138,12 @@ namespace DWDW_Service.Repositories
                     StartDate = a.StartDate,
                     EndDate = a.EndDate
                 }).ToList();
+        }
+
+        public List<Arrangement> GetOverdue()
+        {
+            DateTime now = DateTime.Now;
+            return dbContext.Set<Arrangement>().Where(x => x.EndDate < now && x.IsActive == true).ToList();
         }
     }
 }
