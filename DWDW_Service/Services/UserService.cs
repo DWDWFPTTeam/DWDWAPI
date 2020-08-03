@@ -204,9 +204,9 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.INVALID_USERNAME_PASSWORD);
             }
-            var overdueRoomDevice = roomDeviceRepo.GetOverdue();
-            var overdueArrangement = arrangementRepo.GetOverdue();
-            RecurringJob.AddOrUpdate("DeactiveOverdue", () => DeactiveOverdue(overdueRoomDevice, overdueArrangement), "0 0 * * *", TimeZoneInfo.Local);
+            //var overdueRoomDevice = roomDeviceRepo.GetOverdue();
+            //var overdueArrangement = arrangementRepo.GetOverdue();
+            //RecurringJob.AddOrUpdate("DeactiveOverdue", () => DeactiveOverdue(overdueRoomDevice, overdueArrangement), "0 0 * * *", TimeZoneInfo.Local);
 
             return user;
         }
