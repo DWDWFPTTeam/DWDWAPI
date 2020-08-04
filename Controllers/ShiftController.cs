@@ -101,14 +101,12 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.MANAGER)]
         [HttpPost]
         [Route("CreateShift")]
-        public dynamic CreateShift(int locationID, ShiftCreateModel shift)
+        public dynamic CreateShift(ShiftCreateModel shift)
         {
-            var identity = (ClaimsIdentity)User.Identity;
-            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            int userID = int.Parse(ID);
+            int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
-                return shiftService.CreateShift(userID, locationID, shift);
+                return shiftService.CreateShift(userID, shift);
             });
         }
 
