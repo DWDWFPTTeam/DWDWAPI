@@ -117,10 +117,7 @@ namespace DWDW_API.Controllers
         [HttpGet]
         public dynamic GetRecordByWorkerDateForManager(int workerID, DateTime date)
         {
-            IActionResult result;
-            var identity = (ClaimsIdentity)User.Identity;
-            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            int userID = int.Parse(ID);
+            int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
                 return recordService.GetRecordByWorkerDateForManager(userID, workerID, date);
