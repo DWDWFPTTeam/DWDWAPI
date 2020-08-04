@@ -26,33 +26,12 @@ namespace DWDW_API.Controllers
         [Route("SaveRecord")]
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult SaveRecord(RecordReceivedModel recordReceived)
+        public dynamic SaveRecord(RecordReceivedModel recordReceived)
         {
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var recordViewModel = recordService.SaveRecord(recordReceived);
-                result = Ok(recordViewModel);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-
-            }
-           
-            return result;
+                return recordService.SaveRecord(recordReceived);
+            });
         }
 
         //ham de test

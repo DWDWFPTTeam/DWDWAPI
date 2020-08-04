@@ -150,6 +150,10 @@ namespace DWDW_API
                 cfg.CreateMap<UserCreateModel, User>();
                 cfg.CreateMap<UserUpdateModel, User>();
                 cfg.CreateMap<UserActiveModel, User>();
+                cfg.CreateMap<UserGetAllViewModel, User>();
+                cfg.CreateMap<User, UserGetAllViewModel>();
+                cfg.CreateMap<UserPersonalUpdateModel, User>();
+                cfg.CreateMap<User, UserPersonalUpdateModel>();
 
                 //Location Mapping
                 cfg.CreateMap<Location, LocationViewModel>();

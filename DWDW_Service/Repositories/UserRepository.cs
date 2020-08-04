@@ -1,4 +1,5 @@
-﻿using DWDW_API.Core.Entities;
+﻿using DWDW_API.Core.Constants;
+using DWDW_API.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace DWDW_Service.Repositories
 {
     public interface IUserRepository : IBaseRepository<User>
     {
-        Task<User> GetUserByUsernamePassword(string username, string password);
+        User GetUserByUsernamePassword(string username, string password);
         User GetUserByUsername(string username);
         IEnumerable<User> GetWorkerFromLocation(int locationId);
     }
@@ -25,10 +26,10 @@ namespace DWDW_Service.Repositories
                                                             .Equals(username.Trim().ToLower()));
         }
 
-        public async Task<User> GetUserByUsernamePassword(string username, string password)
+        public User GetUserByUsernamePassword(string username, string password)
         {
 
-            var user = await this.dbContext.Set<User>().FirstOrDefaultAsync(x => x.UserName.Equals(username)
+            var user = this.dbContext.Set<User>().FirstOrDefault(x => x.UserName.Equals(username)
                                                                      && x.Password.Equals(password));
             return user;
         }
@@ -37,7 +38,7 @@ namespace DWDW_Service.Repositories
         {
             IEnumerable<User> result = new List<User>();
             result = dbContext.Set<User>().Where(x => x.Arrangement.Any(y => y.LocationId == locationId
-            && y.IsActive == true) && x.RoleId == 3).ToList();
+            && y.IsActive == true) && x.RoleId == int.Parse(Constant.WORKER)).ToList();
             return result;
         }
     }
