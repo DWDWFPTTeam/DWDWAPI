@@ -249,6 +249,10 @@ namespace DWDW_Service.Services
                     result.UserName = shiftRepository.GetUsername(result.ArrangementId);
                     result.UserId = shiftRepository.GetWorkerID(result.ArrangementId);
                 }
+                else
+                {
+                    throw new BaseException(ErrorMessages.INVALID_MANAGER);
+                }
             }  
             else
             {
@@ -282,6 +286,10 @@ namespace DWDW_Service.Services
                         result.RoomCode = shiftRepository.GetRoomCode(result.RoomId);
                         result.UserName = shiftRepository.GetUsername(result.ArrangementId);
                         result.UserId = shiftRepository.GetWorkerID(result.ArrangementId);
+                    }
+                    else
+                    {
+                        throw new BaseException(ErrorMessages.INVALID_MANAGER);
                     }
                 }
                 else
