@@ -46,7 +46,7 @@ namespace DWDW_API.Core.Constants
         //Shift Message
         public const string INVALID_MANAGER = "This shift doesn't belong to the current manager";
         public const string SHIFT_IS_NOT_EXISTED = "Shift is not existed";
-        public const string SHIFT_IS_EXISTED = "This shift is already been set";
+        public const string SHIFT_IS_USED = "This shift is already been set";
         public const string DATE_INVALID = "Date is invalid";
 
         //User Message

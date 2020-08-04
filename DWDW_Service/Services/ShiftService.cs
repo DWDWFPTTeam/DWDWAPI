@@ -241,7 +241,7 @@ namespace DWDW_Service.Services
             bool shiftCheck = shiftRepository.CheckExistedShift(arrangementWorker.ArrangementId, shift.RoomId, shift.Date);
             if (shiftCheck == false)
             {
-                throw new BaseException(ErrorMessages.SHIFT_IS_EXISTED);
+                throw new BaseException(ErrorMessages.SHIFT_IS_USED);
             }
             shiftRepository.Add(new Shift
             {
@@ -306,7 +306,7 @@ namespace DWDW_Service.Services
             bool shiftCheck = shiftRepository.CheckExistedShift(arrangementWorker.ArrangementId, shift.RoomId, shift.Date);
             if (shiftCheck == false)
             {
-                throw new BaseException(ErrorMessages.SHIFT_IS_EXISTED);
+                throw new BaseException(ErrorMessages.SHIFT_IS_USED);
             }
 
             shiftU.ArrangementId = arrangementWorker.ArrangementId;
@@ -343,7 +343,7 @@ namespace DWDW_Service.Services
                 bool shiftCheck = shiftRepository.CheckExistedShift(shiftActive.ArrangementId, shiftActive.RoomId, shiftActive.Date);
                 if (shiftCheck == false)
                 {
-                    throw new BaseException(ErrorMessages.SHIFT_IS_EXISTED);
+                    throw new BaseException(ErrorMessages.SHIFT_IS_USED);
                 }
                 shiftActive.IsActive = shift.IsActive;
                 shiftRepository.Update(shiftActive);
