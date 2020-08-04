@@ -27,30 +27,10 @@ namespace DWDW_API.Controllers
         [Route("GetRooms")]
         public IActionResult GetRooms()
         {
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var list = roomService.GetRooms();
-                return Ok(list);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return roomService.GetRooms();
+            });
         }
 
         [HttpGet]
@@ -58,30 +38,10 @@ namespace DWDW_API.Controllers
         [Route("GetRoomsFromLocation/{locationId}")]
         public IActionResult GetRoomsFromLocation(int locationId)
         {
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var list = roomService.GetRoomsFromLocation(locationId);
-                return Ok(list);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return roomService.GetRoomsFromLocation(locationId);
+            });
         }
 
         [HttpGet]
@@ -89,30 +49,10 @@ namespace DWDW_API.Controllers
         [Route("GetActiveRoomsFromLocation")]
         public IActionResult GetActiveRoomsFromLocation(int locationId)
         {
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var list = roomService.GetActiveRoomsFromLocation(locationId);
-                return Ok(list);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return roomService.GetActiveRoomsFromLocation(locationId);
+            });
         }
 
         [HttpGet]
@@ -120,30 +60,10 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.ADMIN + "," + Constant.MANAGER)]
         public IActionResult GetRoomById(int RoomId)
         {
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var room = roomService.GetRoomById(RoomId);
-                return Ok(room);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return roomService.GetRoomById(RoomId);
+            });
         }
 
         [HttpGet]
@@ -151,30 +71,10 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.ADMIN)]
         public IActionResult SearchRoomCodeByAdmin(string roomCode)
         {
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var room = roomService.SearchRoomCode(roomCode);
-                return Ok(room);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return roomService.SearchRoomCode(roomCode);
+            });
         }
 
         [HttpPut]
@@ -182,31 +82,10 @@ namespace DWDW_API.Controllers
         [Route("UpdateRoom")]
         public IActionResult UpdateRoom(RoomUpdateModel roomUpdate)
         {
-            //if (!ModelState.IsValid) return BadRequest(ModelState);
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var roomUpdated = roomService.UpdateRoom(roomUpdate);
-                return Ok(roomUpdated);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return roomService.UpdateRoom(roomUpdate);
+            });
         }
 
         [HttpPost]
@@ -214,31 +93,10 @@ namespace DWDW_API.Controllers
         [Route("CreateRoom")]
         public IActionResult CreateRoom(RoomInsertModel roomInsert)
         {
-            //if (!ModelState.IsValid) return BadRequest(ModelState);
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var roomInserted = roomService.InsertRoom(roomInsert);
-                return Ok(roomInserted);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return roomService.InsertRoom(roomInsert);
+            });
         }
 
         [HttpPut]
@@ -246,31 +104,10 @@ namespace DWDW_API.Controllers
         [Route("DeactiveRoom/{roomId}")]
         public IActionResult DeactiveRoom(int roomId)
         {
-            //if (!ModelState.IsValid) return BadRequest(ModelState);
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var roomDeactived = roomService.DeactiveRoom(roomId);
-                return Ok(roomDeactived);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return roomService.DeactiveRoom(roomId);
+            });
         }
 
         [HttpGet]
@@ -278,31 +115,11 @@ namespace DWDW_API.Controllers
         [Route("GetRoomsFromLocationByManager/{locationId}")]
         public IActionResult GetRoomsFromLocationByManager(int locationId)
         {
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
                 int userId = int.Parse(CurrentUserId);
-                var list = roomService.GetRoomsFromLocationByManager(userId, locationId);
-                return Ok(list);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return roomService.GetRoomsFromLocationByManager(userId, locationId);
+            });
         }
 
         [HttpGet]
@@ -310,31 +127,11 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.MANAGER)]
         public IActionResult SearchRoomCodeByManager(string roomCode)
         {
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
                 int userId = int.Parse(CurrentUserId);
-                var room = roomService.SearchRoomCodeByManager(userId, roomCode);
-                return Ok(room);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return roomService.SearchRoomCodeByManager(userId, roomCode);
+            });
         }
     }
 }
