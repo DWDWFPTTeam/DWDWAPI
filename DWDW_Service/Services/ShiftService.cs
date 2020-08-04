@@ -276,6 +276,7 @@ namespace DWDW_Service.Services
                         shiftU.ArrangementId = arrangementWorker.ArrangementId;
                         shiftU.Date = shift.Date;
                         shiftU.RoomId = shift.RoomId;
+                        shiftRepository.DisableOldSameShift(shiftU.ArrangementId, shiftU.RoomId, shiftU.Date);
                         shiftRepository.Update(shiftU);
                         result = shiftU.ToViewModel<ShiftViewModel>();
                         result.RoomCode = shiftRepository.GetRoomCode(result.RoomId);
