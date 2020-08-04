@@ -47,6 +47,7 @@ namespace DWDW_API.Core.Constants
         public const string INVALID_MANAGER = "This shift doesn't belong to the current manager";
         public const string SHIFT_IS_NOT_EXISTED = "Shift is not existed";
         public const string SHIFT_IS_EXISTED = "This shift is already been set";
+        public const string DATE_INVALID = "Date is invalid";
 
         //User Message
         public const string BIRTHDAY_WRONG_DATETIME_FORMAT = "Role is not existed";
@@ -60,6 +61,8 @@ namespace DWDW_API.Core.Constants
         public const string WRONG_PHONE_FORMAT = "Wrong phone number format";
         public const string GENDER_IS_NOT_EXISTED = "Gender is not existed";
         public static string MANAGER_NOT_FOUND = "Cannot found the manager";
+        public const string SHIFT_IS_EXISTED = "Shift is existed";
+        public const string ARRANGEMENT_IS_NOT_EXISTED = "Arrangement is not existed";
 
 
         //Location Message
@@ -76,5 +79,8 @@ namespace DWDW_API.Core.Constants
 
         //Notification Message
         public const string NOTI_ID_IS_NOT_EXISTED = "NotificationId is not exitsted";
+
+  
+
     }
 }

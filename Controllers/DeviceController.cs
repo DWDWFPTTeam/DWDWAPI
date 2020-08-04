@@ -134,6 +134,7 @@ namespace DWDW_API.Controllers
         [Route("GetActiveDeviceFromRoomManager")]
         public dynamic GetDeviceFromRoomManager(int roomID)
         {
+            
             int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {

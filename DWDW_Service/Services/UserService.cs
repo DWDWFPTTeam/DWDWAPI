@@ -158,7 +158,7 @@ namespace DWDW_Service.Services
                                                                         && arr.IsActive == true, null, "Location")
                                                                         .Select(arr => arr.Location.ToViewModel<LocationViewModel>());
                 userGetAllViewModel.Role = this.unitOfWork.RoleRepository.Get(role => role.RoleId == user.RoleId
-                                                                              && role.IsActive == true, null, null)
+                                                                              && role.IsActive == true, null, "")
                                                                               .FirstOrDefault().ToViewModel<RoleViewModel>();
                 return userGetAllViewModel;
             });
