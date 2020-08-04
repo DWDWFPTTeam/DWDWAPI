@@ -30,7 +30,7 @@ namespace DWDW_API.Core.ViewModels
         public bool? IsActive { get; set; }
         public string LocationCode { get; set; }
     }
-   
+
     public class UserCreateModel : BaseModel
     {
         [Required]
@@ -113,10 +113,8 @@ namespace DWDW_API.Core.ViewModels
         public int? Gender { get; set; }
         public string DeviceToken { get; set; }
         public bool? IsActive { get; set; }
-        public int? RoleId { get; set; }
-        public string RoleName { get; set; }
-        public int? LocationId { get; set; }
-        public string LocationCode { get; set; }
+        public RoleViewModel Role { get; set; }
+        public IEnumerable<LocationViewModel> Locations { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
     }
