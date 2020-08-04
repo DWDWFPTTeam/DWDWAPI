@@ -24,64 +24,23 @@ namespace DWDW_API.Controllers
         [Route("GetAllNotifications")]
         [Authorize(Roles = Constant.MANAGER)]
         [HttpGet]
-        public IActionResult GetAllNotifications()
+        public dynamic GetAllNotifications()
         {
-            IActionResult result;
-            try
+            int userId = int.Parse(CurrentUserId);
+            return ExecuteInMonitoring(() =>
             {
-                int userId = int.Parse(CurrentUserId);
-                var notifications = notificationService.GetAllNotifiOfManager(userId);
-                result = Ok(notifications);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return notificationService.GetAllNotifiOfManager(userId);
+            });
         }
         [Route("UpdateIsReadNotification")]
         [Authorize(Roles = Constant.MANAGER)]
         [HttpPut]
-        public IActionResult UpdateIsReadNotification(int notificationId)
+        public dynamic UpdateIsReadNotification(int notificationId)
         {
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var noti = this.notificationService.UpdateIsReadNotification(notificationId);
-                result = Ok(noti);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-
-            return result;
+                return notificationService.UpdateIsReadNotification(notificationId);
+            });
         }
 
     }
