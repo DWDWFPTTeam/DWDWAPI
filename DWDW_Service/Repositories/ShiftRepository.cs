@@ -15,6 +15,7 @@ namespace DWDW_Service.Repositories
         Shift GetLatest();
         void DisableShiftsByArrangementId(int? arrangementId);
         void DisableOldSameShift(int? arrangementID, int? shiftRoomId, DateTime? shiftDate);
+        bool CheckExistedShift(int? arrangementID, int? shiftRoomId, DateTime? shiftDate);
         List<Shift> GetShiftSubAccount(List<int?> arrangementID);
         Shift GetShiftByRoomDate(int? roomId, DateTime? recordDateTime);
         IEnumerable<ShiftViewModel> GetShiftFromLocation(int locationID);
@@ -140,6 +141,29 @@ namespace DWDW_Service.Repositories
                 var user = dbContext.Set<User>().Find(arrangement.UserId);
                 result = user.UserId;
             }
+            return result;
+        }
+        public bool CheckExistedShift(int? arrangementID, int? shiftRoomId, DateTime? shiftDate)
+        {
+            bool result = true;
+
+            //Shift same date same room, but different people
+            var room1 = dbContext.Set<Shift>().FirstOrDefault(x => x.RoomId == shiftRoomId
+                                                              && x.Date == shiftDate && x.IsActive == true);
+
+            //Shift same people same date, but different room
+            var room2 = dbContext.Set<Shift>().FirstOrDefault(x => x.ArrangementId == arrangementID
+                                                              && x.Date == shiftDate && x.IsActive == true);
+
+            //Shift existing one
+            var room3 = dbContext.Set<Shift>().FirstOrDefault(x => x.ArrangementId == arrangementID
+                                                              && x.RoomId == shiftRoomId
+                                                              && x.Date == shiftDate && x.IsActive == true);
+            if(room1 != null || room2 != null || room3 != null)
+            {
+                result = false;
+            }
+            
             return result;
         }
     }

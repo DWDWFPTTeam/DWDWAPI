@@ -12,7 +12,7 @@ using System.Text;
 
 namespace DWDW_Service.Services
 {
-    public interface IShiftService: IBaseService<Shift>
+    public interface IShiftService : IBaseService<Shift>
     {
         IEnumerable<ShiftViewModel> GetAll();
         ShiftViewModel GetByID(int id);
@@ -23,8 +23,8 @@ namespace DWDW_Service.Services
         IEnumerable<ShiftViewModel> GetShiftFromLocationByDateWorker(int userID, int locationID, DateTime date);
         IEnumerable<ShiftViewModel> GetShiftByDateManager(int userID, DateTime date);
         IEnumerable<ShiftViewModel> GetShiftWorker(int userID);
-        ShiftViewModel CreateShift(int userID, int locationID, ShiftCreateModel shift);
-        ShiftViewModel UpdateShift(int userID, int locationID, ShiftUpdateModel shift);
+        ShiftViewModel CreateShift(int userID, ShiftCreateModel shift);
+        ShiftViewModel UpdateShift(int userID, ShiftUpdateModel shift);
         ShiftViewModel UpdateShiftActive(int userID, ShiftActiveModel shift);
     }
     public class ShiftService : BaseService<Shift>, IShiftService
@@ -54,19 +54,16 @@ namespace DWDW_Service.Services
         {
             var result = new ShiftViewModel();
             var shift = shiftRepository.Find(id);
-            if (shift != null)
+            if (shift == null)
             {
-                result = shift.ToViewModel<ShiftViewModel>();
-                int? arrangementID = result.ArrangementId;
-                int? roomID = result.RoomId;
-                result.RoomCode = shiftRepository.GetRoomCode(roomID);
-                result.UserName = shiftRepository.GetUsername(arrangementID);
-                result.UserId = shiftRepository.GetWorkerID(arrangementID);
+                throw new BaseException(ErrorMessages.SHIFT_IS_NOT_EXISTED);
             }
-            else
-            {
-                throw new BaseException(ErrorMessages.DEVICE_LIST_EMPTY);
-            }
+            result = shift.ToViewModel<ShiftViewModel>();
+            int? arrangementID = result.ArrangementId;
+            int? roomID = result.RoomId;
+            result.RoomCode = shiftRepository.GetRoomCode(roomID);
+            result.UserName = shiftRepository.GetUsername(arrangementID);
+            result.UserId = shiftRepository.GetWorkerID(arrangementID);
             return result;
         }
 
@@ -112,24 +109,21 @@ namespace DWDW_Service.Services
             var arrangementRepo = unitOfWork.ArrangementRepository;
             var locationRepo = unitOfWork.LocationRepository;
             var location = locationRepo.Find(locationID);
-            if (location != null)
-            {
-                var shiftLocation = shiftRepository.GetShiftFromLocation(locationID);
-                var shiftList = shiftLocation.Where(x => x.Date == date.Date).ToList();
-                foreach (var element in shiftList)
-                {
-                    int? arrangementID = element.ArrangementId;
-                    int? roomID = element.RoomId;
-                    element.RoomCode = shiftRepository.GetRoomCode(roomID);
-                    element.UserName = shiftRepository.GetUsername(arrangementID);
-                    element.UserId = shiftRepository.GetWorkerID(arrangementID);
-                }
-                result = shiftList.Where(x => x.IsActive == true).ToList();
-            }
-            else
+            if (location == null)
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
             }
+            var shiftLocation = shiftRepository.GetShiftFromLocation(locationID);
+            var shiftList = shiftLocation.Where(x => x.Date == date.Date).ToList();
+            foreach (var element in shiftList)
+            {
+                int? arrangementID = element.ArrangementId;
+                int? roomID = element.RoomId;
+                element.RoomCode = shiftRepository.GetRoomCode(roomID);
+                element.UserName = shiftRepository.GetUsername(arrangementID);
+                element.UserId = shiftRepository.GetWorkerID(arrangementID);
+            }
+            result = shiftList.Where(x => x.IsActive == true).ToList();
             return result;
         }
 
@@ -138,25 +132,22 @@ namespace DWDW_Service.Services
             IEnumerable<ShiftViewModel> result = new List<ShiftViewModel>();
             var arrangementRepo = unitOfWork.ArrangementRepository;
             var arrangement = arrangementRepo.CheckLocationManagerWorker(userID, locationID);
-            if (arrangement != null)
-            {
-                var shiftLocation = shiftRepository.GetShiftFromLocation(locationID);
-                var shiftList = shiftLocation.Where(x => x.Date == date.Date).ToList();
-                foreach (var element in shiftList)
-                {
-                    int? arrangementID = element.ArrangementId;
-                    int? roomID = element.RoomId;
-                    element.RoomCode = shiftRepository.GetRoomCode(roomID);
-                    element.UserName = shiftRepository.GetUsername(arrangementID);
-                    element.UserId = shiftRepository.GetWorkerID(arrangementID);
-
-                }
-                result = shiftList.Where(x => x.IsActive == true).ToList();
-            }
-            else
+            if (arrangement == null)
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_MANAGER);
             }
+            var shiftLocation = shiftRepository.GetShiftFromLocation(locationID);
+            var shiftList = shiftLocation.Where(x => x.Date == date.Date).ToList();
+            foreach (var element in shiftList)
+            {
+                int? arrangementID = element.ArrangementId;
+                int? roomID = element.RoomId;
+                element.RoomCode = shiftRepository.GetRoomCode(roomID);
+                element.UserName = shiftRepository.GetUsername(arrangementID);
+                element.UserId = shiftRepository.GetWorkerID(arrangementID);
+
+            }
+            result = shiftList.Where(x => x.IsActive == true).ToList();
             return result;
         }
 
@@ -165,25 +156,22 @@ namespace DWDW_Service.Services
             IEnumerable<ShiftViewModel> result = new List<ShiftViewModel>();
             var arrangementRepo = unitOfWork.ArrangementRepository;
             var arrangement = arrangementRepo.CheckLocationManagerWorker(userID, locationID);
-            if (arrangement != null)
-            {
-                var shiftLocation = shiftRepository.GetShiftFromLocationWorker(userID, locationID);
-                var shiftList = shiftLocation.Where(x => x.Date == date.Date).ToList();
-                foreach (var element in shiftList)
-                {
-                    int? arrangementID = element.ArrangementId;
-                    int? roomID = element.RoomId;
-                    element.RoomCode = shiftRepository.GetRoomCode(roomID);
-                    element.UserName = shiftRepository.GetUsername(arrangementID);
-                    element.UserId = shiftRepository.GetWorkerID(arrangementID);
-
-                }
-                result = shiftList.Where(x => x.IsActive == true).ToList();
-            }
-            else
+            if (arrangement == null)
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
             }
+            var shiftLocation = shiftRepository.GetShiftFromLocationWorker(userID, locationID);
+            var shiftList = shiftLocation.Where(x => x.Date == date.Date).ToList();
+            foreach (var element in shiftList)
+            {
+                int? arrangementID = element.ArrangementId;
+                int? roomID = element.RoomId;
+                element.RoomCode = shiftRepository.GetRoomCode(roomID);
+                element.UserName = shiftRepository.GetUsername(arrangementID);
+                element.UserId = shiftRepository.GetWorkerID(arrangementID);
+
+            }
+            result = shiftList.Where(x => x.IsActive == true).ToList();
             return result;
         }
 
@@ -224,117 +212,154 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        public ShiftViewModel CreateShift(int userID, int locationID, ShiftCreateModel shift)
+        public ShiftViewModel CreateShift(int userID, ShiftCreateModel shift)
         {
-            var result = new ShiftViewModel();
+            ShiftViewModel result;
             var arrangementRepo = this.unitOfWork.ArrangementRepository;
             var roomRepo = this.unitOfWork.RoomRepository;
-            var arrangementWorker = arrangementRepo.GetArrangementOfUserInThisLocation(shift.WorkerID, locationID);
-            if (arrangementWorker != null)
+            var locationRepo = this.unitOfWork.LocationRepository;
+            var room = roomRepo.Find(shift.RoomId);
+            if (room == null)
             {
-                bool CheckManagerLocation = arrangementRepo.CheckUserShift(userID, arrangementWorker.ArrangementId);
-                bool CheckRoomLocation = roomRepo.CheckRoomLocation(shift.RoomId, arrangementWorker.ArrangementId);
-                if (CheckManagerLocation == true && CheckRoomLocation == true)
-                {
-                    shiftRepository.DisableOldSameShift(arrangementWorker.ArrangementId, shift.RoomId, shift.Date);
-                    shiftRepository.Add(new Shift
-                    {
-                        ArrangementId = arrangementWorker.ArrangementId,
-                        Date = shift.Date,
-                        RoomId = shift.RoomId,
-                        IsActive = true
-                    });
-                    result = shiftRepository.GetLatest().ToViewModel<ShiftViewModel>();
-                    result.RoomCode = shiftRepository.GetRoomCode(result.RoomId);
-                    result.UserName = shiftRepository.GetUsername(result.ArrangementId);
-                    result.UserId = shiftRepository.GetWorkerID(result.ArrangementId);
-                }
-                else
-                {
-                    throw new BaseException(ErrorMessages.INVALID_MANAGER);
-                }
-            }  
-            else
-            {
-                throw new BaseException(ErrorMessages.INVALID_MANAGER);
+                throw new BaseException(ErrorMessages.ROOM_IS_NOT_EXISTED);
             }
+            var location = locationRepo.Find(room.LocationId);
+            if (location == null)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
+            }
+            var arrangementWorker = arrangementRepo.GetArrangementOfUserInThisLocation(shift.WorkerID, location.LocationId);
+            if (arrangementWorker == null)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
+            }
+            bool CheckManagerLocation = arrangementRepo.CheckUserShift(userID, arrangementWorker.ArrangementId);
+            if (CheckManagerLocation == false)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_MANAGER);
+            }
+            bool shiftCheck = shiftRepository.CheckExistedShift(arrangementWorker.ArrangementId, shift.RoomId, shift.Date);
+            if (shiftCheck == false)
+            {
+                throw new BaseException(ErrorMessages.SHIFT_IS_EXISTED);
+            }
+            shiftRepository.Add(new Shift
+            {
+                ArrangementId = arrangementWorker.ArrangementId,
+                Date = shift.Date,
+                RoomId = shift.RoomId,
+                IsActive = true
+            });
+            result = shiftRepository.GetLatest().ToViewModel<ShiftViewModel>();
+            result.RoomCode = shiftRepository.GetRoomCode(result.RoomId);
+            result.UserName = shiftRepository.GetUsername(result.ArrangementId);
+            result.UserId = shiftRepository.GetWorkerID(result.ArrangementId);
             return result;
         }
 
-        public ShiftViewModel UpdateShift(int userID, int locationID, ShiftUpdateModel shift)
+        public ShiftViewModel UpdateShift(int userID, ShiftUpdateModel shift)
         {
-            var result = new ShiftViewModel();
+            ShiftViewModel result;
             var shiftU = shiftRepository.Find(shift.ShiftId);
-            if (shiftU != null)
-            {
-                var arrangementRepo = this.unitOfWork.ArrangementRepository;
-                var roomRepo = this.unitOfWork.RoomRepository;
-                bool CheckManagerLocation = arrangementRepo.CheckUserShift(userID, shiftU.ArrangementId);
-                var arrangementWorker = arrangementRepo.GetArrangementOfUserInThisLocation(shift.WorkerID, locationID);
-                if (CheckManagerLocation && arrangementWorker != null)
-                {
-                    bool CheckManagerUpdateLocation = arrangementRepo.CheckUserShift(userID, arrangementWorker.ArrangementId);
-                    bool CheckRoomUpdateLocation = roomRepo.CheckRoomLocation(shift.RoomId, arrangementWorker.ArrangementId);
-                    if (CheckManagerUpdateLocation == true && CheckRoomUpdateLocation == true)
-                    {
-                        shiftU.ArrangementId = arrangementWorker.ArrangementId;
-                        shiftU.Date = shift.Date;
-                        shiftU.RoomId = shift.RoomId;
-                        shiftRepository.DisableOldSameShift(shiftU.ArrangementId, shiftU.RoomId, shiftU.Date);
-                        shiftRepository.Update(shiftU);
-                        result = shiftU.ToViewModel<ShiftViewModel>();
-                        result.RoomCode = shiftRepository.GetRoomCode(result.RoomId);
-                        result.UserName = shiftRepository.GetUsername(result.ArrangementId);
-                        result.UserId = shiftRepository.GetWorkerID(result.ArrangementId);
-                    }
-                    else
-                    {
-                        throw new BaseException(ErrorMessages.INVALID_MANAGER);
-                    }
-                }
-                else
-                {
-                    throw new BaseException(ErrorMessages.INVALID_MANAGER);
-                }
-            }
-            else
+            if (shiftU == null)
             {
                 throw new BaseException(ErrorMessages.SHIFT_IS_NOT_EXISTED);
             }
+
+            var arrangementRepo = this.unitOfWork.ArrangementRepository;
+            var roomRepo = this.unitOfWork.RoomRepository;
+            var locationRepo = this.unitOfWork.LocationRepository;
+            var room = roomRepo.Find(shift.RoomId);
+            if (room == null)
+            {
+                throw new BaseException(ErrorMessages.ROOM_IS_NOT_EXISTED);
+            }
+            var location = locationRepo.Find(room.LocationId);
+            if (location == null)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
+            }
+            //Xac dinh xem shift dang dinh update co thuoc manager khong
+            var arrangementWorker = arrangementRepo.GetArrangementOfUserInThisLocation(shift.WorkerID, location.LocationId);
+            if (arrangementWorker == null)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
+            }
+            bool CheckManagerLocation = arrangementRepo.CheckUserShift(userID, arrangementWorker.ArrangementId);
+            if (CheckManagerLocation == false)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_MANAGER);
+            }
+
+            //Kiem tra thong tin moi nhap vao
+            bool CheckManagerUpdateLocation = arrangementRepo.CheckUserShift(userID, arrangementWorker.ArrangementId);
+            if (CheckManagerUpdateLocation == false)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_MANAGER);
+            }
+
+            bool CheckRoomUpdateLocation = roomRepo.CheckRoomLocation(shift.RoomId, arrangementWorker.ArrangementId);
+            if (CheckRoomUpdateLocation == false)
+            {
+                throw new BaseException(ErrorMessages.ROOM_LOCATION_NOT_EXISTED);
+            }
+            bool shiftCheck = shiftRepository.CheckExistedShift(arrangementWorker.ArrangementId, shift.RoomId, shift.Date);
+            if (shiftCheck == false)
+            {
+                throw new BaseException(ErrorMessages.SHIFT_IS_EXISTED);
+            }
+
+            shiftU.ArrangementId = arrangementWorker.ArrangementId;
+            shiftU.Date = shift.Date;
+            shiftU.RoomId = shift.RoomId;
+            shiftRepository.Update(shiftU);
+            result = shiftU.ToViewModel<ShiftViewModel>();
+            result.RoomCode = shiftRepository.GetRoomCode(result.RoomId);
+            result.UserName = shiftRepository.GetUsername(result.ArrangementId);
+            result.UserId = shiftRepository.GetWorkerID(result.ArrangementId);
+
             return result;
         }
 
         public ShiftViewModel UpdateShiftActive(int userID, ShiftActiveModel shift)
         {
-            var result = new ShiftViewModel();
+            ShiftViewModel result;
             var shiftActive = shiftRepository.Find(shift.ShiftId);
-            if (shiftActive != null)
+            if (shiftActive == null)
             {
-                var arrangementRepo = unitOfWork.ArrangementRepository;
-                bool CheckRelated = arrangementRepo.CheckUserShift(userID, shiftActive.ArrangementId);
-                if (CheckRelated == true)
-                {
-                    //Neu set cho shift nay tu Disable sang Active thi phai disable shift giong nhu vay.
-                    if (shift.IsActive == true)
-                    {
-                        shiftRepository.DisableOldSameShift(shiftActive.ArrangementId,shiftActive.RoomId, shiftActive.Date);
-                    }
+                throw new BaseException(ErrorMessages.SHIFT_IS_NOT_EXISTED);
+            }
 
-                    shiftActive.IsActive = shift.IsActive;
-                    shiftRepository.Update(shiftActive);
-                    result = shiftActive.ToViewModel<ShiftViewModel>();
-                    result.RoomCode = shiftRepository.GetRoomCode(result.RoomId);
-                    result.UserName = shiftRepository.GetUsername(result.ArrangementId);
-                    result.UserId = shiftRepository.GetWorkerID(result.ArrangementId);
-                }
-                else
+            var arrangementRepo = unitOfWork.ArrangementRepository;
+            bool CheckRelated = arrangementRepo.CheckUserShift(userID, shiftActive.ArrangementId);
+            if (CheckRelated != true)
+            {
+                throw new BaseException(ErrorMessages.INVALID_MANAGER);
+            }
+
+            //Neu set cho shift nay tu Disable sang Active thi phai disable shift giong nhu vay.
+            if (shift.IsActive == true)
+            {
+                bool shiftCheck = shiftRepository.CheckExistedShift(shiftActive.ArrangementId, shiftActive.RoomId, shiftActive.Date);
+                if (shiftCheck == false)
                 {
-                    throw new BaseException(ErrorMessages.INVALID_MANAGER);
+                    throw new BaseException(ErrorMessages.SHIFT_IS_EXISTED);
                 }
+                shiftActive.IsActive = shift.IsActive;
+                shiftRepository.Update(shiftActive);
+                result = shiftActive.ToViewModel<ShiftViewModel>();
+                result.RoomCode = shiftRepository.GetRoomCode(result.RoomId);
+                result.UserName = shiftRepository.GetUsername(result.ArrangementId);
+                result.UserId = shiftRepository.GetWorkerID(result.ArrangementId);
             }
             else
             {
-                throw new BaseException(ErrorMessages.SHIFT_IS_NOT_EXISTED);
+                shiftActive.IsActive = shift.IsActive;
+                shiftRepository.Update(shiftActive);
+                result = shiftActive.ToViewModel<ShiftViewModel>();
+                result.RoomCode = shiftRepository.GetRoomCode(result.RoomId);
+                result.UserName = shiftRepository.GetUsername(result.ArrangementId);
+                result.UserId = shiftRepository.GetWorkerID(result.ArrangementId);
             }
             return result;
         }

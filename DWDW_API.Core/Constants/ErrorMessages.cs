@@ -34,9 +34,11 @@ namespace DWDW_API.Core.Constants
 
         //Room Message
         public const string ROOM_IS_NOT_EXISTED = "Room is not existed";
-        public const string ROOM_USER_NOT_EXISTED = "This room doesn't belong to the current manager";
+        public const string ROOM_USER_NOT_EXISTED = "This room doesn't belong to the current user";
+        public const string ROOM_LOCATION_NOT_EXISTED = "This room doesn't belong to the current location";
         public const string ROOM_IS_EXISTED = "Room is existed";
         public static string ROOM_NOT_FOUND = "Room is not found";
+        public const string ROOM_DEVICE_EMPTY = "There is no device in this room";
 
         //RoomDevice Message
         public const string WRONG_DATETIME_FORMAT = "Invalid date";
@@ -44,6 +46,7 @@ namespace DWDW_API.Core.Constants
         //Shift Message
         public const string INVALID_MANAGER = "This shift doesn't belong to the current manager";
         public const string SHIFT_IS_NOT_EXISTED = "Shift is not existed";
+        public const string SHIFT_IS_EXISTED = "This shift is already been set";
 
         //User Message
         public const string BIRTHDAY_WRONG_DATETIME_FORMAT = "Role is not existed";
@@ -65,9 +68,11 @@ namespace DWDW_API.Core.Constants
         public const string LOCATION_IS_NOT_BELONG_TO_MANAGER = "Location Is not belong to manager";
         public const string LOCATION_IS_NOT_BELONG_TO_WORKER = "Location Is not belong to worker";
         public const string LOCATION_DEVICE_EMPTY = "There is no device in this location";
+        
 
         public const string LOCATION_USER_NOT_EXISTED = "This location does not belong to the current manager";
         public const string DEVICE_IS_NOT_BELONG_ROOM = "This device is not belong this this room";
+
 
         //Notification Message
         public const string NOTI_ID_IS_NOT_EXISTED = "NotificationId is not exitsted";
