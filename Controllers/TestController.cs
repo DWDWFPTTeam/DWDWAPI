@@ -20,19 +20,22 @@ namespace DWDW_API.Controllers
     public class TestController : BaseController
     {
 
+        private readonly IUserService userService;
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        public TestController(ExtensionSettings extensionSettings) : base(extensionSettings)
+        public TestController(ExtensionSettings extensionSettings, IUserService userService) : base(extensionSettings)
         {
+            this.userService = userService;
         }
 
         [HttpGet]
         [Authorize(Roles = Constant.ADMIN)]
         public IEnumerable<WeatherForecast> Get(int number1, int number2)
         {
+            userService.DeactiveOverdue();
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {

@@ -32,6 +32,7 @@ namespace DWDW_Service.Services
         UserViewModel UpdateUserDeviceToken(int userID, string deviceToken);
         UserViewModel UpdatePersonalInfo(int userID, UserPersonalUpdateModel updateUser);
         ArrangementViewModel AssignUserToLocation(ArrangementReceivedViewModel arrangement);
+        void DeactiveOverdue();
     }
     public class UserService : BaseService<User>, IUserService
     {
@@ -206,7 +207,7 @@ namespace DWDW_Service.Services
             }
             //var overdueRoomDevice = roomDeviceRepo.GetOverdue();
             //var overdueArrangement = arrangementRepo.GetOverdue();
-            //RecurringJob.AddOrUpdate("DeactiveOverdue", () => DeactiveOverdue(overdueRoomDevice, overdueArrangement), "0 0 * * *", TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate("DeactiveOverdue", () => DeactiveOverdue(), "0 0 * * *", TimeZoneInfo.Local);
 
             return user;
         }
@@ -525,18 +526,21 @@ namespace DWDW_Service.Services
             return arrangementEntity.ToViewModel<ArrangementViewModel>();
         }
 
-        public void DeactiveOverdue(List<RoomDevice> roomDeviceOverdue, List<Arrangement> arrangementOverdue)
+        public void DeactiveOverdue()
         {
             var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
             var arrangementRepo = unitOfWork.ArrangementRepository;
 
-            foreach (var element in roomDeviceOverdue)
+            var overdueRoomDevice = roomDeviceRepo.GetOverdue();
+            var overdueArrangement = arrangementRepo.GetOverdue();
+
+            foreach (var element in overdueRoomDevice)
             {
                 element.IsActive = false;
                 roomDeviceRepo.Update(element);
             }
 
-            foreach (var attribute in arrangementOverdue)
+            foreach (var attribute in overdueArrangement)
             {
                 attribute.IsActive = false;
                 arrangementRepo.Update(attribute);
