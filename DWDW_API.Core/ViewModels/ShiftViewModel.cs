@@ -23,9 +23,11 @@ namespace DWDW_API.Core.ViewModels
         [Required]
         public int WorkerID { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
-        public DateTime? Date { get; set; }
+        public DateTime Date { get; set; }
         [Required]
-        public int? RoomId { get; set; }
+        public int RoomId { get; set; }
+        [Required]
+        public int LocationId { get; set;}
     }
     public class ShiftUpdateModel : BaseModel
     {

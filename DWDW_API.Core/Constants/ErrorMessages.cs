@@ -71,6 +71,7 @@ namespace DWDW_API.Core.Constants
         public const string LOCATION_IS_NOT_BELONG_TO_MANAGER = "Location Is not belong to manager";
         public const string LOCATION_IS_NOT_BELONG_TO_WORKER = "Location Is not belong to worker";
         public const string LOCATION_DEVICE_EMPTY = "There is no device in this location";
+        
 
 
         public const string LOCATION_USER_NOT_EXISTED = "This location does not belong to the current manager";
@@ -80,7 +81,7 @@ namespace DWDW_API.Core.Constants
         //Notification Message
         public const string NOTI_ID_IS_NOT_EXISTED = "NotificationId is not exitsted";
 
-
+  
 
     }
 }

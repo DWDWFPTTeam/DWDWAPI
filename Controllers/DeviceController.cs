@@ -109,9 +109,7 @@ namespace DWDW_API.Controllers
         [Route("GetActiveDeviceFromLocationManager")]
         public dynamic GetDeviceFromLocationManager(int locationID)
         {
-            var identity = (ClaimsIdentity)User.Identity;
-            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            int userID = int.Parse(ID);
+            int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
                 return deviceService.GetActiveDeviceFromLocationManager(userID, locationID);
@@ -136,9 +134,8 @@ namespace DWDW_API.Controllers
         [Route("GetActiveDeviceFromRoomManager")]
         public dynamic GetDeviceFromRoomManager(int roomID)
         {
-            var identity = (ClaimsIdentity)User.Identity;
-            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            int userID = int.Parse(ID);
+            
+            int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
                 return deviceService.GetActiveDeviceFromRoomManager(userID, roomID);
