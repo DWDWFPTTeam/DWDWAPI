@@ -24,23 +24,64 @@ namespace DWDW_API.Controllers
         [Route("GetAllNotifications")]
         [Authorize(Roles = Constant.MANAGER)]
         [HttpGet]
-        public dynamic GetAllNotifications()
+        public IActionResult GetAllNotifications()
         {
-            int userId = int.Parse(CurrentUserId);
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return notificationService.GetAllNotifiOfManager(userId);
-            });
+                int userId = int.Parse(CurrentUserId);
+                var notifications = notificationService.GetAllNotifiOfManager(userId);
+                result = Ok(notifications);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
         [Route("UpdateIsReadNotification")]
         [Authorize(Roles = Constant.MANAGER)]
         [HttpPut]
-        public dynamic UpdateIsReadNotification(int notificationId)
+        public IActionResult UpdateIsReadNotification(int notificationId)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return notificationService.UpdateIsReadNotification(notificationId);
-            });
+                var noti = this.notificationService.UpdateIsReadNotification(notificationId);
+                result = Ok(noti);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+
+            return result;
         }
 
     }

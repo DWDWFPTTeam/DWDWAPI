@@ -26,96 +26,256 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         [Route("GetAllDevice")]
-        public dynamic GetAllDevices()
+        public IActionResult GetAllDevices()
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return deviceService.GetAll();
-            });
+                var devices = deviceService.GetAll();
+                result = Ok(devices);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         //Search device by name
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         [Route("GetDeviceCode")]
-        public dynamic SearchDeviceCode(string deviceCode)
+        public IActionResult SearchDeviceCode(string deviceCode)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return deviceService.GetDeviceCode(deviceCode);
-            });
+                var devices = deviceService.GetDeviceCode(deviceCode);
+                result = Ok(devices);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         //Search device by ID
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         [Route("GetDeviceID")]
-        public dynamic SearchDeviceID(int deviceID)
+        public IActionResult SearchDeviceID(int deviceID)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return deviceService.GetDeviceID(deviceID);
-            });
+                var devices = deviceService.GetDeviceID(deviceID);
+                result = Ok(devices);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.ADMIN)]
         [HttpPost]
         [Route("CreateDevice")]
-        public dynamic CreateDevice(DeviceCreateModel device)
+        public IActionResult CreateDevice(DeviceCreateModel device)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return deviceService.CreateDevice(device);
-            });    
+                var devices = deviceService.CreateDevice(device);
+                result = Ok(devices);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.ADMIN)]
         [HttpPut]
         [Route("UpdateDevice")]
-        public dynamic UpdateDevice(DeviceUpdateModel device)
+        public IActionResult UpdateDevice(DeviceUpdateModel device)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return deviceService.UpdateDevice(device);
-            });
+                var devices = deviceService.UpdateDevice(device);
+                result = Ok(devices);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.ADMIN)]
         [HttpPut]
         [Route("UpdateDeviceActive")]
-        public dynamic UpdateDeviceActive(DeviceActiveModel device)
+        public IActionResult UpdateDeviceActive(DeviceActiveModel device)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return deviceService.UpdateDeviceActive(device);
-            });
+                var devices = deviceService.UpdateDeviceActive(device);
+                result = Ok(devices);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         //Get device with active relationship with room in a location for admin
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         [Route("GetActiveDeviceFromLocationAdmin")]
-        public dynamic GetDeviceFromLocation(int locationID)
+        public IActionResult GetDeviceFromLocation(int locationID)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return deviceService.GetActiveDeviceFromLocation(locationID);
-            });
+                var devices = deviceService.GetActiveDeviceFromLocation(locationID);
+                result = Ok(devices);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         //Get device belong to manager location
         [Authorize(Roles = Constant.MANAGER)]
         [HttpGet]
         [Route("GetActiveDeviceFromLocationManager")]
-        public dynamic GetDeviceFromLocationManager(int locationID)
+        public IActionResult GetDeviceFromLocationManager(int locationID)
         {
+            IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
-            return ExecuteInMonitoring(() =>
+            try
             {
-                return deviceService.GetActiveDeviceFromLocationManager(userID, locationID);
-            });
+                var devices = deviceService.GetActiveDeviceFromLocationManager(userID,locationID);
+                result = Ok(devices);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
 
@@ -123,37 +283,97 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         [Route("GetActiveDeviceFromRoomAdmin")]
-        public dynamic GetDeviceFromRoom(int roomID)
+        public IActionResult GetDeviceFromRoom(int roomID)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return deviceService.GetActiveDeviceFromRoom(roomID);
-            });
+                var devices = deviceService.GetActiveDeviceFromRoom(roomID);
+                result = Ok(devices);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
         //Get device belong to manager room
         [Authorize(Roles = Constant.MANAGER)]
         [HttpGet]
         [Route("GetActiveDeviceFromRoomManager")]
-        public dynamic GetDeviceFromRoomManager(int roomID)
+        public IActionResult GetDeviceFromRoomManager(int roomID)
         {
+            IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
-            return ExecuteInMonitoring(() =>
+            try
             {
-                return deviceService.GetActiveDeviceFromRoomManager(userID, roomID);
-            });
+                var devices = deviceService.GetActiveDeviceFromRoomManager(userID, roomID);
+                result = Ok(devices);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.ADMIN)]
         [HttpPost]
         [Route("AssignDeviceToRoom")]
-        public dynamic AssignDeviceToRoom(RoomDeviceCreateModel roomDevice)
+        public IActionResult AssignDeviceToRoom(RoomDeviceCreateModel roomDevice)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return deviceService.AssignDeviceToRoom(roomDevice);
-            });
+                var devices = deviceService.AssignDeviceToRoom(roomDevice);
+                result = Ok(devices);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
     }
 }

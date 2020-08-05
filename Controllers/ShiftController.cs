@@ -26,156 +26,388 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         [Route("GetAllShift")]
-        public dynamic GetAllShift()
+        public IActionResult GetAllShift()
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return shiftService.GetAll();
-            });
+                var shifts = shiftService.GetAll();
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         [Route("GetShiftByID")]
-        public dynamic GetShiftByID(int id)
+        public IActionResult GetShiftByID(int id)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return shiftService.GetByID(id);
-            });
+                var shifts = shiftService.GetByID(id);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         [Route("GetShiftByDate")]
-        public dynamic GetShiftByDate(DateTime date)
+        public IActionResult GetShiftByDate(DateTime date)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return shiftService.GetShiftByDate(date);
-            });
+                var shifts = shiftService.GetShiftByDate(date);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.MANAGER)]
         [HttpGet]
         [Route("GetShiftManager")]
-        public dynamic GetShiftManager()
+        public IActionResult GetShiftManager()
         {
+            IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
-            return ExecuteInMonitoring(() =>
+            try
             {
-                return shiftService.GetShiftManager(userID);
-            });
+                var shifts = shiftService.GetShiftManager(userID);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.MANAGER)]
         [HttpGet]
         [Route("GetShiftByDateManageer")]
-        public dynamic GetShiftByDateManager(DateTime date)
+        public IActionResult GetShiftByDateManager(DateTime date)
         {
+            IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
-            return ExecuteInMonitoring(() =>
+            try
             {
-                return shiftService.GetShiftByDateManager(userID, date);
-            });
+                var shifts = shiftService.GetShiftByDateManager(userID, date);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.WORKER)]
         [HttpGet]
         [Route("GetShiftWorker")]
-        public dynamic GetShiftWorker()
+        public IActionResult GetShiftWorker()
         {
+            IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
-            return ExecuteInMonitoring(() =>
+            try
             {
-                return shiftService.GetShiftWorker(userID);
-            });
+                var shifts = shiftService.GetShiftWorker(userID);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.MANAGER)]
         [HttpPost]
         [Route("CreateShift")]
-        public dynamic CreateShift(int locationID, ShiftCreateModel shift)
+        public IActionResult CreateShift(int locationID, ShiftCreateModel shift)
         {
+            IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
-            return ExecuteInMonitoring(() =>
+            try
             {
-                return shiftService.CreateShift(userID, locationID, shift);
-            });
+                var shifts = shiftService.CreateShift(userID, locationID, shift);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.MANAGER)]
         [HttpPut]
         [Route("UpdateShift")]
-        public dynamic UpdateShift(int locationID, ShiftUpdateModel shift)
+        public IActionResult UpdateShift(int locationID, ShiftUpdateModel shift)
         {
+            IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
-            return ExecuteInMonitoring(() =>
+            try
             {
-                return shiftService.UpdateShift(userID, locationID, shift);
-            });
+                var shifts = shiftService.UpdateShift(userID, locationID, shift);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
         [Authorize(Roles = Constant.MANAGER)]
         [HttpPut]
         [Route("UpdateShiftActive")]
-        public dynamic UpdateShiftActive(ShiftActiveModel shift)
+        public IActionResult UpdateShiftActive(ShiftActiveModel shift)
         {
+            IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
-            return ExecuteInMonitoring(() =>
+            try
             {
-                return shiftService.UpdateShiftActive(userID, shift);
-            });
+                var shifts = shiftService.UpdateShiftActive(userID, shift);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         [Route("GetShiftFromLocationByDate")]
-        public dynamic GetShiftFromLocationByDate(int locationId, DateTime date)
+        public IActionResult GetShiftFromLocationByDate(int locationId, DateTime date)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return shiftService.GetShiftFromLocationByDate(locationId, date);
-            });
+                var shifts = shiftService.GetShiftFromLocationByDate(locationId, date);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.MANAGER)]
         [HttpGet]
         [Route("GetShiftFromLocationByDateManager")]
-        public dynamic GetShiftFromLocationByDateManager(int locationId, DateTime date)
+        public IActionResult GetShiftFromLocationByDateManager(int locationId, DateTime date)
         {
+            IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
-            return ExecuteInMonitoring(() =>
+            try
             {
-                return shiftService.GetShiftFromLocationByDateManager(userID, locationId, date);
-            });
+                var shifts = shiftService.GetShiftFromLocationByDateManager(userID, locationId, date);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Authorize(Roles = Constant.WORKER)]
         [HttpGet]
         [Route("GetShiftFromLocationByDateWorker")]
-        public dynamic GetShiftFromLocationByDateWorker(int locationId, DateTime date)
+        public IActionResult GetShiftFromLocationByDateWorker(int locationId, DateTime date)
         {
+            IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
-            return ExecuteInMonitoring(() =>
+            try
             {
-                return shiftService.GetShiftFromLocationByDateWorker(userID, locationId, date);
-            });
+                var shifts = shiftService.GetShiftFromLocationByDateWorker(userID, locationId, date);
+                result = Ok(shifts);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
     }
 }

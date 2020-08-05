@@ -28,121 +28,320 @@ namespace DWDW_API.Controllers
         [HttpGet]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("GetLocations")]
-        public dynamic GetLocations()
+        public IActionResult GetLocations()
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return locationService.GetLocations();
-            });
+                var list = locationService.GetLocations();
+                return Ok(list);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [HttpGet]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("GetAllActiveLocations")]
-        public dynamic GetAllActiveLocations()
+        public IActionResult GetAllActiveLocations()
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return locationService.GetAllActiveLocations();
-            });
+                var list = locationService.GetAllActiveLocations();
+                return Ok(list);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [HttpGet]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("GetLocationById")]
-        public dynamic GetLocationById(int locationId)
+        public IActionResult GetLocationById(int locationId)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return locationService.GetLocationById(locationId);
-            });
+                var location = locationService.GetLocationById(locationId);
+                return Ok(location);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [HttpGet]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("SearchLocationCode")]
-        public dynamic SearchLocationByLocationCode(string locationCode)
+        public IActionResult SearchLocationByLocationCode(string locationCode)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return locationService.SearchLocationByLocationCode(locationCode);
-            });
+                var location = locationService.SearchLocationByLocationCode(locationCode);
+                return Ok(location);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [HttpPut]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("UpdateLocation")]
-        public dynamic UpdateLocation(LocationUpdateModel locationUpdate)
+        public IActionResult UpdateLocation(LocationUpdateModel locationUpdate)
         {
-
             //if (!ModelState.IsValid) return BadRequest(ModelState);
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return locationService.UpdateLocation(locationUpdate);
-            });
+                var locationUpdated = locationService.UpdateLocation(locationUpdate);
+                return Ok(locationUpdated);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [HttpPost]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("CreateLocation")]
-        public dynamic CreateLocation(LocationInsertModel locationInsert)
+        public IActionResult CreateLocation(LocationInsertModel locationInsert)
         {
             //if (!ModelState.IsValid) return BadRequest(ModelState);
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return locationService.InsertLocation(locationInsert);
-            });
+                var locationInserted = locationService.InsertLocation(locationInsert);
+                return Ok(locationInserted);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [HttpPut]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("DeactiveLocation/{locationId}")]
-        public dynamic DeactiveLocation(int locationId)
+        public IActionResult DeactiveLocation(int locationId)
         {
             //if (!ModelState.IsValid) return BadRequest(ModelState);
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return locationService.DeactiveLocation(locationId);
-            });
+                var locationDeactived = locationService.DeactiveLocation(locationId);
+                return Ok(locationDeactived);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [HttpPut]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("UpdateLocationStatus")]
-        public dynamic UpdateLocationStatus(LocationUpdateStatusModel location)
+        public IActionResult UpdateLocationStatus(LocationUpdateStatusModel location)
         {
             //if (!ModelState.IsValid) return BadRequest(ModelState);
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return locationService.UpdateLocationStatus(location);
-            });
+                var locationDeactived = locationService.UpdateLocationStatus(location);
+                return Ok(locationDeactived);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [HttpGet]
         [Authorize(Roles = Constant.MANAGER + ", " + Constant.WORKER)]
         [Route("GetLocationsByManagerWorker")]
-        public dynamic GetLocationsByManagerWorker()
+        public IActionResult GetLocationsByManagerWorker()
         {
-            int userId = int.Parse(CurrentUserId);
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return locationService.GetLocationsByManagerWorker(userId);
-            });
+                int userId = int.Parse(CurrentUserId);
+                var list = locationService.GetLocationsByManagerWorker(userId);
+                return Ok(list);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [HttpGet]
         [AllowAnonymous]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("GetLocationsRecord")]
-        public dynamic GetLocationsRecord([FromQuery] LocationReceiveDateModel receiveDateModel)
+        public IActionResult GetLocationsRecord([FromQuery] LocationReceiveDateModel receiveDateModel)
         {
-            DateTime end_lastDate = receiveDateModel.endDate.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
-            //check date is valid
-            List<LocationRecordViewModel> list = new List<LocationRecordViewModel>();
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return locationService.GetLocationsRecordBetweenDate(receiveDateModel.startDate, end_lastDate);
-            });
+                DateTime end_lastDate = receiveDateModel.endDate.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(999);
+                //check date is valid
+                List<LocationRecordViewModel> list = new List<LocationRecordViewModel>();
+                list = locationService.GetLocationsRecordBetweenDate(receiveDateModel.startDate, end_lastDate);
+                return Ok(list);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
     }
 }

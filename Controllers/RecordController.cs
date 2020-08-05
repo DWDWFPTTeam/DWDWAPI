@@ -38,12 +38,31 @@ namespace DWDW_API.Controllers
         [Route("GetRecordsByLocationId")]
         [AllowAnonymous]
         [HttpGet]
-        public dynamic GetRecordsByLocationId(int locationId)
+        public IActionResult GetRecordsByLocationId(int locationId)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return recordService.GetRecordByLocationId(locationId);
-            });
+                var record = recordService.GetRecordByLocationId(locationId);
+                result = Ok(record);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
         [Route("GetRecordsByLocationIdAndTime/{locationId}/{start}")]
         [Authorize(Roles = Constant.ADMIN)]
@@ -104,27 +123,64 @@ namespace DWDW_API.Controllers
         [Route("GetRecordByWorkerDate")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
-        public dynamic GetRecordByWorkerDate(int workerID, DateTime date)
+        public IActionResult GetRecordByWorkerDate(int workerID, DateTime date)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return recordService.GetRecordByWorkerDate(workerID, date);
-            });
+                var record = recordService.GetRecordByWorkerDate(workerID, date);
+                result = Ok(record);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Route("GetRecordByWorkerDateForManager")]
         [Authorize(Roles = Constant.MANAGER)]
         [HttpGet]
-        public dynamic GetRecordByWorkerDateForManager(int workerID, DateTime date)
+        public IActionResult GetRecordByWorkerDateForManager(int workerID, DateTime date)
         {
             IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
-            return ExecuteInMonitoring(() =>
+            try
             {
-                return recordService.GetRecordByWorkerDateForManager(userID, workerID, date);
-            });
+                var record = recordService.GetRecordByWorkerDateForManager(userID,workerID, date);
+                result = Ok(record);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
     }
