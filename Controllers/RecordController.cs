@@ -38,31 +38,12 @@ namespace DWDW_API.Controllers
         [Route("GetRecordsByLocationId")]
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult GetRecordsByLocationId(int locationId)
+        public dynamic GetRecordsByLocationId(int locationId)
         {
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var record = recordService.GetRecordByLocationId(locationId);
-                result = Ok(record);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return recordService.GetRecordByLocationId(locationId);
+            });
         }
         [Route("GetRecordsByLocationIdAndTime/{locationId}/{start}")]
         [Authorize(Roles = Constant.ADMIN)]
@@ -123,64 +104,27 @@ namespace DWDW_API.Controllers
         [Route("GetRecordByWorkerDate")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
-        public IActionResult GetRecordByWorkerDate(int workerID, DateTime date)
+        public dynamic GetRecordByWorkerDate(int workerID, DateTime date)
         {
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var record = recordService.GetRecordByWorkerDate(workerID, date);
-                result = Ok(record);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return recordService.GetRecordByWorkerDate(workerID, date);
+            });
         }
 
         [Route("GetRecordByWorkerDateForManager")]
         [Authorize(Roles = Constant.MANAGER)]
         [HttpGet]
-        public IActionResult GetRecordByWorkerDateForManager(int workerID, DateTime date)
+        public dynamic GetRecordByWorkerDateForManager(int workerID, DateTime date)
         {
             IActionResult result;
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
-            try
+            return ExecuteInMonitoring(() =>
             {
-                var record = recordService.GetRecordByWorkerDateForManager(userID,workerID, date);
-                result = Ok(record);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return recordService.GetRecordByWorkerDateForManager(userID, workerID, date);
+            });
         }
 
     }
