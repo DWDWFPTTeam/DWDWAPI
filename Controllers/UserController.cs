@@ -11,7 +11,6 @@ using DWDW_Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace DWDW_API.Controllers
 {
@@ -30,111 +29,128 @@ namespace DWDW_API.Controllers
         }
 
 
+        //This API just for testing 
         [Route("GetAllAllowAnonymous")]
         [AllowAnonymous]
         [HttpGet]
-        public dynamic GetAllUserAllowAnonymous()
+        public IActionResult GetAllUserAllowAnonymous()
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return userService.GetAllAllowAnonymous();
-            });
+                var users = userService.GetAllAllowAnonymous();
+                result = Ok(users);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
-        //[Route("GetUserInfoToken")]
-        //[Authorize]
-        //[HttpGet]
-        //public IActionResult GetUserInfoToken()
-        //{
-        //    IActionResult result;
-        //    try
-        //    {
-        //        var userId = int.Parse(CurrentUserId);
-        //        var user = userService.GetUserById(userId);
-        //        result = Ok(user);
-        //    }
-        //    catch (BaseException e)
-        //    {
-        //        result = BadRequest(new ErrorViewModel
-        //        {
-        //            StatusCode = StatusCodes.Status400BadRequest,
-        //            Message = e.Message
-        //        });
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-        //        {
-        //            StatusCode = StatusCodes.Status500InternalServerError,
-        //            Message = e.Message
-        //        });
-        //    }
-        //    return result;
-        //}
         [Route("GetUserInfoToken")]
         [Authorize]
         [HttpGet]
-        public dynamic GetUserInfoToken()
+        public IActionResult GetUserInfoToken()
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
                 var userId = int.Parse(CurrentUserId);
-                return userService.GetUserById(userId);
-            });
+                var user = userService.GetUserById(userId);
+                result = Ok(user);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
-        [Route("GetAllByAdmin")]
+
+        [Route("GetAll")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
-        public dynamic GetAllUserByAdmin()
+        public IActionResult GetAllUserByAdmin()
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                var userId = int.Parse(CurrentUserId);
-                return userService.GetAllByAdmin(userId);
-            });
+                var users = userService.GetAllByAdmin();
+                result = Ok(users);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
+
         [Route("GetAllActive")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
-        public dynamic GetAllActiveUserByAdmin()
+        public IActionResult GetAllActiveUserByAdmin()
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                var userId = int.Parse(CurrentUserId);
-                return userService.GetAllActiveByAdmin(userId);
-            });
+                var users = userService.GetAllActiveByAdmin();
+                result = Ok(users);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
-
-        //[Route("GetAllActive")]
-        //[Authorize(Roles = Constant.ADMIN)]
-        //[HttpGet]
-        //public IActionResult GetAllActiveUserByAdmin()
-        //{
-        //    IActionResult result;
-        //    try
-        //    {
-        //        var users = userService.GetAllActiveByAdmin();
-        //        result = Ok(users);
-        //    }
-        //    catch (BaseException e)
-        //    {
-        //        result = BadRequest(new ErrorViewModel
-        //        {
-        //            StatusCode = StatusCodes.Status400BadRequest,
-        //            Message = e.Message
-        //        });
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-        //        {
-        //            StatusCode = StatusCodes.Status500InternalServerError,
-        //            Message = e.Message
-        //        });
-        //    }
-        //    return result;
-        //}
 
 
         [Route("GetUserFromLocationByAdmin")]
@@ -142,11 +158,30 @@ namespace DWDW_API.Controllers
         [HttpGet]
         public IActionResult GetUserFromLocationByAdmin(int locationId)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                int userId = int.Parse(CurrentUserId);
-                return userService.GetUserFromLocationByAdmin(userId, locationId);
-            });
+                var users = userService.GetUserFromLocationByAdmin(locationId);
+                return Ok(users);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+
+            return result;
         }
 
         [Route("GetUserFromLocationsByManager")]
@@ -154,11 +189,32 @@ namespace DWDW_API.Controllers
         [HttpGet]
         public IActionResult GetUserFromLocationsByManager()
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
                 int userId = int.Parse(CurrentUserId);
-                return userService.GetUserFromLocationsByManager(userId);
-            });
+                var users = userService.GetUserFromLocationsByManager(userId);
+                result = Ok(users);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+
+            return result;
         }
 
         [Route("GetUserFromOneLocationByManager")]
@@ -166,23 +222,32 @@ namespace DWDW_API.Controllers
         [HttpGet]
         public IActionResult GetUserFromOneLocationByManager(int locationId)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
                 int userId = int.Parse(CurrentUserId);
-                return userService.GetUserFromOneLocationByManager(userId, locationId);
-            });
-        }
-
-        [Route("GetWorkerFromLocationsByManager")]
-        [Authorize(Roles = Constant.MANAGER)]
-        [HttpGet]
-        public IActionResult GetWorkerFromLocationsByManager(int locationID)
-        {
-            return ExecuteInMonitoring(() =>
+                var users = userService.GetUserFromOneLocationByManager(userId, locationId);
+                result = Ok(users);
+            }
+            catch (BaseException e)
             {
-                int userID = int.Parse(CurrentUserId);
-                return userService.GetWorkerFromLocationsByManager(userID, locationID);
-            });
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+
+            return result;
         }
 
 
@@ -193,24 +258,70 @@ namespace DWDW_API.Controllers
         [HttpPost]
         public IActionResult CreateUserByAdmin(UserCreateModel userCreated)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return userService.CreateUser(userCreated);
-            });
+                var insert = userService.CreateUserAsync(userCreated);
+                result = Ok(insert);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
-        [Route("Login")]
+        [Route("LoginAsync")]
         [AllowAnonymous]
         [HttpPost]
-        public dynamic LoginAsync(UserLoginInfo info)
+        public async Task<IActionResult> LoginAsync(UserLoginInfo info)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                var user = userService.LoginAsync(info.UserName, info.Password);
-                userService.UpdateUserDeviceToken(user.UserId.Value, info.DeviceToken);
-                var tokenModel = new TokenResponseModel();
-                return jwtTokenProvider.CreateUserAccessToken(user);
-            });
+
+                var user = await userService.LoginAsync(info.UserName, info.Password);
+                if (user != null)
+                {
+                    userService.UpdateUserDeviceToken(user.UserId.Value, info.DeviceToken);
+                    var tokenModel = new TokenResponseModel();
+                    tokenModel.AccessToken = jwtTokenProvider.CreateUserAccessToken(user);
+                    result = Ok(tokenModel);
+                }
+                else
+                {
+                    result = BadRequest(ErrorMessages.INVALID_USERNAME_PASSWORD);
+                }
+            } //handle exception
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Route("UpdateUserByAdmin")]
@@ -218,21 +329,59 @@ namespace DWDW_API.Controllers
         [HttpPut]
         public IActionResult UpdateUserByAdmin(UserUpdateModel userUpdate)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return userService.UpdateUser(userUpdate);
-            });
+                var userUpdated = userService.UpdateUser(userUpdate);
+                return Ok(userUpdated);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Route("AssignUserToLocationByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpPut]
-        public dynamic AssignUserToLocation(ArrangementReceivedViewModel arrangement)
+        public IActionResult AssignUserToLocation(ArrangementReceivedViewModel arrangement)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return userService.AssignUserToLocation(arrangement);
-            });
+                var assignUser = userService.AssignUserToLocation(arrangement);
+                return Ok(assignUser);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
 
         [Route("UpdatePersonalInfo")]
@@ -240,104 +389,159 @@ namespace DWDW_API.Controllers
         [HttpPut]
         public IActionResult UpdatePersonalInfo(UserPersonalUpdateModel userUpdate)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            var identity = (ClaimsIdentity)User.Identity;
+            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userID = int.Parse(ID);
+            try
             {
-                var userId = int.Parse(CurrentUserId);
-                return userService.UpdatePersonalInfo(userId, userUpdate);
-            });
-        }
-
-
-        [Route("UpdateManagerDeviceToken")]
-        [Authorize(Roles = Constant.MANAGER)]
-        [HttpPut]
-        public dynamic UpdateManagerDeviceToken(string deviceToken)
-        {
-            return ExecuteInMonitoring(() =>
+                var userUpdated = userService.UpdatePersonalInfo(userID, userUpdate);
+                return Ok(userUpdated);
+            }
+            catch (BaseException e)
             {
-                var userId = int.Parse(CurrentUserId);
-                return userService.UpdateUserDeviceToken(userId, deviceToken);
-            });
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
-
-
+ 
 
         [Route("DeActiveUserByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpDelete]
-        public dynamic DeActiveUserByAdmin(int id)
+        public IActionResult DeActiveUserByAdmin(int id)
         {
-            return ExecuteInMonitoring(() =>
+            IActionResult result;
+            try
             {
-                return userService.DeActiveUserByAdmin(id);
-            });
+                var deActiveUser = userService.DeActiveUserByAdmin(id);
+                result = Ok(deActiveUser);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
         }
-        //[Route("UpdateUserActiveByAdmin")]
-        //[Authorize(Roles = Constant.ADMIN)]
-        //[HttpPut]
-        //public IActionResult ActiveUserByAdmin(UserActiveModel user)
-        //{
-        //    IActionResult result;
-        //    try
-        //    {
-        //        var activeUser = userService.ActiveUserByAdmin(user);
-        //        result = Ok(activeUser);
-        //    }
-        //    catch (BaseException e)
-        //    {
-        //        result = BadRequest(new ErrorViewModel
-        //        {
-        //            StatusCode = StatusCodes.Status400BadRequest,
-        //            Message = e.Message
-        //        });
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-        //        {
-        //            StatusCode = StatusCodes.Status500InternalServerError,
-        //            Message = e.Message
-        //        });
-        //    }
-        //    return result;
-        //}
+        [Route("UpdateUserActiveByAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpPut]
+        public IActionResult ActiveUserByAdmin(UserActiveModel user)
+        {
+            IActionResult result;
+            try
+            {
+                var activeUser = userService.ActiveUserByAdmin(user);
+                result = Ok(activeUser);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
+        }
 
+        [Route("UpdateManagerDeviceToken")]
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpDelete]
+        public IActionResult UpdateManagerDeviceToken(string deviceToken)
+        {
+            IActionResult result;
+            var identity = (ClaimsIdentity)User.Identity;
+            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            int userID = int.Parse(ID);
+            try
+            {
+                var managerDeviceToken = userService.UpdateUserDeviceToken(userID, deviceToken);
+                result = Ok(managerDeviceToken);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
+        }
 
+        [Route("GetWorkerFromLocationsByManager")]
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpGet]
+        public IActionResult GetWorkerFromLocationsByManager(int locationID)
+        {
+            IActionResult result;
+            try
+            {
+                int userId = int.Parse(CurrentUserId);
+                var users = userService.GetWorkerFromLocationsByManager(userId, locationID);
+                result = Ok(users);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
 
-        //[Route("UpdateManagerDeviceToken")]
-        //[Authorize(Roles = Constant.MANAGER)]
-        //[HttpDelete]
-        //public IActionResult UpdateManagerDeviceToken(string deviceToken)
-        //{
-        //    IActionResult result;
-        //    var identity = (ClaimsIdentity)User.Identity;
-        //    var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-        //    int userID = int.Parse(ID);
-        //    try
-        //    {
-        //        var managerDeviceToken = userService.UpdateUserDeviceToken(userID, deviceToken);
-        //        result = Ok(managerDeviceToken);
-        //    }
-        //    catch (BaseException e)
-        //    {
-        //        result = BadRequest(new ErrorViewModel
-        //        {
-        //            StatusCode = StatusCodes.Status400BadRequest,
-        //            Message = e.Message
-        //        });
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-        //        {
-        //            StatusCode = StatusCodes.Status500InternalServerError,
-        //            Message = e.Message
-        //        });
-        //    }
-        //    return result;
-        //}
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
 
-
+            return result;
+        }
 
 
     }

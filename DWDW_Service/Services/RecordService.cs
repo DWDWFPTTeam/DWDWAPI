@@ -191,27 +191,15 @@ namespace DWDW_Service.Services
             var room = unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == record.DeviceId
                                                                  && rd.IsActive == true, null, "Room")
                                                                 .FirstOrDefault().Room;
-            if(room == null)
-            {
-                throw new BaseException(ErrorMessages.ROOM_NOT_FOUND);
-            }
             //Get Manager who manage the room
             var manager = unitOfWork.ArrangementRepository.Get(a => a.LocationId == room.LocationId
                                                             && a.IsActive == true, null, "User")
                                                             .Select(a => a.User)
                                                             .Where(u => u.RoleId.ToString().Equals(Constant.MANAGER))
                                                             .FirstOrDefault();
-            if(manager == null)
-            {
-                throw new BaseException(ErrorMessages.MANAGER_NOT_FOUND);
-            }
 
             //Get the shift of room and time
             var shift = unitOfWork.ShiftRepository.GetShiftByRoomDate(room.RoomId, record.RecordDateTime);
-            if (shift == null)
-            {
-                throw new BaseException(ErrorMessages.SHIFT_IS_NOT_EXISTED);
-            }
 
             var worker = unitOfWork.UserRepository.Find(shift.Arrangement.UserId);
             var notification = unitOfWork.NotificationRepository.CreateNotification(record, room, manager, worker, deviceCode);
