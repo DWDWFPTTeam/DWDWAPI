@@ -115,9 +115,9 @@ namespace DWDW_API.Controllers
         [Route("GetRoomsFromLocationByManager/{locationId}")]
         public dynamic GetRoomsFromLocationByManager(int locationId)
         {
-            int userId = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
+                int userId = int.Parse(CurrentUserId);
                 return roomService.GetRoomsFromLocationByManager(userId, locationId);
             });
         }
@@ -127,9 +127,9 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.MANAGER)]
         public dynamic SearchRoomCodeByManager(string roomCode)
         {
-            int userId = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
+                int userId = int.Parse(CurrentUserId);
                 return roomService.SearchRoomCodeByManager(userId, roomCode);
             });
         }
