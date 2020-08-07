@@ -14,7 +14,7 @@ namespace DWDW_API.Core.ViewModels
         public DateTime? EndDate { get; set; }
         public bool? IsActive { get; set; }
     }
-    public class ArrangementReceivedViewModel: BaseModel
+    public class ArrangementReceivedViewModel : BaseModel
     {
         [Required]
         public int UserId { get; set; }
@@ -25,6 +25,15 @@ namespace DWDW_API.Core.ViewModels
         [Required]
         public DateTime EndDate { get; set; }
     }
+
+    public class ArrangementDisableViewModel : BaseModel
+    {
+        [Required]
+        public int UserId { get; set; }
+        [Required]
+        public int LocationId { get; set; }
+    }
+
     public class ArrangementLocationViewModel : BaseModel
     {
         public int? LocationId { get; set; }

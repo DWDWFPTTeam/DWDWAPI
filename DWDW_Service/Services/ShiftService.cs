@@ -233,6 +233,10 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
             }
+            if (shift.Date > arrangementWorker.EndDate)
+            {
+                throw new BaseException(ErrorMessages.SHIFT_DATE_INVALID);
+            }
             bool CheckManagerLocation = arrangementRepo.CheckUserShift(userID, arrangementWorker.ArrangementId);
             if (CheckManagerLocation == false)
             {
@@ -284,6 +288,10 @@ namespace DWDW_Service.Services
             if (arrangementWorker == null)
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
+            }
+            if (shift.Date > arrangementWorker.EndDate)
+            {
+                throw new BaseException(ErrorMessages.SHIFT_DATE_INVALID);
             }
             bool CheckManagerLocation = arrangementRepo.CheckUserShift(userID, arrangementWorker.ArrangementId);
             if (CheckManagerLocation == false)

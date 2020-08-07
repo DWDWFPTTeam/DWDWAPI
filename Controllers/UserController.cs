@@ -94,6 +94,18 @@ namespace DWDW_API.Controllers
                 return userService.GetAllByAdmin(userId);
             });
         }
+
+        [Route("GetByIDAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpGet]
+        public dynamic GetByIDAdmin(int userId)
+        {
+            return ExecuteInMonitoring(() =>
+            {
+                return userService.GetByIDAdmin(userId);
+            });
+        }
+
         [Route("GetAllActive")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
@@ -232,6 +244,17 @@ namespace DWDW_API.Controllers
             return ExecuteInMonitoring(() =>
             {
                 return userService.AssignUserToLocation(arrangement);
+            });
+        }
+
+        [Route("DeassignUserFromLocationByAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpPut]
+        public dynamic DeassignUserFromLocationByAdmin(ArrangementDisableViewModel arrangement)
+        {
+            return ExecuteInMonitoring(() =>
+            {
+                return userService.DeassignUserToLocation(arrangement);
             });
         }
 
