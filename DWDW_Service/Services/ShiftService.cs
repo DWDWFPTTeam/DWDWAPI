@@ -306,11 +306,6 @@ namespace DWDW_Service.Services
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_MANAGER);
             }
 
-            bool CheckRoomUpdateLocation = roomRepo.CheckRoomLocation(shift.RoomId, arrangementWorker.ArrangementId);
-            if (CheckRoomUpdateLocation == false)
-            {
-                throw new BaseException(ErrorMessages.ROOM_LOCATION_NOT_EXISTED);
-            }
             bool shiftCheck = shiftRepository.CheckExistedShift(arrangementWorker.ArrangementId, shift.RoomId, shift.Date);
             if (shiftCheck == false)
             {
