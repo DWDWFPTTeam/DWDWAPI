@@ -11,12 +11,13 @@ using System.Text;
 using Newtonsoft.Json;
 using System.Linq;
 using DWDW_API.Core.Infrastructure;
+using System.Threading.Tasks;
 
 namespace DWDW_Service.Services
 {
     public interface IRecordService : IBaseService<Record>
     {
-        RecordViewModel SaveRecord(RecordReceivedModel record);
+        Task<RecordViewModel> SaveRecord(RecordReceivedModel record, string imageRoot);
         IEnumerable<RecordViewModel> GetRecordByLocationId(int locationId);
         IEnumerable<RecordViewModel> GetRecordsByLocationIdBetweenTime
             (int locationId, DateTime startDate, DateTime endDate);
@@ -142,7 +143,7 @@ namespace DWDW_Service.Services
             return record;
         }
 
-        public RecordViewModel SaveRecord(RecordReceivedModel record)
+        public async Task<RecordViewModel> SaveRecord(RecordReceivedModel record, string imageRoot)
         {
             RecordViewModel result;
             var device = unitOfWork.DeviceRepository.GetDeviceCode(record.DeviceCode);
@@ -152,16 +153,33 @@ namespace DWDW_Service.Services
                 {
                     DeviceId = device.DeviceId,
                     Type = record.Type,
-                    Image = record.Image,
-                    RecordDateTime = DateTime.Now
+                    RecordDateTime = DateTime.Now,
+                    
                 };
                 var notificationFCM = this.CreateNotificationFCM(recordEntity, device.DeviceCode);
+                if(record.Image.Length <= 0)
+                {
+                    throw new BaseException("Image is not existed!");
+                }
+                if (!Directory.Exists(imageRoot))
+                {
+                    Directory.CreateDirectory(imageRoot);
+                   
+                }
+                var dir = new DirectoryInfo(imageRoot);
+                var imagePath = imageRoot + record.Image.Name + dir.GetFiles().Length + ".jpg";
+                using (var fileStream = File.Create(imagePath))
+                {
+                    await record.Image.CopyToAsync(fileStream);
+                    fileStream.Flush();
+                    recordEntity.Image = imagePath;
+                }
                 using (var transaction = unitOfWork.CreateTransaction())
                 {
                     try
                     {
                         //save record
-                        recordRepository.Add(recordEntity);
+                        await recordRepository.AddAsync(recordEntity);
                         //save noti
                         unitOfWork.NotificationRepository.Add(notificationFCM.NotificationVM.ToEntity<Notifications>());
                         transaction.Commit();

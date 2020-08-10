@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections;
 using System.Globalization;
+using System.IO;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace DWDW_API.Controllers
 {
@@ -26,11 +28,12 @@ namespace DWDW_API.Controllers
         [Route("SaveRecord")]
         [AllowAnonymous]
         [HttpPost]
-        public dynamic SaveRecord(RecordReceivedModel recordReceived)
+        public async Task<dynamic> SaveRecord([FromForm]RecordReceivedModel recordReceived)
         {
-            return ExecuteInMonitoring(() =>
+           
+            return await ExecuteInMonitoringAsync(async () =>
             {
-                return recordService.SaveRecord(recordReceived);
+                return await recordService.SaveRecord(recordReceived, this.ImageRoot);
             });
         }
 

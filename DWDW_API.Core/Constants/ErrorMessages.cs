@@ -18,6 +18,8 @@ namespace DWDW_API.Core.Constants
         public const string START_DATE_REQUIRED = "Start date is required"; 
         public const string END_DATE_REQUIRED = "End date is required";
         public const string INVALID_DATE_FORMAT = "Invalid date format! Date format is'yyyy-MM-dd'";
+        public const string TYPE_MUST_BE_INTEGER = "Type must be integer'";
+        public const string IMAGE_IS_EMPTY = "Image is empty";
 
         public const string INVALID_USERID_OR_LOCATIONID = "User Id or Location Id is invalid";
 
@@ -31,6 +33,8 @@ namespace DWDW_API.Core.Constants
         public const string DEVICE_LIST_EMPTY = "This device is not existed";
         public const string DEVICE_IS_EXISTED = "Device is existed";
         public const string DEVICE_IS_NOT_EXISTED = "Device is not existed";
+        public const string DEVICE_CODE_IS_EMPTY = "Device is empty";
+
 
         //Room Message
         public const string ROOM_IS_NOT_EXISTED = "Room is not existed";

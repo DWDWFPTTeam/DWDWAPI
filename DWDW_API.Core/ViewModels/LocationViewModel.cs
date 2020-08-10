@@ -15,6 +15,14 @@ namespace DWDW_API.Core.ViewModels
         public string LocationCode { get; set; }
         public bool? IsActive { get; set; }
     }
+    public class LocationUserViewModel : BaseModel
+    {
+        public int LocationId { get; set; }
+        public string LocationCode { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+    }
 
     public class LocationRecordViewModel : BaseModel
     {

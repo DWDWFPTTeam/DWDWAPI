@@ -234,6 +234,7 @@ namespace DWDW_API.Controllers
                 return userService.AssignUserToLocation(arrangement);
             });
         }
+       
 
         [Route("UpdatePersonalInfo")]
         [Authorize(Roles = Constant.ADMIN + ", " + Constant.MANAGER + ", " + Constant.WORKER)]
