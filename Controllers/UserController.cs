@@ -94,6 +94,18 @@ namespace DWDW_API.Controllers
                 return userService.GetAllByAdmin(userId);
             });
         }
+
+        [Route("GetByIDAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpGet]
+        public dynamic GetByIDAdmin(int userId)
+        {
+            return ExecuteInMonitoring(() =>
+            {
+                return userService.GetByIDAdmin(userId);
+            });
+        }
+
         [Route("GetAllActive")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
@@ -236,6 +248,17 @@ namespace DWDW_API.Controllers
         }
        
 
+        [Route("DeassignUserFromLocationByAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpPut]
+        public dynamic DeassignUserFromLocationByAdmin(ArrangementDisableViewModel arrangement)
+        {
+            return ExecuteInMonitoring(() =>
+            {
+                return userService.DeassignUserToLocation(arrangement);
+            });
+        }
+
         [Route("UpdatePersonalInfo")]
         [Authorize(Roles = Constant.ADMIN + ", " + Constant.MANAGER + ", " + Constant.WORKER)]
         [HttpPut]
@@ -273,35 +296,35 @@ namespace DWDW_API.Controllers
                 return userService.DeActiveUserByAdmin(id);
             });
         }
-        //[Route("UpdateUserActiveByAdmin")]
-        //[Authorize(Roles = Constant.ADMIN)]
-        //[HttpPut]
-        //public IActionResult ActiveUserByAdmin(UserActiveModel user)
-        //{
-        //    IActionResult result;
-        //    try
-        //    {
-        //        var activeUser = userService.ActiveUserByAdmin(user);
-        //        result = Ok(activeUser);
-        //    }
-        //    catch (BaseException e)
-        //    {
-        //        result = BadRequest(new ErrorViewModel
-        //        {
-        //            StatusCode = StatusCodes.Status400BadRequest,
-        //            Message = e.Message
-        //        });
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-        //        {
-        //            StatusCode = StatusCodes.Status500InternalServerError,
-        //            Message = e.Message
-        //        });
-        //    }
-        //    return result;
-        //}
+        [Route("UpdateUserActiveByAdmin")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpPut]
+        public IActionResult ActiveUserByAdmin(UserActiveModel user)
+        {
+            IActionResult result;
+            try
+            {
+                var activeUser = userService.ActiveUserByAdmin(user);
+                result = Ok(activeUser);
+            }
+            catch (BaseException e)
+            {
+                result = BadRequest(new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = e.Message
+                });
+            }
+            catch (Exception e)
+            {
+                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = e.Message
+                });
+            }
+            return result;
+        }
 
 
 

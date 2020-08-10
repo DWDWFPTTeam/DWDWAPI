@@ -173,6 +173,8 @@ namespace DWDW_API
                 cfg.CreateMap<ArrangementViewModel, Arrangement>();
                 cfg.CreateMap<Arrangement, ArrangementReceivedViewModel>();
                 cfg.CreateMap<ArrangementReceivedViewModel, Arrangement>();
+                cfg.CreateMap<Arrangement, ArrangementDisableViewModel>();
+                cfg.CreateMap<ArrangementDisableViewModel, Arrangement>();
 
 
                 //Record Mapping

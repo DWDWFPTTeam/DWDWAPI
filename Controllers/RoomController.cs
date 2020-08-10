@@ -25,7 +25,7 @@ namespace DWDW_API.Controllers
         [HttpGet]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("GetRooms")]
-        public IActionResult GetRooms()
+        public dynamic GetRooms()
         {
             return ExecuteInMonitoring(() =>
             {
@@ -36,7 +36,7 @@ namespace DWDW_API.Controllers
         [HttpGet]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("GetRoomsFromLocation/{locationId}")]
-        public IActionResult GetRoomsFromLocation(int locationId)
+        public dynamic GetRoomsFromLocation(int locationId)
         {
             return ExecuteInMonitoring(() =>
             {
@@ -47,7 +47,7 @@ namespace DWDW_API.Controllers
         [HttpGet]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("GetActiveRoomsFromLocation")]
-        public IActionResult GetActiveRoomsFromLocation(int locationId)
+        public dynamic GetActiveRoomsFromLocation(int locationId)
         {
             return ExecuteInMonitoring(() =>
             {
@@ -58,7 +58,7 @@ namespace DWDW_API.Controllers
         [HttpGet]
         [Route("GetRoomById")]
         [Authorize(Roles = Constant.ADMIN + "," + Constant.MANAGER)]
-        public IActionResult GetRoomById(int RoomId)
+        public dynamic GetRoomById(int RoomId)
         {
             return ExecuteInMonitoring(() =>
             {
@@ -69,7 +69,7 @@ namespace DWDW_API.Controllers
         [HttpGet]
         [Route("SearchRoomCodeByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
-        public IActionResult SearchRoomCodeByAdmin(string roomCode)
+        public dynamic SearchRoomCodeByAdmin(string roomCode)
         {
             return ExecuteInMonitoring(() =>
             {
@@ -80,7 +80,7 @@ namespace DWDW_API.Controllers
         [HttpPut]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("UpdateRoom")]
-        public IActionResult UpdateRoom(RoomUpdateModel roomUpdate)
+        public dynamic UpdateRoom(RoomUpdateModel roomUpdate)
         {
             return ExecuteInMonitoring(() =>
             {
@@ -91,7 +91,7 @@ namespace DWDW_API.Controllers
         [HttpPost]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("CreateRoom")]
-        public IActionResult CreateRoom(RoomInsertModel roomInsert)
+        public dynamic CreateRoom(RoomInsertModel roomInsert)
         {
             return ExecuteInMonitoring(() =>
             {
@@ -102,7 +102,7 @@ namespace DWDW_API.Controllers
         [HttpPut]
         [Authorize(Roles = Constant.ADMIN)]
         [Route("DeactiveRoom/{roomId}")]
-        public IActionResult DeactiveRoom(int roomId)
+        public dynamic DeactiveRoom(int roomId)
         {
             return ExecuteInMonitoring(() =>
             {
@@ -113,7 +113,7 @@ namespace DWDW_API.Controllers
         [HttpGet]
         [Authorize(Roles = Constant.MANAGER)]
         [Route("GetRoomsFromLocationByManager/{locationId}")]
-        public IActionResult GetRoomsFromLocationByManager(int locationId)
+        public dynamic GetRoomsFromLocationByManager(int locationId)
         {
             return ExecuteInMonitoring(() =>
             {
@@ -125,7 +125,7 @@ namespace DWDW_API.Controllers
         [HttpGet]
         [Route("SearchRoomCodeByManager")]
         [Authorize(Roles = Constant.MANAGER)]
-        public IActionResult SearchRoomCodeByManager(string roomCode)
+        public dynamic SearchRoomCodeByManager(string roomCode)
         {
             return ExecuteInMonitoring(() =>
             {

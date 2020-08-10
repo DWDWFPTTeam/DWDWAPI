@@ -61,9 +61,7 @@ namespace DWDW_API.Controllers
         [Route("GetShiftManager")]
         public dynamic GetShiftManager()
         {
-            var identity = (ClaimsIdentity)User.Identity;
-            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            int userID = int.Parse(ID);
+            int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
                 return shiftService.GetShiftManager(userID);
@@ -75,9 +73,7 @@ namespace DWDW_API.Controllers
         [Route("GetShiftByDateManageer")]
         public dynamic GetShiftByDateManager(DateTime date)
         {
-            var identity = (ClaimsIdentity)User.Identity;
-            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            int userID = int.Parse(ID);
+            int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
                 return shiftService.GetShiftByDateManager(userID, date);
@@ -89,9 +85,7 @@ namespace DWDW_API.Controllers
         [Route("GetShiftWorker")]
         public dynamic GetShiftWorker()
         {
-            var identity = (ClaimsIdentity)User.Identity;
-            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            int userID = int.Parse(ID);
+            int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
                 return shiftService.GetShiftWorker(userID);
@@ -113,14 +107,14 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.MANAGER)]
         [HttpPut]
         [Route("UpdateShift")]
-        public dynamic UpdateShift(int locationID, ShiftUpdateModel shift)
+        public dynamic UpdateShift(ShiftUpdateModel shift)
         {
             var identity = (ClaimsIdentity)User.Identity;
             var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             int userID = int.Parse(ID);
             return ExecuteInMonitoring(() =>
             {
-                return shiftService.UpdateShift(userID, locationID, shift);
+                return shiftService.UpdateShift(userID, shift);
             });
         }
         [Authorize(Roles = Constant.MANAGER)]
@@ -128,9 +122,7 @@ namespace DWDW_API.Controllers
         [Route("UpdateShiftActive")]
         public dynamic UpdateShiftActive(ShiftActiveModel shift)
         {
-            var identity = (ClaimsIdentity)User.Identity;
-            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            int userID = int.Parse(ID);
+            int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
                 return shiftService.UpdateShiftActive(userID, shift);
@@ -153,9 +145,7 @@ namespace DWDW_API.Controllers
         [Route("GetShiftFromLocationByDateManager")]
         public dynamic GetShiftFromLocationByDateManager(int locationId, DateTime date)
         {
-            var identity = (ClaimsIdentity)User.Identity;
-            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            int userID = int.Parse(ID);
+            int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
                 return shiftService.GetShiftFromLocationByDateManager(userID, locationId, date);
@@ -167,9 +157,7 @@ namespace DWDW_API.Controllers
         [Route("GetShiftFromLocationByDateWorker")]
         public dynamic GetShiftFromLocationByDateWorker(int locationId, DateTime date)
         {
-            var identity = (ClaimsIdentity)User.Identity;
-            var ID = (identity.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            int userID = int.Parse(ID);
+            int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
                 return shiftService.GetShiftFromLocationByDateWorker(userID, locationId, date);
