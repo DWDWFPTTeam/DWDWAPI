@@ -160,6 +160,9 @@ namespace DWDW_API
                 cfg.CreateMap<LocationViewModel, Location>();
                 cfg.CreateMap<LocationInsertModel, Location>();
                 cfg.CreateMap<LocationUpdateStatusModel, Location>();
+                cfg.CreateMap<LocationUserViewModel, Location>();
+                cfg.CreateMap<Location, LocationUserViewModel>();
+
 
                 //Device Mapping
                 cfg.CreateMap<Device, DeviceViewModel>();
