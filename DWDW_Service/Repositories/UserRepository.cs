@@ -12,6 +12,7 @@ namespace DWDW_Service.Repositories
         User GetUserByUsernamePassword(string username, string password);
         User GetUserByUsername(string username);
         IEnumerable<User> GetWorkerFromLocation(int locationId);
+        IEnumerable<User> GetUserFromLocation(int locationId);
     }
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
@@ -39,6 +40,14 @@ namespace DWDW_Service.Repositories
             IEnumerable<User> result = new List<User>();
             result = dbContext.Set<User>().Where(x => x.Arrangement.Any(y => y.LocationId == locationId
             && y.IsActive == true) && x.RoleId == int.Parse(Constant.WORKER)).ToList();
+            return result;
+        }
+
+        public IEnumerable<User> GetUserFromLocation(int locationId)
+        {
+            IEnumerable<User> result = new List<User>();
+            result = dbContext.Set<User>().Where(x => x.Arrangement.Any(y => y.LocationId == locationId
+            && y.IsActive == true)).ToList();
             return result;
         }
     }

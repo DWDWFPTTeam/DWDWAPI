@@ -114,6 +114,7 @@ namespace DWDW_API.Core.ViewModels
         public string DeviceToken { get; set; }
         public bool? IsActive { get; set; }
         public RoleViewModel Role { get; set; }
+        public int RoleId { get; set; }
         public IEnumerable<LocationUserViewModel> Locations { get; set; }
 
     }

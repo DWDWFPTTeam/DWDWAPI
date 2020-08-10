@@ -156,8 +156,8 @@ namespace DWDW_API.Controllers
         {
             return ExecuteInMonitoring(() =>
             {
-                int userId = int.Parse(CurrentUserId);
-                return userService.GetUserFromLocationByAdmin(userId, locationId);
+                
+                return userService.GetUserFromLocationByAdmin( locationId);
             });
         }
 

@@ -30,7 +30,7 @@ namespace DWDW_Service.Services
         UserViewModel UpdateUser(UserUpdateModel userUpdate);
         UserViewModel DeActiveUserByAdmin(int id);
         UserViewModel ActiveUserByAdmin(UserActiveModel userActive);
-        IEnumerable<UserGetAllViewModel> GetUserFromLocationByAdmin(int locationId, int locationId1);
+        IEnumerable<UserGetAllViewModel> GetUserFromLocationByAdmin( int locationId1);
         IEnumerable<UserViewModel> GetUserFromLocationsByManager(int userId);
         IEnumerable<UserViewModel> GetWorkerFromLocationsByManager(int userId, int locationID);
         IEnumerable<UserViewModel> GetUserFromOneLocationByManager(int userId, int locationId);
@@ -361,41 +361,52 @@ namespace DWDW_Service.Services
             result = users.Select(u => u.ToViewModel<UserViewModel>());
             return result;
         }
-        public IEnumerable<UserGetAllViewModel> GetUserFromLocationByAdmin(int userId, int locationId)
+        public IEnumerable<UserGetAllViewModel> GetUserFromLocationByAdmin(int locationId)
         {
-            var user = userRepository.Find(userId);
-            if (user == null)
-            {
-                throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
-            }
-            if (user.RoleId.Value != int.Parse(Constant.ADMIN))
-            {
-                throw new BaseException(ErrorMessages.INVALID_ROLE_FOR_THIS_ACTION);
-            }
+            
             var location = this.unitOfWork.LocationRepository.Find(locationId);
             if (location == null)
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
             }
-            var users = this.unitOfWork.ArrangementRepository.Get(arr => arr.LocationId == locationId
-                                                                && arr.IsActive == true, null, "User").Select(arr => arr.User);
-            return users.Select(u =>
+            var users = userRepository.GetUserFromLocation(locationId);
+            var result = users.Select(x => x.ToViewModel<UserGetAllViewModel>()).ToList();
+            foreach(var element in result)
             {
-                var userGetAllViewModel = user.ToViewModel<UserGetAllViewModel>();
-                userGetAllViewModel.Locations = this.unitOfWork.ArrangementRepository.Get(arr => arr.UserId == user.UserId
-                                                                       && arr.IsActive == true, null, "Location")
-                                                                       .Select(arr =>
-                                                                       {
-                                                                           var location = arr.Location.ToViewModel<LocationUserViewModel>();
-                                                                           location.StartDate = arr.StartDate;
-                                                                           location.EndDate = arr.EndDate;
-                                                                           return location;
-                                                                       });
-                userGetAllViewModel.Role = this.unitOfWork.RoleRepository.Get(role => role.RoleId == user.RoleId
-                                                                             && role.IsActive == true, null, "")
-                                                                             .FirstOrDefault().ToViewModel<RoleViewModel>();
-                return userGetAllViewModel;
-            });
+                element.Locations = this.unitOfWork.ArrangementRepository.Get(arr => arr.UserId == element.UserId
+                                                                   && arr.IsActive == true, null, "Location")
+                                                                   .Select(arr =>
+                                                                   {
+                                                                       var location = arr.Location.ToViewModel<LocationUserViewModel>();
+                                                                       location.StartDate = arr.StartDate;
+                                                                       location.EndDate = arr.EndDate;
+                                                                       return location;
+                                                                   });
+                element.Role = this.unitOfWork.RoleRepository.Get(role => role.RoleId == element.RoleId
+                                                                         && role.IsActive == true, null, "")
+                                                                         .FirstOrDefault().ToViewModel<RoleViewModel>();
+
+            }
+            return result;
+            //var users = this.unitOfWork.ArrangementRepository.Get(arr => arr.LocationId == locationId
+            //                                                    && arr.IsActive == true, null, "User").Select(arr => arr.User);
+            //return users.Select(u =>
+            //{
+            //    var userGetAllViewModel = user.ToViewModel<UserGetAllViewModel>();
+            //userGetAllViewModel.Locations = this.unitOfWork.ArrangementRepository.Get(arr => arr.UserId == user.UserId
+            //                                                       && arr.IsActive == true, null, "Location")
+            //                                                       .Select(arr =>
+            //                                                       {
+            //                                                           var location = arr.Location.ToViewModel<LocationUserViewModel>();
+            //                                                           location.StartDate = arr.StartDate;
+            //                                                           location.EndDate = arr.EndDate;
+            //                                                           return location;
+            //                                                       });
+            //userGetAllViewModel.Role = this.unitOfWork.RoleRepository.Get(role => role.RoleId == user.RoleId
+            //                                                             && role.IsActive == true, null, "")
+            //                                                             .FirstOrDefault().ToViewModel<RoleViewModel>();
+            //    return userGetAllViewModel;
+            //});
 
 
         }
