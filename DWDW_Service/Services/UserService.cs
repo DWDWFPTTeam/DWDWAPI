@@ -21,7 +21,7 @@ namespace DWDW_Service.Services
         User LoginAsync(string username, string password);
         //List<UserGetAllViewModel> GetAllByAdmin(int userId);
         //refactor by dat
-        IEnumerable<UserGetAllViewModel> GetAllByAdmin(int userId);
+        IEnumerable<UserGetAllViewModel> GetAllByAdmin();
         UserGetAllViewModel GetByIDAdmin(int userId);
         //List<UserGetAllViewModel> GetAllActiveByAdmin();
         //refactor by dat
@@ -90,17 +90,9 @@ namespace DWDW_Service.Services
 
         }
 
-        public IEnumerable<UserGetAllViewModel> GetAllByAdmin(int userId)
+        public IEnumerable<UserGetAllViewModel> GetAllByAdmin()
         {
-            var user = userRepository.Find(userId);
-            if (user == null)
-            {
-                throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
-            }
-            if (user.RoleId.Value != int.Parse(Constant.ADMIN))
-            {
-                throw new BaseException(ErrorMessages.INVALID_ROLE_FOR_THIS_ACTION);
-            }
+            
             var users = userRepository.GetAll().Select(user =>
             {
                 var userGetAllViewModel = user.ToViewModel<UserGetAllViewModel>();

@@ -84,14 +84,13 @@ namespace DWDW_API.Controllers
         }
 
         [Route("GetAllByAdmin")]
-        [Authorize(Roles = Constant.ADMIN)]
+        //[Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         public dynamic GetAllUserByAdmin()
         {
             return ExecuteInMonitoring(() =>
             {
-                var userId = int.Parse(CurrentUserId);
-                return userService.GetAllByAdmin(userId);
+                return userService.GetAllByAdmin();
             });
         }
 
