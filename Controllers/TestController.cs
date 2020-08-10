@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -9,8 +10,10 @@ using DWDW_API.Providers;
 using DWDW_Service.Repositories;
 using DWDW_Service.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -71,6 +74,18 @@ namespace DWDW_API.Controllers
             TestService testService = new TestService();
             testService.SendNotification(byteArray);
             return result;
+        }
+        [HttpGet]
+        [Route("TestImage")]
+        public IActionResult TestImage(IFormFile image)
+        {
+
+            string fName = image.FileName;
+            //using (var stream = new FileStream(@"C:\Users\ykdns\OneDrive\Documents\DWDW_API\image.jpg", FileMode.Create))
+            //{
+            //    await image.CopyToAsync(stream);
+            //}
+            return Ok(image.FileName);
         }
 
     }

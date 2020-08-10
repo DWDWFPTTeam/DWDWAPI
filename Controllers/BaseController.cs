@@ -22,6 +22,9 @@ namespace DWDW_API.Controllers
         public string CurrentUserId => currentUser.FindFirstValue(ClaimTypes.NameIdentifier);
 
         public string CurrentUsername => currentUser.FindFirstValue(ClaimTypes.Name);
+        public string ContentRoot => extensionSettings.ContentRoot;
+
+        public string ImageRoot => ContentRoot + @"\Images\";
 
         public BaseController(ExtensionSettings extensionSettings)
         {

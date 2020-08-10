@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,14 @@ namespace DWDW_API.Providers
             {
                 var appSettingsSection = this.Configuration.GetSection("AppSettings");
                 return appSettingsSection.Get<AppSettings>();
+            }
+        }
+        public string ContentRoot
+        {
+            get
+            {
+                return this.Configuration.GetValue<string>(WebHostDefaults.ContentRootKey);
+
             }
         }
 

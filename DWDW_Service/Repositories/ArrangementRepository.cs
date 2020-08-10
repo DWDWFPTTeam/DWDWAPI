@@ -18,7 +18,7 @@ namespace DWDW_Service.Repositories
         ArrangementLocationViewModel GetArrangementLocationOfUser(int userId);
         List<ArrangementUserViewModel> GetArrangementUserFromLocation(int locationId);
         //end chi
-        Arrangement GetArrangementOfUserInThisLocation(int userId, int locationId);
+        Arrangement GetArrangementOfUserInThisLocation(int userId, int? locationId);
         bool CheckUserShift(int userID, int? ArrangementID);
         List<Arrangement> DisableArrangementFromLocation(int locationId);
         List<int?> GetArrangementBelongToManager(int userID);
@@ -49,7 +49,7 @@ namespace DWDW_Service.Repositories
             return Get(a => a.UserId.Equals(userId) && a.IsActive == true, null, "Location");
         }
 
-        public Arrangement GetArrangementOfUserInThisLocation(int userId, int locationId)
+        public Arrangement GetArrangementOfUserInThisLocation(int userId, int? locationId)
         {
             return Get(a => a.UserId.Equals(userId)
                        && a.LocationId.Equals(locationId)

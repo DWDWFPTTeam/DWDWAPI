@@ -11,12 +11,13 @@ using System.Text;
 using Newtonsoft.Json;
 using System.Linq;
 using DWDW_API.Core.Infrastructure;
+using System.Threading.Tasks;
 
 namespace DWDW_Service.Services
 {
     public interface IRecordService : IBaseService<Record>
     {
-        RecordViewModel SaveRecord(RecordReceivedModel record);
+        Task<RecordViewModel> SaveRecord(RecordReceivedModel record, string imageRoot);
         IEnumerable<RecordViewModel> GetRecordByLocationId(int locationId);
         IEnumerable<RecordViewModel> GetRecordsByLocationIdBetweenTime
             (int locationId, DateTime startDate, DateTime endDate);
@@ -60,7 +61,7 @@ namespace DWDW_Service.Services
         public IEnumerable<RecordViewModel> GetRecordByWorkerDate(int workerID, DateTime date)
         {
             IEnumerable<RecordViewModel> result = new List<RecordViewModel>();
-            
+
             var locationRepo = unitOfWork.LocationRepository;
             var roomRepo = this.unitOfWork.RoomRepository;
             var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
@@ -72,7 +73,7 @@ namespace DWDW_Service.Services
 
             var recordList = recordRepository.GetRecordByWorkerDate(deviceRelatedID, date);
             result = recordList.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
-            foreach(var element in result)
+            foreach (var element in result)
             {
                 int? deviceID = element.DeviceId;
                 var room = roomRepo.GetRoomFromDevice(deviceID);
@@ -89,26 +90,29 @@ namespace DWDW_Service.Services
             var roomRepo = this.unitOfWork.RoomRepository;
             var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
 
-            List<int?> locationManagerRelatedID = locationRepo.GetLocationByUser(workerID);
+            List<int?> locationManagerRelatedID = locationRepo.GetLocationByUser(managerID);
             List<int?> locationUserRelatedID = locationRepo.GetLocationByUser(workerID);
-            
+
             //User thuoc Manager
             bool userChildManager = locationUserRelatedID.All(x => locationManagerRelatedID.Contains(x));
-            if (userChildManager == true)
+            if (userChildManager != true)
             {
-                //Lay ra danh sach id cua cac item lien quan toi worker
-                List<int?> roomRelatedID = roomRepo.GetRelatedRoomIDFromLocation(locationUserRelatedID);
-                List<int?> deviceRelatedID = roomDeviceRepo.GetRelatedDeviceIDFromRoom(roomRelatedID);
-
-                var recordList = recordRepository.GetRecordByWorkerDate(deviceRelatedID, date);
-                result = recordList.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
-                foreach (var element in result)
-                {
-                    int? deviceID = element.DeviceId;
-                    var room = roomRepo.GetRoomFromDevice(deviceID);
-                    element.RoomId = room.RoomId;
-                }
+                throw new BaseException(ErrorMessages.MANAGER_WORKER_NOT_EXISTED);
             }
+
+            //Lay ra danh sach id cua cac item lien quan toi worker
+            List<int?> roomRelatedID = roomRepo.GetRelatedRoomIDFromLocation(locationUserRelatedID);
+            List<int?> deviceRelatedID = roomDeviceRepo.GetRelatedDeviceIDFromRoom(roomRelatedID);
+
+            var recordList = recordRepository.GetRecordByWorkerDate(deviceRelatedID, date);
+            result = recordList.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+            foreach (var element in result)
+            {
+                int? deviceID = element.DeviceId;
+                var room = roomRepo.GetRoomFromDevice(deviceID);
+                element.RoomId = room.RoomId;
+            }
+
             return result;
         }
 
@@ -142,7 +146,7 @@ namespace DWDW_Service.Services
             return record;
         }
 
-        public RecordViewModel SaveRecord(RecordReceivedModel record)
+        public async Task<RecordViewModel> SaveRecord(RecordReceivedModel record, string imageRoot)
         {
             RecordViewModel result;
             var device = unitOfWork.DeviceRepository.GetDeviceCode(record.DeviceCode);
@@ -152,16 +156,33 @@ namespace DWDW_Service.Services
                 {
                     DeviceId = device.DeviceId,
                     Type = record.Type,
-                    Image = record.Image,
-                    RecordDateTime = DateTime.Now
+                    RecordDateTime = DateTime.Now,
+                    
                 };
                 var notificationFCM = this.CreateNotificationFCM(recordEntity, device.DeviceCode);
+                if(record.Image.Length <= 0)
+                {
+                    throw new BaseException("Image is not existed!");
+                }
+                if (!Directory.Exists(imageRoot))
+                {
+                    Directory.CreateDirectory(imageRoot);
+                   
+                }
+                var dir = new DirectoryInfo(imageRoot);
+                var imagePath = imageRoot + record.Image.Name + dir.GetFiles().Length + ".jpg";
+                using (var fileStream = File.Create(imagePath))
+                {
+                    await record.Image.CopyToAsync(fileStream);
+                    fileStream.Flush();
+                    recordEntity.Image = imagePath;
+                }
                 using (var transaction = unitOfWork.CreateTransaction())
                 {
                     try
                     {
                         //save record
-                        recordRepository.Add(recordEntity);
+                        await recordRepository.AddAsync(recordEntity);
                         //save noti
                         unitOfWork.NotificationRepository.Add(notificationFCM.NotificationVM.ToEntity<Notifications>());
                         transaction.Commit();
@@ -183,15 +204,15 @@ namespace DWDW_Service.Services
 
             return result;
         }
-        
+
         private NotificationFCMViewModel CreateNotificationFCM(Record record, string deviceCode)
         {
-         
+
             //Get room from device is placed
             var room = unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == record.DeviceId
                                                                  && rd.IsActive == true, null, "Room")
                                                                 .FirstOrDefault().Room;
-            if(room == null)
+            if (room == null)
             {
                 throw new BaseException(ErrorMessages.ROOM_NOT_FOUND);
             }
@@ -201,7 +222,7 @@ namespace DWDW_Service.Services
                                                             .Select(a => a.User)
                                                             .Where(u => u.RoleId.ToString().Equals(Constant.MANAGER))
                                                             .FirstOrDefault();
-            if(manager == null)
+            if (manager == null)
             {
                 throw new BaseException(ErrorMessages.MANAGER_NOT_FOUND);
             }
@@ -216,7 +237,8 @@ namespace DWDW_Service.Services
             var worker = unitOfWork.UserRepository.Find(shift.Arrangement.UserId);
             var notification = unitOfWork.NotificationRepository.CreateNotification(record, room, manager, worker, deviceCode);
 
-            return new NotificationFCMViewModel {
+            return new NotificationFCMViewModel
+            {
                 Title = notification.MessageTitle,
                 Message = notification.MessageContent,
                 DeviceToken = manager.DeviceToken,
@@ -274,6 +296,6 @@ namespace DWDW_Service.Services
             tResponse.Close();
         }
 
-       
+
     }
 }
