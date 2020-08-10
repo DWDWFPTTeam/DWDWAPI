@@ -57,7 +57,7 @@ namespace DWDW_API.Controllers
             {
                 DateTime startDate;
                 bool check = false;
-                string pattern = "dd-MM-yyyy";
+                string pattern = "yyyy-MM-dd";
                 check = DateTime.TryParseExact
                     (start, pattern, null, DateTimeStyles.None, out startDate);
                 //check date is valid
