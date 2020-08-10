@@ -1,5 +1,4 @@
 ﻿using DWDW_API.Core.Constants;
-using DWDW_API.Core.Entities;
 using DWDW_API.Core.Infrastructure;
 using DWDW_API.Core.ViewModels;
 using DWDW_API.Providers;
@@ -10,8 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections;
 using System.Globalization;
-using System.IO;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DWDW_API.Controllers
@@ -30,7 +27,7 @@ namespace DWDW_API.Controllers
         [HttpPost]
         public async Task<dynamic> SaveRecord([FromForm]RecordReceivedModel recordReceived)
         {
-           
+
             return await ExecuteInMonitoringAsync(async () =>
             {
                 return await recordService.SaveRecord(recordReceived, this.ImageRoot);
@@ -48,7 +45,7 @@ namespace DWDW_API.Controllers
                 return recordService.GetRecordByLocationId(locationId);
             });
         }
-        [Route("GetRecordsByLocationIdAndTime/{locationId}/{start}")]
+        [Route("GetRecordsByLocationDate")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         public IActionResult GetRecordsByLocationIdAndTime(
@@ -65,7 +62,7 @@ namespace DWDW_API.Controllers
                     (start, pattern, null, DateTimeStyles.None, out startDate);
                 //check date is valid
                 if (check == false) return BadRequest("Invalid date format");
-                
+
                 //chua check start-end cai nao phai lon hon
 
                 IEnumerable record;
