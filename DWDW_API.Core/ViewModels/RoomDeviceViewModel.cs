@@ -18,9 +18,9 @@ namespace DWDW_API.Core.ViewModels
     }
     public class RoomDeviceCreateModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.ROOM_ID_INVALID)]
         public int? RoomId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.DEVICE_ID_INVALID)]
         public int? DeviceId { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
         public DateTime? StartDate { get; set; }

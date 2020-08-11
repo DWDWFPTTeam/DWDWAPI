@@ -1,4 +1,5 @@
-﻿using DWDW_API.Core.Infrastructure;
+﻿using DWDW_API.Core.Constants;
+using DWDW_API.Core.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,21 +17,21 @@ namespace DWDW_API.Core.ViewModels
     }
     public class ArrangementReceivedViewModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.USERID_INVALID)]
         public int UserId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.LOCATIONID_INVALID)]
         public int LocationId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.DATE_INVALID)]
         public DateTime StartDate { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.DATE_INVALID)]
         public DateTime EndDate { get; set; }
     }
 
     public class ArrangementDisableViewModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.USERID_INVALID)]
         public int UserId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.LOCATIONID_INVALID)]
         public int LocationId { get; set; }
     }
 

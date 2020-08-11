@@ -9,9 +9,9 @@ namespace DWDW_API.Core.ViewModels
 {
     public class LocationViewModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.LOCATIONID_INVALID)]
         public int LocationId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.LOCATION_CODE_INVALID)]
         public string LocationCode { get; set; }
         public bool? IsActive { get; set; }
     }
@@ -26,30 +26,30 @@ namespace DWDW_API.Core.ViewModels
 
     public class LocationRecordViewModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.LOCATIONID_INVALID)]
         public int LocationId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.LOCATION_CODE_INVALID)]
         public string LocationCode { get; set; }
         public float TotalRecord { get; set; }
     }
     public class LocationUpdateModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.LOCATIONID_INVALID)]
         public int LocationId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.LOCATION_CODE_INVALID)]
         public string LocationCode { get; set; }
     }
     public class LocationUpdateStatusModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.LOCATIONID_INVALID)]
         public int LocationId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.STATUS_INVALID)]
         public bool? IsActive { get; set; }
 
     }
     public class LocationInsertModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.LOCATION_CODE_INVALID)]
         public string LocationCode { get; set; }
     }
     public class LocationReceiveDateModel : BaseModel

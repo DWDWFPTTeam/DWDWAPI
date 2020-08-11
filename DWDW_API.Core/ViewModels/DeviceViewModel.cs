@@ -1,4 +1,5 @@
-﻿using DWDW_API.Core.Infrastructure;
+﻿using DWDW_API.Core.Constants;
+using DWDW_API.Core.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -21,23 +22,23 @@ namespace DWDW_API.Core.ViewModels
 
     public class DeviceCreateModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.DEVICE_CODE_INVALID)]
         public string DeviceCode { get; set; }
 
     }
     public class DeviceUpdateModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.DEVICE_ID_INVALID)]
         public int? DeviceId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.DEVICE_CODE_INVALID)]
         public string DeviceCode { get; set; }
 
     }
     public class DeviceActiveModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.DEVICE_ID_INVALID)]
         public int? DeviceId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.STATUS_INVALID)]
         public bool? IsActive { get; set; }
 
     }

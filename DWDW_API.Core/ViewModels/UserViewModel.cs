@@ -33,9 +33,9 @@ namespace DWDW_API.Core.ViewModels
 
     public class UserCreateModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.INVALID_USERNAME_PASSWORD)]
         public string UserName { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.INVALID_USERNAME_PASSWORD)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
         [DataType(DataType.PhoneNumber, ErrorMessage = ErrorMessages.WRONG_PHONE_FORMAT)]
@@ -43,60 +43,60 @@ namespace DWDW_API.Core.ViewModels
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.BIRTHDAY_WRONG_DATETIME_FORMAT)]
         public DateTime? DateOfBirth { get; set; }
         public int? Gender { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.ROLE_ID_INVALID)]
         public int RoleId { get; set; }
     }
     public class UserUpdateModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.USERID_INVALID)]
         public int UserId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.INVALID_USERNAME_PASSWORD)]
         public string UserName { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.WRONG_PHONE_FORMAT)]
         [DataType(DataType.PhoneNumber, ErrorMessage = ErrorMessages.WRONG_PHONE_FORMAT)]
         public string Phone { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.BIRTHDAY_WRONG_DATETIME_FORMAT)]
         public DateTime? DateOfBirth { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.WRONG_GENDER_FORMAT)]
         [Range(1, 3, ErrorMessage = ErrorMessages.GENDER_IS_NOT_EXISTED)]
         public int? Gender { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.ROLE_ID_INVALID)]
         [Range(1, 3, ErrorMessage = ErrorMessages.ROLE_IS_NOT_EXISTED)]
         public int? RoleId { get; set; }
 
     }
     public class UserActiveModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.USERID_INVALID)]
         public int UserId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.STATUS_INVALID)]
         public bool? IsActive { get; set; }
 
     }
 
     public class UserPersonalUpdateModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.INVALID_USERNAME_PASSWORD)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.WRONG_PHONE_FORMAT)]
         [DataType(DataType.PhoneNumber, ErrorMessage = ErrorMessages.WRONG_PHONE_FORMAT)]
         public string Phone { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.BIRTHDAY_WRONG_DATETIME_FORMAT)]
         public DateTime? DateOfBirth { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.WRONG_GENDER_FORMAT)]
         [Range(1, 3, ErrorMessage = ErrorMessages.GENDER_IS_NOT_EXISTED)]
         public int? Gender { get; set; }
     }
 
     public class UserLoginInfo
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.USER_NAME_INVALID)]
         public string UserName { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.INVALID_USERNAME_PASSWORD)]
         [MinLength(1, ErrorMessage = ErrorMessages.PASSWORD_LEN_NOT_VALID)]
         public string Password { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.WRONG_DEVICETOKEN_FORMAT)]
         public string DeviceToken { get; set; }
     }
 

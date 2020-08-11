@@ -20,32 +20,32 @@ namespace DWDW_API.Core.ViewModels
     }
     public class ShiftCreateModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.USERID_INVALID)]
         public int WorkerID { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
         public DateTime Date { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.ROOM_ID_INVALID)]
         public int RoomId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.LOCATIONID_INVALID)]
         public int LocationId { get; set;}
     }
     public class ShiftUpdateModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.SHIFT_ID_INVALID)]
         public int ShiftId { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.USERID_INVALID)]
         public int WorkerID { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
         public DateTime? Date { get; set; }
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.ROOM_ID_INVALID)]
         public int? RoomId { get; set; }
     }
     public class ShiftActiveModel : BaseModel
     {
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.SHIFT_ID_INVALID)]
         public int ShiftId { get; set; }
         
-        [Required]
+        [Required(ErrorMessage = ErrorMessages.STATUS_INVALID)]
         public bool? IsActive { get; set; }
     }
 }

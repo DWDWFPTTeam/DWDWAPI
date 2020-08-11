@@ -23,17 +23,22 @@ namespace DWDW_API.Core.Constants
 
         public const string INVALID_USERID_OR_LOCATIONID = "User Id or Location Id is invalid";
 
+
         //Role Message
         public const string ROLE_IS_NOT_EXISTED = "Role is not existed";
         public const string ROLE_IS_EXISTED = "Role is existed";
         public const string ROLE_IS_NOT_MANAGER = "Role is not manager";
         public const string INVALID_ROLE_FOR_THIS_ACTION = "Invalid Role";
+        public const string ROLE_ID_INVALID = "Role ID is invalid";
 
         //Device Message
         public const string DEVICE_LIST_EMPTY = "This device is not existed";
         public const string DEVICE_IS_EXISTED = "Device is existed";
         public const string DEVICE_IS_NOT_EXISTED = "Device is not existed";
         public const string DEVICE_CODE_IS_EMPTY = "Device is empty";
+        public const string DEVICE_CODE_INVALID = "Device Code is invalid";
+        public const string DEVICE_ID_INVALID = "Device ID is invalid";
+        public const string STATUS_INVALID = "Status is invalid";
 
 
         //Room Message
@@ -41,6 +46,8 @@ namespace DWDW_API.Core.Constants
         public const string ROOM_USER_NOT_EXISTED = "This room doesn't belong to the current user";
         public const string ROOM_LOCATION_NOT_EXISTED = "This room doesn't belong to the current location";
         public const string ROOM_IS_EXISTED = "Room is existed";
+        public const string ROOM_ID_INVALID = "Room ID is invalid";
+        public const string ROOM_CODE_INVALID = "Room Code is invalid";
         public static string ROOM_NOT_FOUND = "Room is not found";
         public const string ROOM_DEVICE_EMPTY = "There is no device in this room";
 
@@ -53,6 +60,7 @@ namespace DWDW_API.Core.Constants
         public const string SHIFT_IS_USED = "This shift is already been set";
         public const string SHIFT_DATE_INVALID = "This shift date is invalid";
         public const string DATE_INVALID = "Date is invalid";
+        public const string SHIFT_ID_INVALID = "Shift ID is invalid";
 
         //User Message
         public const string BIRTHDAY_WRONG_DATETIME_FORMAT = "Role is not existed";
@@ -62,8 +70,12 @@ namespace DWDW_API.Core.Constants
         public const string USER_IS_NOT_EXISTED = "User is not existed";
         public const string USERNAME_IS_EXISTED = "Username is existed";
         public const string USERID_IS_EXISTED = "UserId is existed";
+        public const string USERID_INVALID = "UserId is invalid";
+        public const string USER_NAME_INVALID = "User name is invalid";
         public const string USERID_IS_NOT_EXISTED = "UserID is not existed";
         public const string WRONG_PHONE_FORMAT = "Wrong phone number format";
+        public const string WRONG_DEVICETOKEN_FORMAT = "Wrong device token format";
+        public const string WRONG_GENDER_FORMAT = "Wrong gender format";
         public const string GENDER_IS_NOT_EXISTED = "Gender is not existed";
         public static string MANAGER_NOT_FOUND = "Cannot found the manager";
         public const string SHIFT_IS_EXISTED = "Shift is existed";
@@ -73,6 +85,8 @@ namespace DWDW_API.Core.Constants
         //Location Message
         public const string LOCATION_IS_NOT_EXISTED = "Location is not existed";
         public const string LOCATION_IS_EXISTED = "Location is existed";
+        public const string LOCATIONID_INVALID = "Location ID is invalid";
+        public const string LOCATION_CODE_INVALID = "Location code is invalid";
         public const string LOCATION_IS_NOT_BELONG_TO_MANAGER = "Location Is not belong to manager";
         public const string LOCATION_IS_NOT_BELONG_TO_WORKER = "Location Is not belong to worker";
         public const string LOCATION_DEVICE_EMPTY = "There is no device in this location";
