@@ -84,7 +84,7 @@ namespace DWDW_API.Controllers
         }
 
         [Route("GetAllByAdmin")]
-        //[Authorize(Roles = Constant.ADMIN)]
+        [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
         public dynamic GetAllUserByAdmin()
         {
