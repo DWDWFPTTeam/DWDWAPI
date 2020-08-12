@@ -59,60 +59,15 @@ namespace DWDW_API.Controllers
                 return recordService.GetRecordByLocationId(locationId);
             });
         }
-        [Route("GetRecordsByLocationIdAndTime/{locationId}/{start}")]
+        [Route("GetRecordsByLocationDate")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
-        public IActionResult GetRecordsByLocationIdAndTime(
-            int locationId, string start, string end)
+        public IActionResult GetRecordsByLocationDate([FromQuery]LocationRecordReceiveDateModel model)
         {
-            //chua check location exist
-            IActionResult result;
-            try
+            return ExecuteInMonitoring(() =>
             {
-                DateTime startDate;
-                bool check = false;
-                string pattern = "dd-MM-yyyy";
-                check = DateTime.TryParseExact
-                    (start, pattern, null, DateTimeStyles.None, out startDate);
-                //check date is valid
-                if (check == false) return BadRequest("Invalid date format");
-                
-                //chua check start-end cai nao phai lon hon
-
-                IEnumerable record;
-                if (!string.IsNullOrEmpty(end))
-                {
-                    //get weekly,monthly records
-                    DateTime endDate;
-                    check = DateTime.TryParseExact(end, pattern, null, DateTimeStyles.None, out endDate);
-                    //check date is valid
-                    if (check == false) return BadRequest();
-                    record = recordService.GetRecordsByLocationIdBetweenTime(locationId, startDate, endDate);
-                }
-                else
-                {
-                    //get daily records
-                    record = recordService.GetRecordsByLocationIdAndTime(locationId, startDate);
-                }
-                result = Ok(record);
-            }
-            catch (BaseException e)
-            {
-                result = BadRequest(new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = e.Message
-                });
-            }
-            catch (Exception e)
-            {
-                result = StatusCode(StatusCodes.Status500InternalServerError, new ErrorViewModel
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Message = e.Message
-                });
-            }
-            return result;
+                return recordService.GetRecordsByLocationDate(model.LocationId, model.startDate, model.endDate);
+            });
         }
 
         [Route("GetRecordByWorkerDate")]
