@@ -45,7 +45,7 @@ namespace DWDW_Service.Repositories
                             on rd.RoomId equals room.RoomId
                          where room.IsActive == true 
                             && room.LocationId == locationId
-                         orderby record.RecordDateTime ascending
+                         orderby record.RecordId descending
                          select record;
             return result.ToList();
         }
@@ -63,7 +63,7 @@ namespace DWDW_Service.Repositories
                             room.IsActive == true
                             && room.LocationId == locationId
                             && record.RecordDateTime == date
-                         orderby record.RecordDateTime descending
+                         orderby record.RecordId descending
                          select record;
             return result.ToList();
         }
@@ -83,7 +83,7 @@ namespace DWDW_Service.Repositories
                             && room.LocationId == locationId
                             && record.RecordDateTime >= startDate
                             && record.RecordDateTime <= endDate
-                         orderby record.RecordDateTime descending
+                         orderby record.RecordId descending
                          select record;
             return result.ToList();
         }
