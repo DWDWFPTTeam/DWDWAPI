@@ -37,6 +37,17 @@ namespace DWDW_API.Controllers
             });
         }
 
+        [Route("GetRecordById")]
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpGet]
+        public dynamic GetRecordById(int recordId)
+        {
+            return ExecuteInMonitoring(() =>
+            {
+                return recordService.GetRecordById(recordId);
+            });
+        }
+
         //ham de test
         [Route("GetRecordsByLocationId")]
         [AllowAnonymous]

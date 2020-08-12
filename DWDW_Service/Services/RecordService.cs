@@ -18,13 +18,14 @@ namespace DWDW_Service.Services
     public interface IRecordService : IBaseService<Record>
     {
         Task<RecordViewModel> SaveRecord(RecordReceivedModel record, string imageRoot);
-        IEnumerable<RecordViewModel> GetRecordByLocationId(int locationId);
+        IEnumerable<RecordImageViewModel> GetRecordByLocationId(int locationId);
         IEnumerable<RecordViewModel> GetRecordsByLocationIdBetweenTime
             (int locationId, DateTime startDate, DateTime endDate);
         IEnumerable<RecordViewModel> GetRecordsByLocationIdAndTime
             (int locationId, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByWorkerDate(int workerID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByWorkerDateForManager(int managerID, int workerID, DateTime date);
+        RecordImageViewModel GetRecordById(int recordId);
     }
 
     public class RecordService : BaseService<Record>, IRecordService
@@ -44,18 +45,33 @@ namespace DWDW_Service.Services
 
 
 
-        public IEnumerable<RecordViewModel> GetRecordByLocationId(int locationId)
+        //public IEnumerable<RecordViewModel> GetRecordByLocationId(int locationId)
+        //{
+        //    var roomRepo = this.unitOfWork.RoomRepository;
+        //    var record = recordRepository.GetRecordsByLocationId(locationId)
+        //        .Select(r => r.ToViewModel<RecordViewModel>()).ToList();
+        //    foreach (var element in record)
+        //    {
+        //        int? deviceID = element.DeviceId;
+        //        var room = roomRepo.GetRoomFromDevice(deviceID);
+        //        element.RoomId = room.RoomId;
+        //    }
+        //    return record;
+        //}
+
+        public IEnumerable<RecordImageViewModel> GetRecordByLocationId(int locationId)
         {
             var roomRepo = this.unitOfWork.RoomRepository;
-            var record = recordRepository.GetRecordsByLocationId(locationId)
-                .Select(r => r.ToViewModel<RecordViewModel>()).ToList();
-            foreach (var element in record)
-            {
-                int? deviceID = element.DeviceId;
-                var room = roomRepo.GetRoomFromDevice(deviceID);
-                element.RoomId = room.RoomId;
-            }
-            return record;
+            var records = recordRepository.GetRecordsByLocationId(locationId)
+                .Select(r => 
+                {
+                    var record = r.ToViewModel<RecordImageViewModel>();
+                    record.RoomId = roomRepo.GetRoomFromDevice(r.DeviceId).RoomId;
+                    record.ImageByte = File.ReadAllBytes(r.Image);
+                    return record;
+                }).ToList();
+
+            return records;
         }
 
         public IEnumerable<RecordViewModel> GetRecordByWorkerDate(int workerID, DateTime date)
@@ -296,6 +312,17 @@ namespace DWDW_Service.Services
             tResponse.Close();
         }
 
+        public RecordImageViewModel GetRecordById(int recordId)
+        {
+            var recordEntity =  recordRepository.Find(recordId);
+            if(recordEntity == null)
+            {
+                throw new BaseException(ErrorMessages.RECORDID_IS_NOT_EXISTED);
+            }
+            var recordVM = recordEntity.ToViewModel<RecordImageViewModel>();
+            recordVM.ImageByte = File.ReadAllBytes(recordEntity.Image);
 
+            return recordVM;
+        }
     }
 }

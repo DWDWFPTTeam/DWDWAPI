@@ -47,6 +47,7 @@ namespace DWDW_API.Controllers
             {
                 responseVM.StatusCode = StatusCodes.Status400BadRequest;
                 responseVM.Message = e.Message;
+                responseVM.Data = new object();
                 result = BadRequest(responseVM);
             }
             catch (Exception e)
@@ -54,6 +55,7 @@ namespace DWDW_API.Controllers
 
                 responseVM.StatusCode = StatusCodes.Status500InternalServerError;
                 responseVM.Message = e.Message;
+                responseVM.Data = new object();
                 result = StatusCode(StatusCodes.Status500InternalServerError,responseVM);
             }
 
@@ -75,6 +77,7 @@ namespace DWDW_API.Controllers
             {
                 responseVM.StatusCode = StatusCodes.Status400BadRequest;
                 responseVM.Message = e.Message;
+                responseVM.Data = new object();
                 result = BadRequest(responseVM);
             }
             catch (Exception e)
@@ -82,6 +85,7 @@ namespace DWDW_API.Controllers
 
                 responseVM.StatusCode = StatusCodes.Status500InternalServerError;
                 responseVM.Message = e.Message;
+                responseVM.Data = new object();
                 result = StatusCode(StatusCodes.Status500InternalServerError, responseVM);
             }
 

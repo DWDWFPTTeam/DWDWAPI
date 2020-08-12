@@ -101,7 +101,11 @@ namespace DWDW_API.Core.Constants
         //Notification Message
         public const string NOTI_ID_IS_NOT_EXISTED = "NotificationId is not exitsted";
 
-  
+        //Record Massage
+        public const string RECORDID_IS_NOT_EXISTED= "RecordId is not existed";
+
+
+
 
     }
 }
