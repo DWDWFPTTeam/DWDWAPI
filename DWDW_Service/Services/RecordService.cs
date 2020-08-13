@@ -18,6 +18,7 @@ namespace DWDW_Service.Services
     public interface IRecordService : IBaseService<Record>
     {
         Task<RecordViewModel> SaveRecord(RecordReceivedModel record, string imageRoot);
+        Task<RecordViewModel> SaveRecordBlob(RecordReceivedModel record);
         IEnumerable<RecordImageViewModel> GetRecordByLocationId(int locationId);
         IEnumerable<RecordViewModel> GetRecordsByLocationDate
             (int locationId, DateTime startDate, DateTime endDate);
@@ -184,6 +185,64 @@ namespace DWDW_Service.Services
                 element.RoomId = room.RoomId;
             }
             return record;
+        }
+
+        public async Task<RecordViewModel> SaveRecordBlob(RecordReceivedModel record)
+        {
+            RecordViewModel result;
+            var device = unitOfWork.DeviceRepository.GetDeviceCode(record.DeviceCode);
+            if (device != null)
+            {
+                var recordEntity = new Record
+                {
+                    DeviceId = device.DeviceId,
+                    Type = record.Type,
+                    RecordDateTime = DateTime.Now,
+
+                };
+                var notificationFCM = this.CreateNotificationFCM(recordEntity, device.DeviceCode);
+                if (record.Image.Length <= 0)
+                {
+                    throw new BaseException("Image is not existed!");
+                }
+                #region Read File Content
+                //string fileName = Path.GetFileName(record.Image.FileName);
+                byte[] fileData;
+                using (var target = new MemoryStream())
+                {
+                    record.Image.CopyTo(target);
+                    fileData = target.ToArray();
+                }
+                string mimeType = record.Image.ContentType;
+
+                BlobStorageService objBlobService = new BlobStorageService();
+                recordEntity.Image = objBlobService.UploadFileToBlob(record.Image.FileName, fileData, mimeType);
+                #endregion
+
+                using (var transaction = unitOfWork.CreateTransaction())
+                {
+                    try
+                    {
+                        //save record
+                        await recordRepository.AddAsync(recordEntity);
+                        //save noti
+                        unitOfWork.NotificationRepository.Add(notificationFCM.NotificationVM.ToEntity<Notifications>());
+                        transaction.Commit();
+                        result = recordEntity.ToViewModel<RecordViewModel>();
+                    }
+                    catch (Exception e)
+                    {
+                        transaction.Rollback();
+                        throw e;
+                    }
+                }
+                this.SendNotify(notificationFCM);
+            }
+            else
+            {
+                throw new BaseException(ErrorMessages.DEVICE_IS_NOT_EXISTED);
+            }
+            return result;
         }
 
         public async Task<RecordViewModel> SaveRecord(RecordReceivedModel record, string imageRoot)
