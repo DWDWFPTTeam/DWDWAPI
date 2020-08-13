@@ -55,8 +55,8 @@ namespace DWDW_API
             SetupDI(services);
 
             //Hangfire
-            string ConnectionString = "Server=.;Database=DWDB;Trusted_Connection=True;User Id=sa;Password=123;";
-            services.AddHangfire(x => x.UseSqlServerStorage(ConnectionString));
+            //string ConnectionString = "Server=.;Database=DWDB;Trusted_Connection=True;User Id=sa;Password=123;MultipleActiveResultSets=True;";
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
             services.AddHangfireServer();
 
         }
