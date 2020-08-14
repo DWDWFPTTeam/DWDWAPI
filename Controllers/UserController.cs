@@ -222,7 +222,7 @@ namespace DWDW_API.Controllers
         [Route("UpdateUserByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpPut]
-        public IActionResult UpdateUserByAdmin(UserUpdateModel userUpdate)
+        public dynamic UpdateUserByAdmin(UserUpdateModel userUpdate)
         {
             return ExecuteInMonitoring(() =>
             {
@@ -256,7 +256,7 @@ namespace DWDW_API.Controllers
         [Route("UpdatePersonalInfo")]
         [Authorize(Roles = Constant.ADMIN + ", " + Constant.MANAGER + ", " + Constant.WORKER)]
         [HttpPut]
-        public IActionResult UpdatePersonalInfo(UserPersonalUpdateModel userUpdate)
+        public dynamic UpdatePersonalInfo(UserPersonalUpdateModel userUpdate)
         {
             return ExecuteInMonitoring(() =>
             {
