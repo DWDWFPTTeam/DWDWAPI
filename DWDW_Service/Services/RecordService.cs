@@ -182,8 +182,10 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
             }
+
             var deviceIdsInLocation = this.unitOfWork.RoomRepository.Get(room => room.LocationId == record.LocationId, null, "RoomDevice")
                                                                       .Select(room => room.RoomDevice)
+                                                                      .Where(rd => rd.Count > 0)
                                                                       .Select(roomDevice => roomDevice.FirstOrDefault().DeviceId);
             if (deviceIdsInLocation.Count() == 0)
             {
