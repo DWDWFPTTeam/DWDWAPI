@@ -77,7 +77,7 @@ namespace DWDW_API.Core.Constants
         public const string WRONG_DEVICETOKEN_FORMAT = "Wrong device token format";
         public const string WRONG_GENDER_FORMAT = "Wrong gender format";
         public const string GENDER_IS_NOT_EXISTED = "Gender is not existed";
-        public static string MANAGER_NOT_FOUND = "Cannot found the manager";
+        public const string MANAGER_NOT_FOUND = "Cannot found the manager";
         public const string SHIFT_IS_EXISTED = "Shift is existed";
         public const string ARRANGEMENT_IS_NOT_EXISTED = "Arrangement is not existed";
 
@@ -103,6 +103,8 @@ namespace DWDW_API.Core.Constants
 
         //Record Massage
         public const string RECORDID_IS_NOT_EXISTED= "RecordId is not existed";
+        public const string LOCATION_HAVE_NO_DEVICE = "Location has no device";
+
 
 
 

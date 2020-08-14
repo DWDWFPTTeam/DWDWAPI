@@ -11,7 +11,7 @@ namespace DWDW_Service.Repositories
     {
         User GetDeviceToken(int deviceID);
         string GetRoom(int deviceID);
-        List<Record> GetRecordsByLocationId(int locationId);
+        IEnumerable<Record> GetRecordsByLocationId(int locationId);
         List<Record> GetRecordsByLocationIdBetweenTime
             (int locationId, DateTime startDate, DateTime endDate);
         List<Record> GetRecordsByLocationIdAndTime
@@ -36,7 +36,7 @@ namespace DWDW_Service.Repositories
             return manager;
         }
 
-        public List<Record> GetRecordsByLocationId(int locationId)
+        public IEnumerable<Record> GetRecordsByLocationId(int locationId)
         {
             var result = from record in dbContext.Set<Record>()
                          join rd in dbContext.Set<RoomDevice>() 
@@ -47,7 +47,7 @@ namespace DWDW_Service.Repositories
                             && room.LocationId == locationId
                          orderby record.RecordId descending
                          select record;
-            return result.ToList();
+            return result;
         }
 
         public List<Record> GetRecordsByLocationIdAndTime(int locationId, DateTime date)
