@@ -1,17 +1,10 @@
 ﻿using DWDW_API.Core.Constants;
-using DWDW_API.Core.Entities;
-using DWDW_API.Core.Infrastructure;
 using DWDW_API.Core.ViewModels;
 using DWDW_API.Providers;
 using DWDW_Service.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections;
-using System.Globalization;
-using System.IO;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DWDW_API.Controllers
@@ -31,6 +24,19 @@ namespace DWDW_API.Controllers
         public async Task<dynamic> SaveRecord([FromForm]RecordReceivedModel recordReceived)
         {
            
+            return await ExecuteInMonitoringAsync(async () =>
+            {
+                return await recordService.SaveRecord(recordReceived, this.ImageRoot);
+            });
+        }
+
+
+        [Route("SaveRecordByte")]
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<dynamic> SaveRecordByte([FromBody]RecordReceivedByteModel recordReceived)
+        {
+
             return await ExecuteInMonitoringAsync(async () =>
             {
                 return await recordService.SaveRecord(recordReceived, this.ImageRoot);
@@ -62,11 +68,11 @@ namespace DWDW_API.Controllers
         [Route("GetRecordsByLocationDate")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
-        public IActionResult GetRecordsByLocationDate([FromQuery]LocationRecordReceiveDateModel model)
+        public dynamic GetRecordsByLocationDate([FromQuery]RecordLocationReceivedViewModel record)
         {
             return ExecuteInMonitoring(() =>
             {
-                return recordService.GetRecordsByLocationDate(model.LocationId, model.startDate, model.endDate);
+                return recordService.GetRecordsByLocationDate(record);
             });
         }
 
