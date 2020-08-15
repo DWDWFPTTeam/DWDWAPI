@@ -79,23 +79,23 @@ namespace DWDW_API.Controllers
         [Route("GetRecordByWorkerDate")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpGet]
-        public dynamic GetRecordByWorkerDate(int workerID, DateTime date)
+        public dynamic GetRecordByWorkerDate(int roomID, DateTime date)
         {
             return ExecuteInMonitoring(() =>
             {
-                return recordService.GetRecordByWorkerDate(workerID, date);
+                return recordService.GetRecordByWorkerDate(roomID, date);
             });
         }
 
         [Route("GetRecordByWorkerDateForManager")]
         [Authorize(Roles = Constant.MANAGER)]
         [HttpGet]
-        public dynamic GetRecordByWorkerDateForManager(int workerID, DateTime date)
+        public dynamic GetRecordByWorkerDateForManager(int roomID, DateTime date)
         {
             int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
-                return recordService.GetRecordByWorkerDateForManager(userID, workerID, date);
+                return recordService.GetRecordByWorkerDateForManager(userID, roomID, date);
             });
         }
 
