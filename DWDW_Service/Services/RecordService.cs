@@ -77,20 +77,26 @@ namespace DWDW_Service.Services
             return records;
         }
 
-        public IEnumerable<RecordViewModel> GetRecordByWorkerDate(int roomID, DateTime date)
+        public IEnumerable<RecordViewModel> GetRecordByWorkerDate(int workerID, DateTime date)
         {
             IEnumerable<RecordViewModel> result = new List<RecordViewModel>();
 
             var locationRepo = unitOfWork.LocationRepository;
             var roomRepo = this.unitOfWork.RoomRepository;
             var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
-
-            var roomRecord = roomRepo.Find(roomID);
-            if (roomRecord == null)
+            var userRepo = unitOfWork.UserRepository;
+            var worker = userRepo.Find(workerID);
+            if (worker == null)
             {
-                throw new BaseException(ErrorMessages.ROOM_IS_NOT_EXISTED);
+                throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
             }
 
+            List<int?> arrangementWorker = recordRepository.GetRelatedArrangement(workerID);
+            var roomID = recordRepository.GetShiftRoomByArrangementDate(arrangementWorker, date);
+            if (roomID == null)
+            {
+                throw new BaseException(ErrorMessages.SHIFT_IS_NOT_EXISTED);
+            }
             var recordList = recordRepository.GetRecordByWorkerDate(roomID, date);
             result = recordList.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
             foreach (var element in result)
@@ -100,30 +106,38 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        public IEnumerable<RecordViewModel> GetRecordByWorkerDateForManager(int managerID, int roomID, DateTime date)
+        public IEnumerable<RecordViewModel> GetRecordByWorkerDateForManager(int managerID, int workerID, DateTime date)
         {
             IEnumerable<RecordViewModel> result = new List<RecordViewModel>();
 
             var locationRepo = unitOfWork.LocationRepository;
             var roomRepo = this.unitOfWork.RoomRepository;
             var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
-
-            var roomRecord = roomRepo.Find(roomID);
-            if (roomRecord == null)
+            var userRepo = unitOfWork.UserRepository;
+            var worker = userRepo.Find(workerID);
+            if (worker == null)
             {
-                throw new BaseException(ErrorMessages.ROOM_IS_NOT_EXISTED);
+                throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
             }
+
 
             List<int?> locationManagerRelatedID = locationRepo.GetLocationByUser(managerID);
+            List<int?> locationUserRelatedID = locationRepo.GetLocationByUser(workerID);
 
-            //Room thuoc Manager
-            bool roomManager = locationManagerRelatedID.Contains(roomRecord.LocationId);
-            if (roomManager != true)
+
+            //User thuoc Manager
+            bool userChildManager = locationUserRelatedID.All(x => locationManagerRelatedID.Contains(x));
+            if (userChildManager != true)
             {
-                throw new BaseException(ErrorMessages.ROOM_USER_NOT_EXISTED);
+                throw new BaseException(ErrorMessages.MANAGER_WORKER_NOT_EXISTED);
             }
 
-
+            List<int?> arrangementWorker = recordRepository.GetRelatedArrangement(workerID);
+            var roomID = recordRepository.GetShiftRoomByArrangementDate(arrangementWorker, date);
+            if (roomID == null)
+            {
+                throw new BaseException(ErrorMessages.SHIFT_IS_NOT_EXISTED);
+            }
             var recordList = recordRepository.GetRecordByWorkerDate(roomID, date);
             result = recordList.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
             foreach (var element in result)

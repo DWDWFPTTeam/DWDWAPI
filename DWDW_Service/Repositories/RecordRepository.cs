@@ -17,8 +17,9 @@ namespace DWDW_Service.Repositories
         List<Record> GetRecordsByLocationIdAndTime
             (int locationId, DateTime date);
 
-        //List<Record> GetRecordByWorkerDate(List<int?> deviceRelated, DateTime date);
-        List<Record> GetRecordByWorkerDate(int roomID, DateTime date);
+        int? GetShiftRoomByArrangementDate(List<int?> arrangementRelated, DateTime date);
+        List<int?> GetRelatedArrangement(int workerID);
+        List<Record> GetRecordByWorkerDate(int? roomID, DateTime date);
     }
     public class RecordRepository : BaseRepository<Record>, IRecordRepository
     {
@@ -96,13 +97,34 @@ namespace DWDW_Service.Repositories
             return room.RoomCode;
         }
 
-        //public List<Record> GetRecordByWorkerDate(List<int?> deviceRelated, DateTime date)
-        //{
-        //    var result = dbContext.Set<Record>().Where(x => deviceRelated.Contains(x.DeviceId) 
-        //    && x.RecordDateTime < date.AddDays(1) && x.RecordDateTime > date).ToList();
-        //    return result;
-        //}
-        public List<Record> GetRecordByWorkerDate(int roomID, DateTime date)
+        public int? GetShiftRoomByArrangementDate(List<int?> arrangementRelated, DateTime date)
+        {
+            var result = dbContext.Set<Shift>().FirstOrDefault(x => arrangementRelated.Contains(x.ArrangementId)
+            && x.Date == date);
+            int? workerRoomID;
+            if (result == null)
+            {
+                workerRoomID = null;
+            }
+            else
+            {
+                workerRoomID = result.RoomId;
+            }
+            
+            return workerRoomID;
+        }
+        public List<int?> GetRelatedArrangement(int workerID)
+        {
+            var arrangementUser = dbContext.Set<Arrangement>().Where(x => x.UserId == workerID && x.IsActive == true).ToList();
+            List<int?> relatedArrangement = new List<int?>();
+            for (int i = 0; i < arrangementUser.Count; i++)
+            {
+                int? a = arrangementUser.ElementAt(i).ArrangementId;
+                relatedArrangement.Add(a);
+            }
+            return relatedArrangement;
+        }
+        public List<Record> GetRecordByWorkerDate(int? roomID, DateTime date)
         {
             var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.RoomId == roomID && x.IsActive == true);
             var result = dbContext.Set<Record>().Where(x => x.DeviceId == roomDevice.DeviceId
