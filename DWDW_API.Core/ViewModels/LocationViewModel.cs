@@ -64,19 +64,5 @@ namespace DWDW_API.Core.ViewModels
         [DisplayFormat(DataFormatString = "yyyy-MM-dd")]
         public DateTime endDate { get; set; }
     }
-    public class LocationRecordReceiveDateModel : BaseModel
-    {
-        [Required(ErrorMessage = ErrorMessages.LOCATIONID_INVALID)]
-        public int LocationId { get; set; }
-
-        [Required(ErrorMessage = ErrorMessages.START_DATE_REQUIRED)]
-        [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
-        [DisplayFormat(DataFormatString = "yyyy-MM-dd")]
-        public DateTime startDate { get; set; }
-
-        [Required(ErrorMessage = ErrorMessages.END_DATE_REQUIRED)]
-        [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
-        [DisplayFormat(DataFormatString = "yyyy-MM-dd")]
-        public DateTime endDate { get; set; }
-    }
+  
 }

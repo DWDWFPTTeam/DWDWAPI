@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using DWDW_API.Core.Constants;
 using DWDW_API.Core.Infrastructure;
 using DWDW_API.Core.ViewModels;
@@ -11,7 +7,6 @@ using DWDW_Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic.CompilerServices;
 
 namespace DWDW_API.Controllers
 {
@@ -227,7 +222,7 @@ namespace DWDW_API.Controllers
         [Route("UpdateUserByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpPut]
-        public IActionResult UpdateUserByAdmin(UserUpdateModel userUpdate)
+        public dynamic UpdateUserByAdmin(UserUpdateModel userUpdate)
         {
             return ExecuteInMonitoring(() =>
             {
@@ -261,7 +256,7 @@ namespace DWDW_API.Controllers
         [Route("UpdatePersonalInfo")]
         [Authorize(Roles = Constant.ADMIN + ", " + Constant.MANAGER + ", " + Constant.WORKER)]
         [HttpPut]
-        public IActionResult UpdatePersonalInfo(UserPersonalUpdateModel userUpdate)
+        public dynamic UpdatePersonalInfo(UserPersonalUpdateModel userUpdate)
         {
             return ExecuteInMonitoring(() =>
             {

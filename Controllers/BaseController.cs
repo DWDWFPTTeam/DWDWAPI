@@ -37,17 +37,18 @@ namespace DWDW_API.Controllers
         {
             dynamic result;
             var responseVM = new ResponseViewModel();
+            responseVM.Data = new List<object>();
             try
             {
                 responseVM.StatusCode = StatusCodes.Status200OK;
-                responseVM.Data = func();
+
+                responseVM.Data.Add(func());
                 result = Ok(responseVM);
             }
             catch (BaseException e)
             {
                 responseVM.StatusCode = StatusCodes.Status400BadRequest;
                 responseVM.Message = e.Message;
-                responseVM.Data = new object();
                 result = BadRequest(responseVM);
             }
             catch (Exception e)
@@ -55,7 +56,6 @@ namespace DWDW_API.Controllers
 
                 responseVM.StatusCode = StatusCodes.Status500InternalServerError;
                 responseVM.Message = e.Message;
-                responseVM.Data = new object();
                 result = StatusCode(StatusCodes.Status500InternalServerError,responseVM);
             }
 
@@ -67,17 +67,17 @@ namespace DWDW_API.Controllers
         {
             dynamic result;
             var responseVM = new ResponseViewModel();
+            responseVM.Data = new List<object>();
             try
             {
                 responseVM.StatusCode = StatusCodes.Status200OK;
-                responseVM.Data = await func();
+                responseVM.Data.Add(await func());
                 result = Ok(responseVM);
             }
             catch (BaseException e)
             {
                 responseVM.StatusCode = StatusCodes.Status400BadRequest;
                 responseVM.Message = e.Message;
-                responseVM.Data = new object();
                 result = BadRequest(responseVM);
             }
             catch (Exception e)
@@ -85,7 +85,6 @@ namespace DWDW_API.Controllers
 
                 responseVM.StatusCode = StatusCodes.Status500InternalServerError;
                 responseVM.Message = e.Message;
-                responseVM.Data = new object();
                 result = StatusCode(StatusCodes.Status500InternalServerError, responseVM);
             }
 

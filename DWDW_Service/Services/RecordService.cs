@@ -12,6 +12,9 @@ using Newtonsoft.Json;
 using System.Linq;
 using DWDW_API.Core.Infrastructure;
 using System.Threading.Tasks;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Security.Cryptography.X509Certificates;
 
 namespace DWDW_Service.Services
 {
@@ -19,13 +22,13 @@ namespace DWDW_Service.Services
     {
         Task<RecordViewModel> SaveRecord(RecordReceivedModel record, string imageRoot);
         IEnumerable<RecordImageViewModel> GetRecordByLocationId(int locationId);
-        IEnumerable<RecordViewModel> GetRecordsByLocationDate
-            (int locationId, DateTime startDate, DateTime endDate);
+        IEnumerable<RecordViewModel> GetRecordsByLocationDate(RecordLocationReceivedViewModel record);
         IEnumerable<RecordViewModel> GetRecordsByLocationIdAndTime
             (int locationId, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByWorkerDate(int workerID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByWorkerDateForManager(int managerID, int workerID, DateTime date);
         RecordImageViewModel GetRecordById(int recordId);
+        Task<RecordViewModel> SaveRecord(RecordReceivedByteModel recordReceived, string imageRoot);
     }
 
     public class RecordService : BaseService<Record>, IRecordService
@@ -63,7 +66,7 @@ namespace DWDW_Service.Services
         {
             var roomRepo = this.unitOfWork.RoomRepository;
             var records = recordRepository.GetRecordsByLocationId(locationId)
-                .Select(r => 
+                .Select(r =>
                 {
                     var record = r.ToViewModel<RecordImageViewModel>();
                     record.RoomId = roomRepo.GetRoomFromDevice(r.DeviceId).RoomId;
@@ -132,43 +135,73 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        public IEnumerable<RecordViewModel> GetRecordsByLocationDate(int locationId, DateTime startDate, DateTime endDate)
-        {
-            var locationRepo = this.unitOfWork.LocationRepository;
-            var location = locationRepo.Find(locationId);
-            if (location == null) throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
+        //public IEnumerable<RecordViewModel> GetRecordsByLocationDate(int locationId, DateTime startDate, DateTime endDate)
+        //{
+        //    var locationRepo = this.unitOfWork.LocationRepository;
+        //    var location = locationRepo.Find(locationId);
+        //    if (location == null) throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
 
-            var roomRepo = this.unitOfWork.RoomRepository;
-            List<RecordViewModel> records = new List<RecordViewModel>();
-            int check = DateTime.Compare(startDate, endDate);
-            if (check < 0)
+        //    var roomRepo = this.unitOfWork.RoomRepository;
+        //    List<RecordViewModel> records = new List<RecordViewModel>();
+        //    int check = DateTime.Compare(startDate, endDate);
+        //    if (check < 0)
+        //    {
+        //        records = recordRepository
+        //        .GetRecordsByLocationIdBetweenTime(locationId, startDate, endDate)
+        //        .Select(r => r.ToViewModel<RecordViewModel>()).ToList();
+        //    }
+        //    else if (check == 0)
+        //    {
+        //        records = recordRepository
+        //        .GetRecordsByLocationIdAndTime(locationId, startDate)
+        //        .Select(r => r.ToViewModel<RecordViewModel>()).ToList();
+        //    }
+        //    else
+        //    {
+        //        DateTime f;
+        //        f = startDate;
+        //        startDate = endDate;
+        //        endDate = f;
+        //        records = recordRepository
+        //        .GetRecordsByLocationIdBetweenTime(locationId, startDate, endDate)
+        //        .Select(r => r.ToViewModel<RecordViewModel>()).ToList();
+        //    }
+
+        //    foreach (var element in records)
+        //    {
+        //        int? deviceID = element.DeviceId;
+        //        var room = roomRepo.GetRoomFromDevice(deviceID);
+        //        element.RoomId = room.RoomId;
+        //    }
+        //    return records;
+        //}
+        public IEnumerable<RecordViewModel> GetRecordsByLocationDate(RecordLocationReceivedViewModel record)
+        {
+            var location = this.unitOfWork.LocationRepository.Find(record.LocationId);
+            if (location == null)
             {
-                records = recordRepository
-                .GetRecordsByLocationIdBetweenTime(locationId, startDate, endDate)
-                .Select(r => r.ToViewModel<RecordViewModel>()).ToList();
-            }else if (check == 0)
-            {
-                records = recordRepository
-                .GetRecordsByLocationIdAndTime(locationId, startDate)
-                .Select(r => r.ToViewModel<RecordViewModel>()).ToList();
-            }else
-            {
-                DateTime f;
-                f = startDate;
-                startDate = endDate;
-                endDate = f;
-                records = recordRepository
-                .GetRecordsByLocationIdBetweenTime(locationId, startDate, endDate)
-                .Select(r => r.ToViewModel<RecordViewModel>()).ToList();
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
             }
-            
-            foreach (var element in records)
+
+            var deviceIdsInLocation = this.unitOfWork.RoomRepository.Get(room => room.LocationId == record.LocationId, null, "RoomDevice")
+                                                                      .Select(room => room.RoomDevice)
+                                                                      .Where(rd => rd.Count > 0)
+                                                                      .Select(roomDevice => roomDevice.FirstOrDefault().DeviceId);
+            if (deviceIdsInLocation.Count() == 0)
             {
-                int? deviceID = element.DeviceId;
-                var room = roomRepo.GetRoomFromDevice(deviceID);
-                element.RoomId = room.RoomId;
+                throw new BaseException(ErrorMessages.LOCATION_HAVE_NO_DEVICE);
             }
-            return records;
+            var listRecords = new List<Record>();
+            foreach (var id in deviceIdsInLocation)
+            {
+                var records = this.recordRepository.Get(r => r.DeviceId == id
+                                                        && r.RecordDateTime >= record.StartDate.Date
+                                                        && r.RecordDateTime <= record.EndDate.Date, null, "");
+                listRecords.AddRange(records);
+            }
+
+            var recordEntities =  listRecords.OrderByDescending(r => r.RecordId).ToList();
+            return recordEntities.Select(r => r.ToViewModel<RecordViewModel>());
         }
 
         public IEnumerable<RecordViewModel> GetRecordsByLocationIdAndTime(int locationId, DateTime date)
@@ -197,17 +230,17 @@ namespace DWDW_Service.Services
                     DeviceId = device.DeviceId,
                     Type = record.Type,
                     RecordDateTime = DateTime.Now,
-                    
+
                 };
                 var notificationFCM = this.CreateNotificationFCM(recordEntity, device.DeviceCode);
-                if(record.Image.Length <= 0)
+                if (record.Image.Length <= 0)
                 {
                     throw new BaseException("Image is not existed!");
                 }
                 if (!Directory.Exists(imageRoot))
                 {
                     Directory.CreateDirectory(imageRoot);
-                   
+
                 }
                 var dir = new DirectoryInfo(imageRoot);
                 var imagePath = imageRoot + record.Image.Name + dir.GetFiles().Length + ".jpg";
@@ -241,6 +274,61 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.DEVICE_IS_NOT_EXISTED);
             }
+
+            return result;
+        }
+
+        public async Task<RecordViewModel> SaveRecord(RecordReceivedByteModel record, string imageRoot)
+        {
+            RecordViewModel result;
+            var device = unitOfWork.DeviceRepository.GetDeviceCode(record.DeviceCode);
+            if(device == null)
+            {
+                throw new BaseException(ErrorMessages.DEVICE_IS_NOT_EXISTED);
+            }
+            var recordEntity = new Record
+            {
+                DeviceId = device.DeviceId,
+                Type = record.Type,
+                RecordDateTime = DateTime.Now,
+
+            };
+            var notificationFCM = this.CreateNotificationFCM(recordEntity, device.DeviceCode);
+            if (record.Image.Length <= 0)
+            {
+                throw new BaseException("Image is not existed!");
+            }
+            if (!Directory.Exists(imageRoot))
+            {
+                Directory.CreateDirectory(imageRoot);
+
+            }
+            var dir = new DirectoryInfo(imageRoot);
+            var imagePath = imageRoot + "image" + dir.GetFiles().Length + ".jpg";
+            using (Image image = Image.FromStream(new MemoryStream(record.Image)))
+            {
+                image.Save(imagePath, ImageFormat.Jpeg);  // Or Png
+                recordEntity.Image = imagePath;
+            }
+
+            using (var transaction = unitOfWork.CreateTransaction())
+            {
+                try
+                {
+                    //save record
+                    await recordRepository.AddAsync(recordEntity);
+                    //save noti
+                    unitOfWork.NotificationRepository.Add(notificationFCM.NotificationVM.ToEntity<Notifications>());
+                    transaction.Commit();
+                    result = recordEntity.ToViewModel<RecordViewModel>();
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e;
+                }
+            }
+            this.SendNotify(notificationFCM);
 
             return result;
         }
@@ -338,8 +426,8 @@ namespace DWDW_Service.Services
 
         public RecordImageViewModel GetRecordById(int recordId)
         {
-            var recordEntity =  recordRepository.Find(recordId);
-            if(recordEntity == null)
+            var recordEntity = recordRepository.Find(recordId);
+            if (recordEntity == null)
             {
                 throw new BaseException(ErrorMessages.RECORDID_IS_NOT_EXISTED);
             }
@@ -348,5 +436,7 @@ namespace DWDW_Service.Services
 
             return recordVM;
         }
+
+       
     }
 }
