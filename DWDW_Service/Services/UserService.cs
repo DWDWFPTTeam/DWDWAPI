@@ -538,24 +538,34 @@ namespace DWDW_Service.Services
             var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
             var arrangementRepo = unitOfWork.ArrangementRepository;
 
-            var overdueRoomDevice = roomDeviceRepo.GetOverdue();
-            var overdueArrangement = arrangementRepo.GetOverdue();
-
-            foreach (var element in overdueRoomDevice)
+            using (var transaction = unitOfWork.CreateTransaction())
             {
-                element.IsActive = false;
-                roomDeviceRepo.Update(element);
-            }
+                try
+                {
+                    var overdueRoomDevice = roomDeviceRepo.GetOverdue();
+                    var overdueArrangement = arrangementRepo.GetOverdue();
 
-            foreach (var attribute in overdueArrangement)
-            {
-                attribute.IsActive = false;
-                arrangementRepo.Update(attribute);
-            }
+                    foreach (var element in overdueRoomDevice)
+                    {
+                        element.IsActive = false;
+                        roomDeviceRepo.Update(element);
+                    }
 
+                    foreach (var attribute in overdueArrangement)
+                    {
+                        attribute.IsActive = false;
+                        arrangementRepo.Update(attribute);
+                    }
+                    transaction.Commit();
+                }
+                catch (Exception e)
+                {
+
+                    transaction.Rollback();
+                    throw e;
+                }
+
+            }
         }
-
-
-
     }
 }
