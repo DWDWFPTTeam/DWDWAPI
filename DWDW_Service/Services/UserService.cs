@@ -30,7 +30,7 @@ namespace DWDW_Service.Services
         UserViewModel UpdateUser(UserUpdateModel userUpdate);
         UserViewModel DeActiveUserByAdmin(int id);
         UserViewModel ActiveUserByAdmin(UserActiveModel userActive);
-        IEnumerable<UserGetAllViewModel> GetUserFromLocationByAdmin( int locationId1);
+        IEnumerable<UserGetAllViewModel> GetUserFromLocationByAdmin(int locationId1);
         IEnumerable<UserViewModel> GetUserFromLocationsByManager(int userId);
         IEnumerable<UserViewModel> GetWorkerFromLocationsByManager(int userId, int locationID);
         IEnumerable<UserViewModel> GetUserFromOneLocationByManager(int userId, int locationId);
@@ -92,7 +92,7 @@ namespace DWDW_Service.Services
 
         public IEnumerable<UserGetAllViewModel> GetAllByAdmin()
         {
-            
+
             var users = userRepository.GetAll().Select(user =>
             {
                 var userGetAllViewModel = user.ToViewModel<UserGetAllViewModel>();
@@ -119,7 +119,7 @@ namespace DWDW_Service.Services
         {
             UserGetAllViewModel result;
             var user = userRepository.Find(userId);
-            if(user == null)
+            if (user == null)
             {
                 throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
             }
@@ -133,7 +133,7 @@ namespace DWDW_Service.Services
             return result;
         }
 
-  
+
 
         public IEnumerable<UserGetAllViewModel> GetAllActiveByAdmin(int userId)
         {
@@ -199,25 +199,29 @@ namespace DWDW_Service.Services
             UserViewModel result;
             //check validation
             var user = userRepository.Find(userUpdate.UserId);
-            if (user != null)
-            {
-                //Map UserModel to UserEntity
-                user.UserName = userUpdate.UserName;
-                user.RoleId = userUpdate.RoleId;
-                user.Phone = userUpdate.Phone;
-                user.DateOfBirth = userUpdate.DateOfBirth;
-                user.Gender = userUpdate.Gender;
-
-                //update user
-                userRepository.Update(user);
-
-                //Map UserEntity to UserViewModel
-                result = user.ToViewModel<UserViewModel>();
-            }
-            else
+            if (user == null)
             {
                 throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
             }
+            var checkUser = userRepository.CheckUserNameExisted(userUpdate.UserName);
+            if (checkUser != null)
+            {
+                throw new BaseException(ErrorMessages.USER_IS_EXISTED);
+            }
+
+            //Map UserModel to UserEntity
+            user.UserName = userUpdate.UserName;
+            user.RoleId = userUpdate.RoleId;
+            user.Phone = userUpdate.Phone;
+            user.DateOfBirth = userUpdate.DateOfBirth;
+            user.Gender = userUpdate.Gender;
+
+            //update user
+            userRepository.Update(user);
+
+            //Map UserEntity to UserViewModel
+            result = user.ToViewModel<UserViewModel>();
+
 
 
             return result;
@@ -355,7 +359,7 @@ namespace DWDW_Service.Services
         }
         public IEnumerable<UserGetAllViewModel> GetUserFromLocationByAdmin(int locationId)
         {
-            
+
             var location = this.unitOfWork.LocationRepository.Find(locationId);
             if (location == null)
             {
@@ -363,7 +367,7 @@ namespace DWDW_Service.Services
             }
             var users = userRepository.GetUserFromLocation(locationId);
             var result = users.Select(x => x.ToViewModel<UserGetAllViewModel>()).ToList();
-            foreach(var element in result)
+            foreach (var element in result)
             {
                 element.Locations = this.unitOfWork.ArrangementRepository.Get(arr => arr.UserId == element.UserId
                                                                    && arr.IsActive == true, null, "Location")

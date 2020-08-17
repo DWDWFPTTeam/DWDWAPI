@@ -78,7 +78,7 @@ namespace DWDW_Service.Services
                             rooms = roomRepository.EnableRoomFromLocation(locationId);
                             location.IsActive = true;
                         }
-                        
+
                         locationRepository.Update(location);
                         transaction.Commit();
                     }
@@ -214,17 +214,19 @@ namespace DWDW_Service.Services
         {
             LocationViewModel result;
             var location = locationRepository.Find(locationUpdate.LocationId);
-            if (location != null)
-            {
-                location.LocationCode = locationUpdate.LocationCode;
-                location.IsActive = location.IsActive;
-                locationRepository.Update(location);
-                result = location.ToViewModel<LocationViewModel>();
-            }
-            else
+            if (location == null)
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
             }
+            var checkLocation = locationRepository.CheckLocationCodeExisted(locationUpdate.LocationCode);
+            if (checkLocation != null)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_EXISTED);
+            }
+            location.LocationCode = locationUpdate.LocationCode;
+            location.IsActive = location.IsActive;
+            locationRepository.Update(location);
+            result = location.ToViewModel<LocationViewModel>();
             return result;
         }
 

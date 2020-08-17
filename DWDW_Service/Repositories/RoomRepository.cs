@@ -10,6 +10,7 @@ namespace DWDW_Service.Repositories
     public interface IRoomRepository : IBaseRepository<Room>
     {
         Room GetRoomByRoomCode(string roomCode);
+        Room CheckRoomCodeExisted(string roomCode);
         void DisableDeviceRoom(int? deviceID);
         void DisableRoomDevice(int? roomID);
         RoomDevice GetLatest();
@@ -37,6 +38,12 @@ namespace DWDW_Service.Repositories
                 .Where(x => x.LocationId == locationID)
                 .ToList();
         }
+
+        public Room CheckRoomCodeExisted(string roomCode)
+        {
+            return this.dbContext.Set<Room>().FirstOrDefault(c => c.RoomCode == roomCode);
+        }
+
         public Room GetRoomByRoomCode(string roomCode)
         {
             return this.dbContext.Set<Room>().FirstOrDefault

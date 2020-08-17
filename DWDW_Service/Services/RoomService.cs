@@ -224,22 +224,26 @@ namespace DWDW_Service.Services
             RoomViewModel result;
             var room = roomRepository.Find(roomUpdate.RoomId);
             var location = locationRepository.Find(roomUpdate.LocationId);
-            if ((room != null) && (location != null))
-            {
-                room.RoomCode = roomUpdate.RoomCode;
-                room.LocationId = roomUpdate.LocationId;
-                room.IsActive = true;
-                roomRepository.Update(room);
-                result = room.ToViewModel<RoomViewModel>();
-            }
-            else if (room == null)
+            if (room == null)
             {
                 throw new BaseException(ErrorMessages.ROOM_IS_NOT_EXISTED);
             }
-            else
+            if (location == null)
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
             }
+            var checkRoom = roomRepository.CheckRoomCodeExisted(roomUpdate.RoomCode);
+            if (checkRoom != null)
+            {
+                throw new BaseException(ErrorMessages.ROOM_IS_EXISTED);
+            }
+
+            room.RoomCode = roomUpdate.RoomCode;
+            room.LocationId = roomUpdate.LocationId;
+            room.IsActive = true;
+            roomRepository.Update(room);
+            result = room.ToViewModel<RoomViewModel>();
+
             return result;
         }
     }

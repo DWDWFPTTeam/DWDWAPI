@@ -9,6 +9,7 @@ namespace DWDW_Service.Repositories
 {
     public interface IUserRepository : IBaseRepository<User>
     {
+        User CheckUserNameExisted(string userName);
         User GetUserByUsernamePassword(string username, string password);
         User GetUserByUsername(string username);
         IEnumerable<User> GetWorkerFromLocation(int locationId);
@@ -19,6 +20,11 @@ namespace DWDW_Service.Repositories
         public UserRepository(DbContext dbContext) : base(dbContext)
         {
 
+        }
+
+        public User CheckUserNameExisted(string userName)
+        {
+            return dbContext.Set<User>().FirstOrDefault(x => x.UserName == userName);
         }
 
         public User GetUserByUsername(string username)
