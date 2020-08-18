@@ -290,6 +290,16 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.ENDATE_MUST_BIGGER_NOW);
             }
+            var room = roomRepo.Find(roomDevice.RoomId);
+            if (room.IsActive == false)
+            {
+                throw new BaseException(ErrorMessages.ROOM_IS_DISABLE);
+            }
+            var device = deviceRepo.Find(roomDevice.DeviceId);
+            if (device.IsActive == false)
+            {
+                throw new BaseException(ErrorMessages.DEVICE_IS_DISABLE);
+            }
             roomDeviceRepo.Add(new RoomDevice
             {
                 RoomId = roomDevice.RoomId,
@@ -299,8 +309,6 @@ namespace DWDW_Service.Services
                 IsActive = true
             });
             result = roomDeviceRepo.GetLatest().ToViewModel<RoomDeviceAssignModel>();
-            var room = roomRepo.Find(result.RoomId);
-            var device = deviceRepo.Find(result.DeviceId);
             result.RoomCode = room.RoomCode;
             result.DeviceCode = device.DeviceCode;
             return result;

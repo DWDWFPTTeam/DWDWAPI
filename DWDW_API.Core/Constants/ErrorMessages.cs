@@ -40,6 +40,8 @@ namespace DWDW_API.Core.Constants
         public const string DEVICE_CODE_INVALID = "Device Code is invalid";
         public const string DEVICE_ID_INVALID = "Device ID is invalid";
         public const string STATUS_INVALID = "Status is invalid";
+        public const string DEVICE_IS_DISABLE = "This device is disable";
+
 
 
         //Room Message
@@ -50,6 +52,7 @@ namespace DWDW_API.Core.Constants
         public const string ROOM_ID_INVALID = "Room ID is invalid";
         public const string ROOM_CODE_INVALID = "Room Code is invalid";
         public static string ROOM_NOT_FOUND = "Room is not found";
+        public const string ROOM_IS_DISABLE = "This room is disable";
         public const string ROOM_DEVICE_EMPTY = "There is no device in this room";
 
         //RoomDevice Message

@@ -27,8 +27,8 @@ namespace DWDW_Service.Repositories
         public bool CheckExistedRoomDevice(RoomDeviceCreateModel roomDeviceCreate)
         {
             bool result = false;
-            var existedRoomDevice = dbContext.Set<RoomDevice>().Where(x => (x.DeviceId == roomDeviceCreate.DeviceId
-            || x.RoomId == roomDeviceCreate.RoomId) && x.IsActive == true).ToList();
+            var existedRoomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => (x.DeviceId == roomDeviceCreate.DeviceId
+            || x.RoomId == roomDeviceCreate.RoomId) && x.IsActive == true);
             if (existedRoomDevice == null)
             {
                 result = true;
