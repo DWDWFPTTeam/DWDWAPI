@@ -11,6 +11,7 @@ namespace DWDW_API.Core.ViewModels
     {
         public int UserId { get; set; }
         public string UserName { get; set; }
+        public string FullName { get; set; }
         public string Phone { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public int? Gender { get; set; }
@@ -22,6 +23,7 @@ namespace DWDW_API.Core.ViewModels
     {
         public int UserId { get; set; }
         public string UserName { get; set; }
+        public string FullName { get; set; }
         public string Phone { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public int? Gender { get; set; }
@@ -38,30 +40,39 @@ namespace DWDW_API.Core.ViewModels
         [Required(ErrorMessage = ErrorMessages.INVALID_USERNAME_PASSWORD)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        [Required(ErrorMessage = ErrorMessages.FULLNAME_IS_EMPTY)]
+        public string FullName { get; set; }
         [DataType(DataType.PhoneNumber, ErrorMessage = ErrorMessages.WRONG_PHONE_FORMAT)]
         public string Phone { get; set; }
+        [Required(ErrorMessage = ErrorMessages.BIRTHDAY_IS_EMPTY)]
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.BIRTHDAY_WRONG_DATETIME_FORMAT)]
         public DateTime? DateOfBirth { get; set; }
+        [Required(ErrorMessage = ErrorMessages.GENDER_IS_EMPTY)]
+        [Range(1, 3, ErrorMessage = ErrorMessages.WRONG_GENDER_FORMAT)]
         public int? Gender { get; set; }
         [Required(ErrorMessage = ErrorMessages.ROLE_ID_INVALID)]
+        [Range(1, 3, ErrorMessage = ErrorMessages.WRONG_ROLE_FORMAT)]
         public int RoleId { get; set; }
     }
     public class UserUpdateModel : BaseModel
     {
-        [Required(ErrorMessage = ErrorMessages.USERID_INVALID)]
+        [Required(ErrorMessage = ErrorMessages.USERID_IS_EMPTY)]
         public int UserId { get; set; }
-        [Required(ErrorMessage = ErrorMessages.INVALID_USERNAME_PASSWORD)]
-        public string UserName { get; set; }
-        [Required(ErrorMessage = ErrorMessages.WRONG_PHONE_FORMAT)]
+   
+        [Required(ErrorMessage = ErrorMessages.FULLNAME_IS_EMPTY)]
+        public string FullName { get; set; }
+
+        [Required(ErrorMessage = ErrorMessages.PHONE_IS_EMPTY)]
         [DataType(DataType.PhoneNumber, ErrorMessage = ErrorMessages.WRONG_PHONE_FORMAT)]
         public string Phone { get; set; }
+
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.BIRTHDAY_WRONG_DATETIME_FORMAT)]
         public DateTime? DateOfBirth { get; set; }
-        [Required(ErrorMessage = ErrorMessages.WRONG_GENDER_FORMAT)]
-        [Range(1, 3, ErrorMessage = ErrorMessages.GENDER_IS_NOT_EXISTED)]
+        [Required(ErrorMessage = ErrorMessages.GENDER_IS_EMPTY)]
+        [Range(1, 3, ErrorMessage = ErrorMessages.WRONG_GENDER_FORMAT)]
         public int? Gender { get; set; }
         [Required(ErrorMessage = ErrorMessages.ROLE_ID_INVALID)]
-        [Range(1, 3, ErrorMessage = ErrorMessages.ROLE_IS_NOT_EXISTED)]
+        [Range(1, 3, ErrorMessage = ErrorMessages.WRONG_ROLE_FORMAT)]
         public int? RoleId { get; set; }
 
     }
@@ -85,7 +96,7 @@ namespace DWDW_API.Core.ViewModels
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.BIRTHDAY_WRONG_DATETIME_FORMAT)]
         public DateTime? DateOfBirth { get; set; }
         [Required(ErrorMessage = ErrorMessages.WRONG_GENDER_FORMAT)]
-        [Range(1, 3, ErrorMessage = ErrorMessages.GENDER_IS_NOT_EXISTED)]
+        [Range(1, 3, ErrorMessage = ErrorMessages.GENDER_IS_EMPTY)]
         public int? Gender { get; set; }
     }
 

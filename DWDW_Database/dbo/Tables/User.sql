@@ -2,6 +2,7 @@
     [UserId]      INT            IDENTITY (1, 1) NOT NULL,
     [UserName]    NVARCHAR (MAX) NULL,
     [Password]    NVARCHAR (MAX) NULL,
+    [FullName]    NVARCHAR (MAX) NULL,
     [Phone]       NVARCHAR (MAX) NULL,
     [DateOfBirth] DATETIME       NULL,
     [Gender]      INT            NULL,
@@ -11,6 +12,8 @@
     CONSTRAINT [PK__User__CB9A1CFF151180C8] PRIMARY KEY CLUSTERED ([UserId] ASC),
     CONSTRAINT [FK_User_Role] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[Role] ([roleId])
 );
+
+
 
 
 
