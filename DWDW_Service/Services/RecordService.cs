@@ -22,7 +22,7 @@ namespace DWDW_Service.Services
     {
         Task<RecordViewModel> SaveRecord(RecordReceivedModel record, string imageRoot);
         IEnumerable<RecordImageViewModel> GetRecordByLocationId(int locationId);
-        IEnumerable<RecordViewModel> GetRecordsByLocationDate(RecordLocationReceivedViewModel record);
+        IEnumerable<RecordRoomCodeViewModel> GetRecordsByLocationDate(RecordLocationReceivedViewModel record);
         IEnumerable<RecordViewModel> GetRecordsByLocationIdAndTime
             (int locationId, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByWorkerDate(int workerID, DateTime date);
@@ -64,12 +64,15 @@ namespace DWDW_Service.Services
 
         public IEnumerable<RecordImageViewModel> GetRecordByLocationId(int locationId)
         {
-            var roomRepo = this.unitOfWork.RoomRepository;
             var records = recordRepository.GetRecordsByLocationId(locationId)
                 .Select(r =>
                 {
                     var record = r.ToViewModel<RecordImageViewModel>();
-                    record.RoomId = roomRepo.GetRoomFromDevice(r.DeviceId).RoomId;
+                    var room = this.unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == r.DeviceId
+                                                                        && rd.IsActive == true, null, "Room")
+                                                                        .Where(rd => rd.Room != null)
+                                                                        .Select(rd => rd.Room).FirstOrDefault();
+                    record.RoomCode = room.RoomCode;
                     record.ImageByte = File.ReadAllBytes(r.Image);
                     return record;
                 }).ToList();
@@ -187,7 +190,7 @@ namespace DWDW_Service.Services
         //    }
         //    return records;
         //}
-        public IEnumerable<RecordViewModel> GetRecordsByLocationDate(RecordLocationReceivedViewModel record)
+        public IEnumerable<RecordRoomCodeViewModel> GetRecordsByLocationDate(RecordLocationReceivedViewModel record)
         {
             var location = this.unitOfWork.LocationRepository.Find(record.LocationId);
             if (location == null)
@@ -213,7 +216,16 @@ namespace DWDW_Service.Services
             }
 
             var recordEntities =  listRecords.OrderByDescending(r => r.RecordId).ToList();
-            return recordEntities.Select(r => r.ToViewModel<RecordViewModel>());
+            var recordVM = recordEntities.Select(r =>
+            {
+                var recordViewModel = r.ToViewModel<RecordRoomCodeViewModel>();
+                var room = this.unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == r.DeviceId, null, "Room")
+                                                               .Where(rd => rd.Room != null)
+                                                               .Select(rd => rd.Room).FirstOrDefault();
+                recordViewModel.RoomCode = room.RoomCode;
+                return recordViewModel;
+            });
+            return recordVM;
         }
 
         public IEnumerable<RecordViewModel> GetRecordsByLocationIdAndTime(int locationId, DateTime date)
@@ -444,6 +456,25 @@ namespace DWDW_Service.Services
                 throw new BaseException(ErrorMessages.RECORDID_IS_NOT_EXISTED);
             }
             var recordVM = recordEntity.ToViewModel<RecordImageViewModel>();
+            var room = this.unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == recordEntity.DeviceId, null, "Room")
+                                                               .Where(rd => rd.Room != null)
+                                                               .Select(rd => rd.Room).FirstOrDefault();
+            if(room == null)
+            {
+                throw new BaseException(ErrorMessages.ROOM_IS_NOT_EXISTED);
+            }
+            var arrangement = this.unitOfWork.ShiftRepository.Get(s => s.RoomId == room.RoomId
+                                                           && s.Date.Value.Date.CompareTo(recordEntity.RecordDateTime.Value.Date) == 0
+                                                           && s.IsActive == true, null, "Arrangement")
+                                                           .Where(s => s.Arrangement != null)
+                                                           .Select(s => s.Arrangement).FirstOrDefault();
+            if (arrangement == null)
+            {
+                throw new BaseException(ErrorMessages.ARRANGEMENT_IS_NOT_EXISTED);
+            }
+            var user = this.unitOfWork.UserRepository.Find(arrangement.UserId);
+            recordVM.FullName = user.FullName;
+            recordVM.RoomCode = room.RoomCode;
             recordVM.ImageByte = File.ReadAllBytes(recordEntity.Image);
 
             return recordVM;

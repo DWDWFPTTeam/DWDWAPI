@@ -186,6 +186,8 @@ namespace DWDW_API
                 cfg.CreateMap<RecordViewModel, Record>();
                 cfg.CreateMap<RecordImageViewModel, Record>();
                 cfg.CreateMap<Record, RecordImageViewModel>();
+                cfg.CreateMap<Record, RecordRoomCodeViewModel>();
+                cfg.CreateMap<RecordRoomCodeViewModel, Record>();
 
                 //Role Mapping
                 cfg.CreateMap<Role, RoleViewModel>();
