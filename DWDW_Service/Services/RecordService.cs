@@ -456,6 +456,25 @@ namespace DWDW_Service.Services
                 throw new BaseException(ErrorMessages.RECORDID_IS_NOT_EXISTED);
             }
             var recordVM = recordEntity.ToViewModel<RecordImageViewModel>();
+            var room = this.unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == recordEntity.DeviceId, null, "Room")
+                                                               .Where(rd => rd.Room != null)
+                                                               .Select(rd => rd.Room).FirstOrDefault();
+            if(room == null)
+            {
+                throw new BaseException(ErrorMessages.ROOM_IS_NOT_EXISTED);
+            }
+            var arrangement = this.unitOfWork.ShiftRepository.Get(s => s.RoomId == room.RoomId
+                                                           && s.Date.Value.Date.CompareTo(recordEntity.RecordDateTime.Value.Date) == 0
+                                                           && s.IsActive == true, null, "Arrangement")
+                                                           .Where(s => s.Arrangement != null)
+                                                           .Select(s => s.Arrangement).FirstOrDefault();
+            if (arrangement == null)
+            {
+                throw new BaseException(ErrorMessages.ARRANGEMENT_IS_NOT_EXISTED);
+            }
+            var user = this.unitOfWork.UserRepository.Find(arrangement.UserId);
+            recordVM.FullName = user.FullName;
+            recordVM.RoomCode = room.RoomCode;
             recordVM.ImageByte = File.ReadAllBytes(recordEntity.Image);
 
             return recordVM;
