@@ -291,11 +291,19 @@ namespace DWDW_Service.Services
                 throw new BaseException(ErrorMessages.ENDATE_MUST_BIGGER_NOW);
             }
             var room = roomRepo.Find(roomDevice.RoomId);
+            if(room == null)
+            {
+                throw new BaseException(ErrorMessages.ROOM_IS_NOT_EXISTED);
+            }
             if (room.IsActive == false)
             {
                 throw new BaseException(ErrorMessages.ROOM_IS_DISABLE);
             }
             var device = deviceRepo.Find(roomDevice.DeviceId);
+            if(device == null)
+            {
+                throw new BaseException(ErrorMessages.DEVICE_IS_NOT_EXISTED);
+            }
             if (device.IsActive == false)
             {
                 throw new BaseException(ErrorMessages.DEVICE_IS_DISABLE);
