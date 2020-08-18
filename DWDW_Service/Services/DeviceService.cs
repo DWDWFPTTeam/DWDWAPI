@@ -279,8 +279,17 @@ namespace DWDW_Service.Services
             var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
             var roomRepo = unitOfWork.RoomRepository;
             var deviceRepo = unitOfWork.DeviceRepository;
-            roomDeviceRepo.DisableDeviceRoom(roomDevice.DeviceId);
-            roomDeviceRepo.DisableRoomDevice(roomDevice.RoomId);
+            //roomDeviceRepo.DisableDeviceRoom(roomDevice.DeviceId);
+            //roomDeviceRepo.DisableRoomDevice(roomDevice.RoomId);
+            var checkExisted = roomDeviceRepo.CheckExistedRoomDevice(roomDevice);
+            if (checkExisted == false)
+            {
+                throw new BaseException(ErrorMessages.RELATIONSHIP_EXISTED);
+            }
+            if (roomDevice.EndDate < DateTime.Now)
+            {
+                throw new BaseException(ErrorMessages.ENDATE_MUST_BIGGER_NOW);
+            }
             roomDeviceRepo.Add(new RoomDevice
             {
                 RoomId = roomDevice.RoomId,

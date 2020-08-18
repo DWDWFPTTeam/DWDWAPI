@@ -1,4 +1,5 @@
 ﻿using DWDW_API.Core.Entities;
+using DWDW_API.Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace DWDW_Service.Repositories
 {
     public interface IRoomDeviceRepository : IBaseRepository<RoomDevice>
     {
+        bool CheckExistedRoomDevice(RoomDeviceCreateModel roomDeviceCreate);
         void DisableDeviceRoom(int? deviceID);
         void DisableRoomDevice(int? roomID);
         RoomDevice GetLatest();
@@ -20,6 +22,18 @@ namespace DWDW_Service.Repositories
     {
         public RoomDeviceRepository(DbContext dbContext) : base(dbContext)
         {
+        }
+
+        public bool CheckExistedRoomDevice(RoomDeviceCreateModel roomDeviceCreate)
+        {
+            bool result = false;
+            var existedRoomDevice = dbContext.Set<RoomDevice>().Where(x => (x.DeviceId == roomDeviceCreate.DeviceId
+            || x.RoomId == roomDeviceCreate.RoomId) && x.IsActive == true).ToList();
+            if (existedRoomDevice == null)
+            {
+                result = true;
+            }
+            return result;
         }
 
         public void DisableDeviceRoom(int? deviceID)

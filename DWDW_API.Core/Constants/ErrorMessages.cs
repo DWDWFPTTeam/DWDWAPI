@@ -20,6 +20,7 @@ namespace DWDW_API.Core.Constants
         public const string INVALID_DATE_FORMAT = "Invalid date format! Date format is'yyyy-MM-dd'";
         public const string TYPE_MUST_BE_INTEGER = "Type must be integer'";
         public const string IMAGE_IS_EMPTY = "Image is empty";
+        public const string RELATIONSHIP_EXISTED = "This relationship is already existed";
 
         public const string INVALID_USERID_OR_LOCATIONID = "User Id or Location Id is invalid";
 
@@ -53,6 +54,8 @@ namespace DWDW_API.Core.Constants
 
         //RoomDevice Message
         public const string WRONG_DATETIME_FORMAT = "Invalid date";
+        public const string ENDATE_MUST_BIGGER_NOW = "End date must be later than now";
+
 
         //Shift Message
         public const string INVALID_MANAGER = "This shift doesn't belong to the current manager";
