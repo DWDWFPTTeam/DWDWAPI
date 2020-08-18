@@ -16,12 +16,20 @@ namespace DWDW_API.Core.ViewModels
         public int? Type { get; set; }
         public DateTime? RecordDateTime { get; set; }
     }
+    public class RecordRoomCodeViewModel : BaseModel
+    {
+        public int? RecordId { get; set; }
+        public int? DeviceId { get; set; }
+        public String RoomCode { get; set; }
+        public int? Type { get; set; }
+        public DateTime? RecordDateTime { get; set; }
+    }
 
     public class RecordImageViewModel : BaseModel
     {
         public int? RecordId { get; set; }
         public int? DeviceId { get; set; }
-        public int? RoomId { get; set; }
+        public String RoomCode { get; set; }
         public int? Type { get; set; }
         public DateTime? RecordDateTime { get; set; }
         public byte[] ImageByte { get; set; }
