@@ -24,7 +24,7 @@ namespace DWDW_Service.Repositories
 
         public User CheckUserNameExisted(string userName)
         {
-            return dbContext.Set<User>().FirstOrDefault(x => x.UserName == userName);
+            return dbContext.Set<User>().FirstOrDefault(x => x.UserName == userName && x.IsActive == true);
         }
 
         public User GetUserByUsername(string username)

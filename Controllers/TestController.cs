@@ -9,6 +9,7 @@ using DWDW_API.Core.Constants;
 using DWDW_API.Providers;
 using DWDW_Service.Repositories;
 using DWDW_Service.Services;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -36,17 +37,11 @@ namespace DWDW_API.Controllers
 
         [HttpGet]
         [Authorize(Roles = Constant.ADMIN)]
-        public IEnumerable<WeatherForecast> Get(int number1, int number2)
+        public IActionResult CreateCheckingOverdueJob(int number1, int number2)
         {
-            userService.DeactiveOverdue();
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+            //userService.DeactiveOverdue();
+            RecurringJob.AddOrUpdate("DeactiveOverdue", () => userService.DeactiveOverdue(), "0 0 * * *", TimeZoneInfo.Local);
+            return Ok();
         }
 
         [HttpGet]

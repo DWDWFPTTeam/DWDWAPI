@@ -29,7 +29,7 @@ namespace DWDW_Service.Repositories
 
         public Location CheckLocationCodeExisted(string locationCode)
         {
-            return this.dbContext.Set<Location>().FirstOrDefault(c => c.LocationCode == locationCode);
+            return this.dbContext.Set<Location>().FirstOrDefault(c => c.LocationCode == locationCode && c.IsActive == true);
         }
         public List<int?> GetLocationByUser(int userID)
         {

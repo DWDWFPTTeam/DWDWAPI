@@ -41,7 +41,7 @@ namespace DWDW_Service.Repositories
 
         public Room CheckRoomCodeExisted(string roomCode)
         {
-            return this.dbContext.Set<Room>().FirstOrDefault(c => c.RoomCode == roomCode);
+            return this.dbContext.Set<Room>().FirstOrDefault(c => c.RoomCode == roomCode && c.IsActive == true);
         }
 
         public Room GetRoomByRoomCode(string roomCode)

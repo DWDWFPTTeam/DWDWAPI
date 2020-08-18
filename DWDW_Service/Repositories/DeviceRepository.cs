@@ -44,7 +44,7 @@ namespace DWDW_Service.Repositories
         }
         public Device CheckDeviceCodeExisted(string deviceCode)
         {
-            return this.dbContext.Set<Device>().FirstOrDefault(c => c.DeviceCode == deviceCode);
+            return this.dbContext.Set<Device>().FirstOrDefault(c => c.DeviceCode == deviceCode && c.IsActive == true);
         }
 
         public Device GetDeviceFromRoom(int? roomID)
