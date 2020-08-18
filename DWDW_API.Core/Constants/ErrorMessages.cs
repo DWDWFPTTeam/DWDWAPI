@@ -76,10 +76,17 @@ namespace DWDW_API.Core.Constants
         public const string WRONG_PHONE_FORMAT = "Wrong phone number format";
         public const string WRONG_DEVICETOKEN_FORMAT = "Wrong device token format";
         public const string WRONG_GENDER_FORMAT = "Wrong gender format";
-        public const string GENDER_IS_NOT_EXISTED = "Gender is not existed";
+        public const string GENDER_IS_EMPTY = "Gender is empty";
         public const string MANAGER_NOT_FOUND = "Cannot found the manager";
         public const string SHIFT_IS_EXISTED = "Shift is existed";
         public const string ARRANGEMENT_IS_NOT_EXISTED = "Arrangement is not existed";
+        public const string FULLNAME_IS_EMPTY = "Fullname is empty";
+        public const string USERNAME_IS_EMPTY = "UserName is empty";
+        public const string USERID_IS_EMPTY = "UserId is empty";
+        public const string PHONE_IS_EMPTY = "Phone is empty";
+        public const string WRONG_ROLE_FORMAT = "Role is wrong format";
+        public const string BIRTHDAY_IS_EMPTY = "Birthday is empty";
+
 
 
         //Location Message

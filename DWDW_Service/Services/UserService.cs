@@ -196,35 +196,21 @@ namespace DWDW_Service.Services
 
         public UserViewModel UpdateUser(UserUpdateModel userUpdate)
         {
-            UserViewModel result;
             //check validation
             var user = userRepository.Find(userUpdate.UserId);
             if (user == null)
             {
-                throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
+                throw new BaseException(ErrorMessages.USER_IS_NOT_EXISTED);
             }
-            var checkUser = userRepository.CheckUserNameExisted(userUpdate.UserName);
-            if (checkUser != null)
-            {
-                throw new BaseException(ErrorMessages.USER_IS_EXISTED);
-            }
-
-            //Map UserModel to UserEntity
-            user.UserName = userUpdate.UserName;
-            user.RoleId = userUpdate.RoleId;
-            user.Phone = userUpdate.Phone;
+            user.FullName = userUpdate.FullName;
             user.DateOfBirth = userUpdate.DateOfBirth;
             user.Gender = userUpdate.Gender;
-
+            user.Phone = userUpdate.Phone;
+            user.RoleId = userUpdate.RoleId;
             //update user
             userRepository.Update(user);
 
-            //Map UserEntity to UserViewModel
-            result = user.ToViewModel<UserViewModel>();
-
-
-
-            return result;
+            return user.ToViewModel<UserViewModel>();
 
         }
 

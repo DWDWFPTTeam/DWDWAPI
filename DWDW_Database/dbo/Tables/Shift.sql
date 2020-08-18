@@ -3,11 +3,14 @@
     [ArrangementId] INT  NULL,
     [Date]          DATE NULL,
     [RoomId]        INT  NULL,
+    [ShiftType]     INT  NULL,
     [IsActive]      BIT  NULL,
     CONSTRAINT [PK__Shift__F2F06B029921998A] PRIMARY KEY CLUSTERED ([ShiftId] ASC),
-    CONSTRAINT [FK_Shift_Room] FOREIGN KEY ([RoomId]) REFERENCES [dbo].[Room] ([roomId]),
+    CONSTRAINT [FK_Shift_Room] FOREIGN KEY ([RoomId]) REFERENCES [dbo].[Room] ([RoomId]),
     CONSTRAINT [FK_Shift_UserLocation] FOREIGN KEY ([ArrangementId]) REFERENCES [dbo].[Arrangement] ([ArrangementId])
 );
+
+
 
 
 
