@@ -76,17 +76,6 @@
     <Build Include="dbo\Tables\User.sql" />
     <Build Include="dbo\Tables\Arrangement.sql" />
     <Build Include="dbo\Tables\Notifications_1.sql" />
-    <Build Include="HangFire\Tables\Set.sql" />
-    <Build Include="HangFire\Tables\List.sql" />
-    <Build Include="HangFire\Tables\Server.sql" />
-    <Build Include="HangFire\Tables\JobQueue.sql" />
-    <Build Include="HangFire\Tables\JobParameter.sql" />
-    <Build Include="HangFire\Tables\State.sql" />
-    <Build Include="HangFire\Tables\Job.sql" />
-    <Build Include="HangFire\Tables\Schema.sql" />
-    <Build Include="HangFire\Tables\AggregatedCounter.sql" />
-    <Build Include="HangFire\Tables\Hash.sql" />
-    <Build Include="HangFire\Tables\Counter.sql" />
     <Build Include="Security\HangFire.sql" />
   </ItemGroup>
   <ItemGroup>
