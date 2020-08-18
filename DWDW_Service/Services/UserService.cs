@@ -476,7 +476,7 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
             }
-            user.Password = updateUser.Password;
+            user.FullName = updateUser.FullName;
             user.Phone = updateUser.Phone;
             user.DateOfBirth = updateUser.DateOfBirth;
             user.Gender = updateUser.Gender;

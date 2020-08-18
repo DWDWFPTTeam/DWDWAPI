@@ -87,9 +87,9 @@ namespace DWDW_API.Core.ViewModels
 
     public class UserPersonalUpdateModel : BaseModel
     {
-        [Required(ErrorMessage = ErrorMessages.INVALID_USERNAME_PASSWORD)]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
+
+        [Required(ErrorMessage = ErrorMessages.FULLNAME_IS_EMPTY)]
+        public string FullName { get; set; }
         [Required(ErrorMessage = ErrorMessages.WRONG_PHONE_FORMAT)]
         [DataType(DataType.PhoneNumber, ErrorMessage = ErrorMessages.WRONG_PHONE_FORMAT)]
         public string Phone { get; set; }
@@ -120,6 +120,7 @@ namespace DWDW_API.Core.ViewModels
         public int UserId { get; set; }
         public string UserName { get; set; }
         public string Phone { get; set; }
+        public string FullName { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public int? Gender { get; set; }
         public string DeviceToken { get; set; }
