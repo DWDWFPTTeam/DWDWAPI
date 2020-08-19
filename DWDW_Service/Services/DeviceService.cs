@@ -17,6 +17,7 @@ namespace DWDW_Service.Services
     {
         IEnumerable<DeviceViewModel> GetAll();
         IEnumerable<DeviceViewModel> GetDeviceCode(string deviceCode);
+        IEnumerable<DeviceViewModel> GetUnassignedDevice();
         DeviceViewModel GetDeviceID(int deviceID);
         DeviceViewModel CreateDevice(DeviceCreateModel device);
         DeviceViewModel UpdateDevice(DeviceUpdateModel device);
@@ -57,6 +58,13 @@ namespace DWDW_Service.Services
             var deviceCodeList = deviceRepository.GetDeviceByCode(deviceCode);
             int count = deviceCodeList.Count();
             result = deviceCodeList.Select(x => x.ToViewModel<DeviceViewModel>());
+            return result;
+        }
+        public IEnumerable<DeviceViewModel> GetUnassignedDevice()
+        {
+            IEnumerable<DeviceViewModel> result = new List<DeviceViewModel>();
+            var unassignedDevice = deviceRepository.GetUnassignedDevice();
+            result = unassignedDevice.Select(x => x.ToViewModel<DeviceViewModel>());
             return result;
         }
 

@@ -15,6 +15,7 @@ namespace DWDW_Service.Repositories
         void DisableRoomDevice(int? roomID);
         RoomDevice GetLatest();
         List<Room> GetRoomFromLocation(int locationID);
+        List<Room> GetUnAssignedRoomFromLocation(int locationID);
         List<Room> DisableRoomFromLocation(int locationID);
         List<Room> EnableRoomFromLocation(int locationID);
         bool CheckRoomLocation(int? roomID, int? ArrangementID);
@@ -37,6 +38,24 @@ namespace DWDW_Service.Repositories
             return this.dbContext.Set<Room>()
                 .Where(x => x.LocationId == locationID)
                 .ToList();
+        }
+
+        public List<Room> GetUnAssignedRoomFromLocation(int locationID)
+        {
+            //Room thuoc location
+            var rooms = this.dbContext.Set<Room>()
+                .Where(x => x.LocationId == locationID && x.IsActive == true)
+                .ToList();
+            //Loai bo room da co device
+            foreach (var element in rooms.ToList())
+            {
+                var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.RoomId == element.RoomId && x.IsActive == true);
+                if (roomDevice != null)
+                {
+                    rooms.Remove(element);
+                }
+            }
+            return rooms;
         }
 
         public Room CheckRoomCodeExisted(string roomCode)

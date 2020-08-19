@@ -12,6 +12,7 @@ namespace DWDW_Service.Repositories
     public interface IDeviceRepository : IBaseRepository<Device>
     {
         List<Device> GetDeviceByCode(string deviceCode);
+        List<Device> GetUnassignedDevice();
         Device GetDeviceCode(string deviceCode);
         Device CheckDeviceCodeExisted(string deviceCode);
         Device GetDeviceFromRoom(int? roomID);
@@ -38,6 +39,24 @@ namespace DWDW_Service.Repositories
         {
             return this.dbContext.Set<Device>().Where(x => x.DeviceCode.Contains(deviceCode)).ToList();
         }
+
+        public List<Device> GetUnassignedDevice()
+        {
+            var devices = this.dbContext.Set<Device>()
+                .Where(x =>x.IsActive == true)
+                .ToList();
+            //Loai bo room da co device
+            foreach (var element in devices.ToList())
+            {
+                var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.DeviceId == element.DeviceId && x.IsActive == true);
+                if (roomDevice != null)
+                {
+                    devices.Remove(element);
+                }
+            }
+            return devices;
+        }
+
         public Device GetDeviceCode(string deviceCode)
         {
             return this.dbContext.Set<Device>().FirstOrDefault(x => x.DeviceCode == deviceCode);

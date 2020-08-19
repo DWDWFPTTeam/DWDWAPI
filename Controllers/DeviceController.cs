@@ -152,5 +152,16 @@ namespace DWDW_API.Controllers
                 return deviceService.AssignDeviceToRoom(roomDevice);
             });
         }
+
+        [Authorize(Roles = Constant.ADMIN)]
+        [HttpGet]
+        [Route("GetUnassignedDevice")]
+        public dynamic GetUnassignedDevice()
+        {
+            return ExecuteInMonitoring(() =>
+            {
+                return deviceService.GetUnassignedDevice();
+            });
+        }
     }
 }

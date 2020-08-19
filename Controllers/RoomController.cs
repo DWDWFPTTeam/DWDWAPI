@@ -133,5 +133,16 @@ namespace DWDW_API.Controllers
                 return roomService.SearchRoomCodeByManager(userId, roomCode);
             });
         }
+
+        [HttpGet]
+        [Authorize(Roles = Constant.ADMIN)]
+        [Route("GetUnassignedRoomsFromLocation/{locationId}")]
+        public dynamic GetUnassignedRoomsFromLocation(int locationId)
+        {
+            return ExecuteInMonitoring(() =>
+            {
+                return roomService.GetUnassignedRoomsFromLocation(locationId);
+            });
+        }
     }
 }

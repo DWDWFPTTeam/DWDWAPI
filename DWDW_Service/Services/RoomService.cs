@@ -19,6 +19,7 @@ namespace DWDW_Service.Services
         RoomViewModel UpdateRoom(RoomUpdateModel roomUpdate);
         RoomViewModel DeactiveRoom(int roomId);
         IEnumerable<RoomViewModel> GetRoomsFromLocation(int locationId);
+        IEnumerable<RoomViewModel> GetUnassignedRoomsFromLocation(int locationId);
         IEnumerable<RoomViewModel> GetActiveRoomsFromLocation(int locationId);
         IEnumerable<RoomViewModel> SearchRoomCode(string roomCode);
         IEnumerable<RoomViewModel> GetRoomsFromLocationByManager(int userId, int locationId);
@@ -104,6 +105,17 @@ namespace DWDW_Service.Services
         public IEnumerable<RoomViewModel> GetRoomsFromLocation(int locationId)
         {
             var result = roomRepository.GetRoomFromLocation(locationId)
+                .Select(r => r.ToViewModel<RoomViewModel>());
+            if (result == null)
+            {
+                throw new BaseException(ErrorMessages.GET_LIST_FAIL);
+            }
+            return result;
+        }
+
+        public IEnumerable<RoomViewModel> GetUnassignedRoomsFromLocation(int locationId)
+        {
+            var result = roomRepository.GetUnAssignedRoomFromLocation(locationId)
                 .Select(r => r.ToViewModel<RoomViewModel>());
             if (result == null)
             {
