@@ -488,6 +488,7 @@ namespace DWDW_Service.Services
 
         public ArrangementViewModel AssignUserToLocation(ArrangementReceivedViewModel arrangement)
         {
+            var result = new ArrangementViewModel();
             var arrangementRepo = unitOfWork.ArrangementRepository;
             var location = unitOfWork.LocationRepository.Find(arrangement.LocationId);
             if (location == null)
@@ -499,12 +500,31 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
             }
+            //Lay ra arrangement da ton tai cua user
             var existedArrangement = arrangementRepo.GetArrangementOfUserInThisLocation(arrangement.UserId, arrangement.LocationId);
-            //var managerArrangement = userRepository
-            var arrangementEntity = arrangement.ToEntity<Arrangement>();
-            arrangementEntity.IsActive = true;
-            unitOfWork.ArrangementRepository.Add(arrangementEntity);
-            return arrangementEntity.ToViewModel<ArrangementViewModel>();
+            DateTime oldArrangementEnd = existedArrangement.EndDate ?? DateTime.Now;
+            //Check star Date cua Arrangement moi co anh huong arrangement cu trong cung user khong
+            if (existedArrangement != null)
+            {
+                if (arrangement.StartDate >= oldArrangementEnd.AddDays(1))
+                {
+                    throw new BaseException(ErrorMessages.ENDATE_MUST_BIGGER_NOW);
+                }
+                var arrangementEntity = arrangement.ToEntity<Arrangement>();
+                arrangementEntity.IsActive = true;
+                unitOfWork.ArrangementRepository.Add(arrangementEntity);
+                result = arrangementEntity.ToViewModel<ArrangementViewModel>();
+            }
+            else
+            {
+                var managerArrangement = userRepository.GetManagerFromLocation(arrangement.LocationId);
+                if (user.RoleId != managerArrangement.RoleId && user.RoleId == 2)
+                {
+                    throw new BaseException(ErrorMessages.ENDATE_MUST_BIGGER_NOW);
+                }
+            }
+
+            return result;
         }
 
         public ArrangementViewModel DeassignUserToLocation(ArrangementDisableViewModel arrangement)

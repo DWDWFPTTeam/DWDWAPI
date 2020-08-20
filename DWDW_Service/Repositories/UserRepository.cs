@@ -13,6 +13,7 @@ namespace DWDW_Service.Repositories
         User GetUserByUsernamePassword(string username, string password);
         User GetUserByUsername(string username);
         IEnumerable<User> GetWorkerFromLocation(int locationId);
+        User GetManagerFromLocation(int locationId);
         IEnumerable<User> GetUserFromLocation(int locationId);
     }
     public class UserRepository : BaseRepository<User>, IUserRepository

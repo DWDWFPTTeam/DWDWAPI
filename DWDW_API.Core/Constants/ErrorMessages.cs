@@ -58,7 +58,7 @@ namespace DWDW_API.Core.Constants
         //RoomDevice Message
         public const string WRONG_DATETIME_FORMAT = "Invalid date";
         public const string ENDATE_MUST_BIGGER_NOW = "End date must be later than now";
-
+        public const string STARDATE_MUST_BIGGER = "Star date conflict with other relationship end date";
 
         //Shift Message
         public const string INVALID_MANAGER = "This shift doesn't belong to the current manager";
@@ -86,6 +86,7 @@ namespace DWDW_API.Core.Constants
         public const string MANAGER_NOT_FOUND = "Cannot found the manager";
         public const string SHIFT_IS_EXISTED = "Shift is existed";
         public const string ARRANGEMENT_IS_NOT_EXISTED = "Arrangement is not existed";
+        public const string ARRANGEMENT_MANAGER_EXISTED = "This arrangement already have manager";
         public const string FULLNAME_IS_EMPTY = "Fullname is empty";
         public const string USERNAME_IS_EMPTY = "UserName is empty";
         public const string USERID_IS_EMPTY = "UserId is empty";

@@ -182,6 +182,11 @@ namespace DWDW_Service.Services
             //Từ device và date ra record
             var record = recordRepository.GetRecordByDeviceDate(device.DeviceId, date);
             var result =  record.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+            result.Skip(Math.Max(0, result.Count() - 10));
+            foreach(var element in result)
+            {
+                element.RoomId = roomID;
+            }
             return result;
         }
         //public IEnumerable<RecordViewModel> GetRecordsByLocationDate(int locationId, DateTime startDate, DateTime endDate)
