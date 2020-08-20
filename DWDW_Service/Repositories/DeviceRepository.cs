@@ -48,7 +48,7 @@ namespace DWDW_Service.Repositories
             //Loai bo room da co device
             foreach (var element in devices.ToList())
             {
-                var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.DeviceId == element.DeviceId && x.IsActive == true);
+                var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.DeviceId == element.DeviceId);
                 if (roomDevice != null)
                 {
                     devices.Remove(element);
@@ -76,7 +76,7 @@ namespace DWDW_Service.Repositories
         {
             bool result = false;
             var UserLocation = this.dbContext.Set<Arrangement>().FirstOrDefault(x => x.UserId == userID
-            && x.LocationId == locationID);
+            && x.LocationId == locationID && x.IsActive == true);
             if(UserLocation != null)
             {
                 result = true;
@@ -90,7 +90,7 @@ namespace DWDW_Service.Repositories
             var room = this.dbContext.Set<Room>().Find(roomID);
             var location = this.dbContext.Set<Location>().FirstOrDefault(x => x.LocationId == room.LocationId);
             var UserLocation = this.dbContext.Set<Arrangement>().FirstOrDefault(x => x.UserId == userID
-            && x.LocationId == location.LocationId);
+            && x.LocationId == location.LocationId && x.IsActive == true);
             if (UserLocation != null)
             {
                 result = true;

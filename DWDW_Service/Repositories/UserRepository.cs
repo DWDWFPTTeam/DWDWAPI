@@ -49,6 +49,12 @@ namespace DWDW_Service.Repositories
             return result;
         }
 
+        public User GetManagerFromLocation(int locationId)
+        {
+            return dbContext.Set<User>().FirstOrDefault(x => x.Arrangement.Any(y => y.LocationId == locationId
+            && y.IsActive == true) && x.RoleId == int.Parse(Constant.MANAGER));
+        }
+
         public IEnumerable<User> GetUserFromLocation(int locationId)
         {
             IEnumerable<User> result = new List<User>();

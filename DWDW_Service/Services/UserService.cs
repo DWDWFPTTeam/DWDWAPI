@@ -488,6 +488,7 @@ namespace DWDW_Service.Services
 
         public ArrangementViewModel AssignUserToLocation(ArrangementReceivedViewModel arrangement)
         {
+            var arrangementRepo = unitOfWork.ArrangementRepository;
             var location = unitOfWork.LocationRepository.Find(arrangement.LocationId);
             if (location == null)
             {
@@ -498,6 +499,8 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
             }
+            var existedArrangement = arrangementRepo.GetArrangementOfUserInThisLocation(arrangement.UserId, arrangement.LocationId);
+            //var managerArrangement = userRepository
             var arrangementEntity = arrangement.ToEntity<Arrangement>();
             arrangementEntity.IsActive = true;
             unitOfWork.ArrangementRepository.Add(arrangementEntity);

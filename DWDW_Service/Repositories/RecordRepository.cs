@@ -20,6 +20,7 @@ namespace DWDW_Service.Repositories
         int? GetShiftRoomByArrangementDate(List<int?> arrangementRelated, DateTime date);
         List<int?> GetRelatedArrangement(int workerID);
         List<Record> GetRecordByWorkerDate(int? roomID, DateTime date);
+        List<Record> GetRecordByDeviceDate(int? deviceID, DateTime date);
     }
     public class RecordRepository : BaseRepository<Record>, IRecordRepository
     {
@@ -130,6 +131,18 @@ namespace DWDW_Service.Repositories
             var result = dbContext.Set<Record>().Where(x => x.DeviceId == roomDevice.DeviceId
             && x.RecordDateTime < date.AddDays(1) && x.RecordDateTime > date).ToList();
             return result;
+        }
+
+        public List<Record> GetRecordByListDevicenDate(List<int?> deviceID, DateTime date)
+        {
+            return dbContext.Set<Record>().Where(x => deviceID.Contains(x.DeviceId) && x.RecordDateTime > date &&
+            x.RecordDateTime < date.AddDays(1)).ToList();
+        }
+
+        public List<Record> GetRecordByDeviceDate(int? deviceID, DateTime date)
+        {
+            return dbContext.Set<Record>().Where(x => x.DeviceId == deviceID && x.RecordDateTime > date
+            && x.RecordDateTime < date.AddDays(1)).ToList();
         }
     }
 }

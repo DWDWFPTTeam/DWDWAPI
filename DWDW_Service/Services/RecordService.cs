@@ -27,6 +27,7 @@ namespace DWDW_Service.Services
             (int locationId, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByWorkerDate(int workerID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByWorkerDateForManager(int managerID, int workerID, DateTime date);
+        IEnumerable<RecordViewModel> GetRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
         RecordImageViewModel GetRecordById(int recordId);
         Task<RecordViewModel> SaveRecord(RecordReceivedByteModel recordReceived, string imageRoot);
     }
@@ -150,6 +151,39 @@ namespace DWDW_Service.Services
             return result;
         }
 
+        public IEnumerable<RecordViewModel> GetRecordByLocationDateForWorker(int workerID, int locationID, DateTime date)
+        {
+            var locationRepo = unitOfWork.LocationRepository;
+            var shiftRepo = unitOfWork.ShiftRepository;
+            var deviceRepo = unitOfWork.DeviceRepository;
+            var arrangementRepo = unitOfWork.ArrangementRepository;
+            var location = locationRepo.Find(locationID);
+            if (location == null)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
+            }
+            bool check = deviceRepo.CheckUserLocation(workerID, locationID);
+            if (check == false)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_MANAGER);
+            }
+
+            //Lay ra shift tu location by date cua worker
+            var arrangement = arrangementRepo.CheckLocationManagerWorker(workerID, locationID);
+            if (arrangement == null)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
+            }
+            var shiftLocation = shiftRepo.GetShiftFromLocationWorker(workerID, locationID);
+            var shiftList = shiftLocation.FirstOrDefault(x => x.Date == date.Date && x.IsActive == true);
+            //Lấy ra room từ shift và từ room ra device
+            var roomID = shiftList.RoomId;
+            var device = deviceRepo.GetDeviceFromRoom(roomID);
+            //Từ device và date ra record
+            var record = recordRepository.GetRecordByDeviceDate(device.DeviceId, date);
+            var result =  record.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+            return result;
+        }
         //public IEnumerable<RecordViewModel> GetRecordsByLocationDate(int locationId, DateTime startDate, DateTime endDate)
         //{
         //    var locationRepo = this.unitOfWork.LocationRepository;
