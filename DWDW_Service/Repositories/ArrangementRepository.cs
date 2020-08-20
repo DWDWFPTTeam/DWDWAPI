@@ -25,6 +25,7 @@ namespace DWDW_Service.Repositories
         List<int?> GetArrangementBelongToWorker(int userID);
 
         List<Arrangement> GetOverdue();
+        Arrangement GetManagerArrangementWithinDate(ArrangementReceivedViewModel newArrangement)
     }
     public class ArrangementRepository : BaseRepository<Arrangement>, IArrangementRepository
     {
@@ -144,6 +145,16 @@ namespace DWDW_Service.Repositories
         {
             DateTime now = DateTime.Now;
             return dbContext.Set<Arrangement>().Where(x => x.EndDate < now && x.IsActive == true).ToList();
+        }
+
+        public Arrangement GetManagerArrangementWithinDate(ArrangementReceivedViewModel newArrangement)
+        {
+            var result = new Arrangement();
+            var arrangementOther = dbContext.Set<Arrangement>().FirstOrDefault(x => x.IsActive == true && x.UserId != newArrangement.UserId
+            && x.StartDate <= newArrangement.StartDate && x.EndDate >= newArrangement.EndDate
+            && x.User.RoleId == 2);
+            result = arrangementOther;
+            return result;
         }
     }
 }

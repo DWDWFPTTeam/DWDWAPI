@@ -500,30 +500,66 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
             }
-            //Lay ra arrangement da ton tai cua user
+            if (arrangement.StartDate < DateTime.Now)
+            {
+                throw new BaseException(ErrorMessages.STARDATE_MUST_BIGGER_NOW);
+            }
+            if (arrangement.StartDate > arrangement.EndDate)
+            {
+                throw new BaseException(ErrorMessages.DATE_INVALID);
+            }
+            //Lay ra arrangement moi nhat da ton tai cua user
             var existedArrangement = arrangementRepo.GetArrangementOfUserInThisLocation(arrangement.UserId, arrangement.LocationId);
             DateTime oldArrangementEnd = existedArrangement.EndDate ?? DateTime.Now;
-            //Check star Date cua Arrangement moi co anh huong arrangement cu trong cung user khong
-            if (existedArrangement != null)
+            //Worker có tồn tại mối quan hệ cũ
+            if (existedArrangement != null && user.RoleId != 2)
             {
-                if (arrangement.StartDate >= oldArrangementEnd.AddDays(1))
+                if (arrangement.StartDate <= oldArrangementEnd.AddDays(-1))
                 {
-                    throw new BaseException(ErrorMessages.ENDATE_MUST_BIGGER_NOW);
+                    throw new BaseException(ErrorMessages.STARDATE_MUST_BIGGER_NOW);
                 }
                 var arrangementEntity = arrangement.ToEntity<Arrangement>();
                 arrangementEntity.IsActive = true;
                 unitOfWork.ArrangementRepository.Add(arrangementEntity);
                 result = arrangementEntity.ToViewModel<ArrangementViewModel>();
             }
-            else
+            //Worker không tồn tại mối quan hệ cũ
+            else if (existedArrangement == null && user.RoleId != 2)
             {
-                var managerArrangement = userRepository.GetManagerFromLocation(arrangement.LocationId);
-                if (user.RoleId != managerArrangement.RoleId && user.RoleId == 2)
-                {
-                    throw new BaseException(ErrorMessages.ENDATE_MUST_BIGGER_NOW);
-                }
+                var arrangementEntity = arrangement.ToEntity<Arrangement>();
+                arrangementEntity.IsActive = true;
+                unitOfWork.ArrangementRepository.Add(arrangementEntity);
+                result = arrangementEntity.ToViewModel<ArrangementViewModel>();
             }
-
+            //Manager tồn tại mối quan hệ cũ
+            else if (existedArrangement != null && user.RoleId == 2)
+            {
+                if (arrangement.StartDate <= oldArrangementEnd.AddDays(-1))
+                {
+                    throw new BaseException(ErrorMessages.STARDATE_MUST_BIGGER_NOW);
+                }
+                var managerArrangement = arrangementRepo.GetManagerArrangementWithinDate(arrangement);
+                if (managerArrangement != null)
+                {
+                    throw new BaseException(ErrorMessages.RELATIONSHIP_EXISTED);
+                }
+                var arrangementEntity = arrangement.ToEntity<Arrangement>();
+                arrangementEntity.IsActive = true;
+                unitOfWork.ArrangementRepository.Add(arrangementEntity);
+                result = arrangementEntity.ToViewModel<ArrangementViewModel>();
+            }
+            else if (existedArrangement != null && user.RoleId == 2)
+            {
+                var managerArrangement = arrangementRepo.GetManagerArrangementWithinDate(arrangement);
+                if (managerArrangement != null)
+                {
+                    throw new BaseException(ErrorMessages.RELATIONSHIP_EXISTED);
+                }
+                var arrangementEntity = arrangement.ToEntity<Arrangement>();
+                arrangementEntity.IsActive = true;
+                unitOfWork.ArrangementRepository.Add(arrangementEntity);
+                result = arrangementEntity.ToViewModel<ArrangementViewModel>();
+            }
             return result;
         }
 

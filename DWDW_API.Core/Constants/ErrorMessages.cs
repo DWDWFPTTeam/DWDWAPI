@@ -59,6 +59,7 @@ namespace DWDW_API.Core.Constants
         public const string WRONG_DATETIME_FORMAT = "Invalid date";
         public const string ENDATE_MUST_BIGGER_NOW = "End date must be later than now";
         public const string STARDATE_MUST_BIGGER = "Star date conflict with other relationship end date";
+        public const string STARDATE_MUST_BIGGER_NOW = "Star must be in the future";
 
         //Shift Message
         public const string INVALID_MANAGER = "This shift doesn't belong to the current manager";
