@@ -136,7 +136,7 @@ namespace DWDW_Service.Services
         {
             IEnumerable<ShiftViewModel> result = new List<ShiftViewModel>();
             var arrangementRepo = unitOfWork.ArrangementRepository;
-            var arrangement = arrangementRepo.CheckLocationManagerWorker(userID, locationID);
+            var arrangement = arrangementRepo.CheckLocationManagerWorker(userID, locationID, date);
             if (arrangement == null)
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_MANAGER);
@@ -161,7 +161,7 @@ namespace DWDW_Service.Services
         {
             IEnumerable<ShiftViewModel> result = new List<ShiftViewModel>();
             var arrangementRepo = unitOfWork.ArrangementRepository;
-            var arrangement = arrangementRepo.CheckLocationManagerWorker(userID, locationID);
+            var arrangement = arrangementRepo.CheckLocationManagerWorker(userID, locationID, date);
             if (arrangement == null)
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);

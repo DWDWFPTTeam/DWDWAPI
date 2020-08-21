@@ -397,7 +397,7 @@ namespace DWDW_Service.Services
         {
             IEnumerable<UserViewModel> result = new List<UserViewModel>();
             var arrangementRepo = this.unitOfWork.ArrangementRepository;
-            var arrangement = arrangementRepo.CheckLocationManagerWorker(userId, locationID);
+            var arrangement = arrangementRepo.CheckLocationManagerWorker(userId, locationID, DateTime.Now);
             if (arrangement != null)
             {
                 var worker = userRepository.GetWorkerFromLocation(locationID);
@@ -566,7 +566,7 @@ namespace DWDW_Service.Services
         public ArrangementViewModel DeassignUserToLocation(ArrangementDisableViewModel arrangement)
         {
             var arrangementRepo = this.unitOfWork.ArrangementRepository;
-            var arrangementDeassign = arrangementRepo.CheckLocationManagerWorker(arrangement.UserId, arrangement.LocationId);
+            var arrangementDeassign = arrangementRepo.CheckLocationManagerWorker(arrangement.UserId, arrangement.LocationId, DateTime.Now);
             if (arrangementDeassign == null)
             {
                 throw new BaseException(ErrorMessages.ARRANGEMENT_NOT_EXISTED);

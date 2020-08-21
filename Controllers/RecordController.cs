@@ -99,6 +99,18 @@ namespace DWDW_API.Controllers
             });
         }
 
+        [Route("GetRecordByLocationWorkerDateForManager")]
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpGet]
+        public dynamic GetRecordByLocationWorkerDateForManager(int workerID,int locationID, DateTime date)
+        {
+            int userID = int.Parse(CurrentUserId);
+            return ExecuteInMonitoring(() =>
+            {
+                return recordService.GetRecordByLocationWorkerDateForManager(userID, workerID, locationID, date);
+            });
+        }
+
         [Route("GetRecordByLocationDateForWorker")]
         [Authorize(Roles = Constant.WORKER)]
         [HttpGet]
