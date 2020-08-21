@@ -27,6 +27,7 @@ namespace DWDW_Service.Services
             (int locationId, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByWorkerDate(int workerID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByWorkerDateForManager(int managerID, int workerID, DateTime date);
+        IEnumerable<RecordViewModel> GetRecordByLocationWorkerDateForManager(int managerID, int workerID, int locationID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
         RecordImageViewModel GetRecordById(int recordId);
         Task<RecordViewModel> SaveRecord(RecordReceivedByteModel recordReceived, string imageRoot);
@@ -130,11 +131,11 @@ namespace DWDW_Service.Services
 
 
             //User thuoc Manager
-            bool userChildManager = locationUserRelatedID.All(x => locationManagerRelatedID.Contains(x));
-            if (userChildManager != true)
-            {
-                throw new BaseException(ErrorMessages.MANAGER_WORKER_NOT_EXISTED);
-            }
+            //bool userChildManager = locationUserRelatedID.All(x => locationManagerRelatedID.Contains(x));
+            //if (userChildManager != true)
+            //{
+            //    throw new BaseException(ErrorMessages.MANAGER_WORKER_NOT_EXISTED);
+            //}
 
             List<int?> arrangementWorker = recordRepository.GetRelatedArrangement(workerID);
             var roomID = recordRepository.GetShiftRoomByArrangementDate(arrangementWorker, date);
@@ -144,6 +145,50 @@ namespace DWDW_Service.Services
             }
             var recordList = recordRepository.GetRecordByWorkerDate(roomID, date);
             result = recordList.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+            foreach (var element in result)
+            {
+                element.RoomId = roomID;
+            }
+            return result;
+        }
+
+        public IEnumerable<RecordViewModel> GetRecordByLocationWorkerDateForManager(int managerID, int workerID, int locationID, DateTime date)
+        {
+            IEnumerable<RecordViewModel> result = new List<RecordViewModel>();
+
+            var locationRepo = unitOfWork.LocationRepository;
+            var roomRepo = this.unitOfWork.RoomRepository;
+            var roomDeviceRepo = unitOfWork.RoomDeviceRepository;
+            var userRepo = unitOfWork.UserRepository;
+            var shiftRepo = unitOfWork.ShiftRepository;
+            var deviceRepo = unitOfWork.DeviceRepository;
+            var arrangementRepo = unitOfWork.ArrangementRepository;
+            var worker = userRepo.Find(workerID);
+            if (worker == null)
+            {
+                throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
+            }
+            var location = locationRepo.Find(locationID);
+            if (location == null)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
+            }
+
+            //Lay ra shift tu location by date cua worker
+            var arrangement = arrangementRepo.CheckLocationManagerWorker(workerID, locationID, date);
+            if (arrangement == null)
+            {
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
+            }
+            var shiftLocation = shiftRepo.GetShiftFromLocationWorker(workerID, locationID);
+            var shiftList = shiftLocation.FirstOrDefault(x => x.Date == date.Date && x.IsActive == true);
+            //Lấy ra room từ shift và từ room ra device
+            var roomID = shiftList.RoomId;
+            var device = deviceRepo.GetDeviceFromRoom(roomID);
+            //Từ device và date ra record
+            var record = recordRepository.GetRecordByDeviceDate(device.DeviceId, date);
+            result = record.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+            result.Skip(Math.Max(0, result.Count() - 10));
             foreach (var element in result)
             {
                 element.RoomId = roomID;
@@ -165,11 +210,11 @@ namespace DWDW_Service.Services
             bool check = deviceRepo.CheckUserLocation(workerID, locationID);
             if (check == false)
             {
-                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_MANAGER);
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
             }
 
             //Lay ra shift tu location by date cua worker
-            var arrangement = arrangementRepo.CheckLocationManagerWorker(workerID, locationID);
+            var arrangement = arrangementRepo.CheckLocationManagerWorker(workerID, locationID, date);
             if (arrangement == null)
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
