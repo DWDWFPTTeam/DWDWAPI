@@ -10,6 +10,7 @@ namespace DWDW_API.Core.Entities
         public int? Type { get; set; }
         public DateTime? RecordDateTime { get; set; }
         public string Image { get; set; }
+        public string Status { get; set; }
         public virtual Device Device { get; set; }
 
     }

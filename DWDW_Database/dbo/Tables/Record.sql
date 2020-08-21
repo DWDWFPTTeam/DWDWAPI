@@ -4,9 +4,12 @@
     [Type]           INT            NULL,
     [RecordDateTime] DATETIME       NULL,
     [Image]          NVARCHAR (255) NULL,
+    [Status]         NVARCHAR (50)  NULL,
     CONSTRAINT [PK__Record__D825195E23AE0B1E] PRIMARY KEY CLUSTERED ([RecordId] ASC),
     CONSTRAINT [FK_Record_Device] FOREIGN KEY ([DeviceId]) REFERENCES [dbo].[Device] ([DeviceId])
 );
+
+
 
 
 
