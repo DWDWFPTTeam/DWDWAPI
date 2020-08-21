@@ -25,7 +25,7 @@ namespace DWDW_Service.Repositories
         List<int?> GetArrangementBelongToWorker(int userID);
 
         List<Arrangement> GetOverdue();
-        Arrangement GetManagerArrangementWithinDate(ArrangementReceivedViewModel newArrangement)
+        Arrangement GetManagerArrangementWithinDate(ArrangementReceivedViewModel newArrangement);
     }
     public class ArrangementRepository : BaseRepository<Arrangement>, IArrangementRepository
     {
