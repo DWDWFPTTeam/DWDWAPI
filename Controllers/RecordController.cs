@@ -31,17 +31,17 @@ namespace DWDW_API.Controllers
         }
 
 
-        [Route("SaveRecordByte")]
-        [AllowAnonymous]
-        [HttpPost]
-        public async Task<dynamic> SaveRecordByte([FromBody]RecordReceivedByteModel recordReceived)
-        {
+        //[Route("SaveRecordByte")]
+        //[AllowAnonymous]
+        //[HttpPost]
+        //public async Task<dynamic> SaveRecordByte([FromBody]RecordReceivedByteModel recordReceived)
+        //{
 
-            return await ExecuteInMonitoringAsync(async () =>
-            {
-                return await recordService.SaveRecord(recordReceived, this.ImageRoot);
-            });
-        }
+        //    return await ExecuteInMonitoringAsync(async () =>
+        //    {
+        //        return await recordService.SaveRecordByte(recordReceived, this.ImageRoot);
+        //    });
+        //}
 
         [Route("GetRecordById")]
         [Authorize(Roles = Constant.ADMIN + "," + Constant.MANAGER)]

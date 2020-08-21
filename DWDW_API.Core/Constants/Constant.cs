@@ -31,6 +31,11 @@ namespace DWDW_API.Core.Constants
         public const int REST = 4;
         public const int WORK = 5;
 
+        //record status
+        public static string NOT_CONFIRMED = "NOT_CONFIRMED";
+        public static string CONFIRMED = "CONFIRMED";
+
+
         public const string DEVICE_HOANG_MOBILETOKEN = "cAF8JeveS9av5pIdQtge0-:APA91bGvzkAno7ycM_fIzqwEjhIUTBy-la9u71_" +
                "vYocHFhnnuGIO0PyfAMU2ph0cae6YuRGpYTAnbw9KtcKgN-aENmED3Bz4KLHnjrpU9HgfRHhBcTBP_" +
                "gbd41-tcsMD4kC9Vl0dnHC2";

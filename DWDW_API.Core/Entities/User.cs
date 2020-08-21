@@ -25,5 +25,6 @@ namespace DWDW_API.Core.Entities
         public virtual Role Role { get; set; }
         public virtual ICollection<Arrangement> Arrangement { get; set; }
         public virtual ICollection<Notifications> Notifications { get; set; }
+        public virtual ICollection<Record> Record { get; set; }
     }
 }

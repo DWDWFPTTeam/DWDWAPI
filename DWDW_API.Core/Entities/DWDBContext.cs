@@ -91,6 +91,10 @@ namespace DWDW_API.Core.Entities
                     .WithMany(p => p.Record)
                     .HasForeignKey(d => d.DeviceId)
                     .HasConstraintName("FK_Record_Device");
+                entity.HasOne(u => u.User)
+                    .WithMany(p => p.Record)
+                    .HasForeignKey(u => u.UserId)
+                    .HasConstraintName("FK_Record_User");
             });
 
             modelBuilder.Entity<Role>(entity =>

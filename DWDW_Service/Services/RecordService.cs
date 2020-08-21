@@ -29,7 +29,7 @@ namespace DWDW_Service.Services
         IEnumerable<RecordViewModel> GetRecordByWorkerDateForManager(int managerID, int workerID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
         RecordImageViewModel GetRecordById(int recordId);
-        Task<RecordViewModel> SaveRecord(RecordReceivedByteModel recordReceived, string imageRoot);
+        //Task<RecordViewModel> SaveRecordByte(RecordReceivedByteModel recordReceived, string imageRoot);
     }
 
     public class RecordService : BaseService<Record>, IRecordService
@@ -181,9 +181,9 @@ namespace DWDW_Service.Services
             var device = deviceRepo.GetDeviceFromRoom(roomID);
             //Từ device và date ra record
             var record = recordRepository.GetRecordByDeviceDate(device.DeviceId, date);
-            var result =  record.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+            var result = record.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
             result.Skip(Math.Max(0, result.Count() - 10));
-            foreach(var element in result)
+            foreach (var element in result)
             {
                 element.RoomId = roomID;
             }
@@ -254,7 +254,7 @@ namespace DWDW_Service.Services
                 listRecords.AddRange(records);
             }
 
-            var recordEntities =  listRecords.OrderByDescending(r => r.RecordId).ToList();
+            var recordEntities = listRecords.OrderByDescending(r => r.RecordId).ToList();
             var recordVM = recordEntities.Select(r =>
             {
                 var recordViewModel = r.ToViewModel<RecordRoomCodeViewModel>();
@@ -284,123 +284,14 @@ namespace DWDW_Service.Services
 
         public async Task<RecordViewModel> SaveRecord(RecordReceivedModel record, string imageRoot)
         {
-            RecordViewModel result;
             var device = unitOfWork.DeviceRepository.GetDeviceCode(record.DeviceCode);
-            if (device != null)
-            {
-                var recordEntity = new Record
-                {
-                    DeviceId = device.DeviceId,
-                    Type = record.Type,
-                    RecordDateTime = DateTime.Now,
-
-                };
-                var notificationFCM = this.CreateNotificationFCM(recordEntity, device.DeviceCode);
-                if (record.Image.Length <= 0)
-                {
-                    throw new BaseException("Image is not existed!");
-                }
-                if (!Directory.Exists(imageRoot))
-                {
-                    Directory.CreateDirectory(imageRoot);
-
-                }
-                var dir = new DirectoryInfo(imageRoot);
-                var imagePath = imageRoot + record.Image.Name + dir.GetFiles().Length + ".jpg";
-                using (var fileStream = File.Create(imagePath))
-                {
-                    await record.Image.CopyToAsync(fileStream);
-                    fileStream.Flush();
-                    recordEntity.Image = imagePath;
-                }
-                using (var transaction = unitOfWork.CreateTransaction())
-                {
-                    try
-                    {
-                        //save record
-                        await recordRepository.AddAsync(recordEntity);
-                        //save noti
-                        unitOfWork.NotificationRepository.Add(notificationFCM.NotificationVM.ToEntity<Notifications>());
-                        transaction.Commit();
-                        result = recordEntity.ToViewModel<RecordViewModel>();
-                    }
-                    catch (Exception e)
-                    {
-                        transaction.Rollback();
-                        throw e;
-                    }
-                }
-                this.SendNotify(notificationFCM);
-
-            }
-            else
+            if (device == null)
             {
                 throw new BaseException(ErrorMessages.DEVICE_IS_NOT_EXISTED);
-            }
-
-            return result;
-        }
-
-        public async Task<RecordViewModel> SaveRecord(RecordReceivedByteModel record, string imageRoot)
-        {
-            RecordViewModel result;
-            var device = unitOfWork.DeviceRepository.GetDeviceCode(record.DeviceCode);
-            if(device == null)
-            {
-                throw new BaseException(ErrorMessages.DEVICE_IS_NOT_EXISTED);
-            }
-            var recordEntity = new Record
-            {
-                DeviceId = device.DeviceId,
-                Type = record.Type,
-                RecordDateTime = DateTime.Now,
-
-            };
-            var notificationFCM = this.CreateNotificationFCM(recordEntity, device.DeviceCode);
-            if (record.Image.Length <= 0)
-            {
-                throw new BaseException("Image is not existed!");
-            }
-            if (!Directory.Exists(imageRoot))
-            {
-                Directory.CreateDirectory(imageRoot);
 
             }
-            var dir = new DirectoryInfo(imageRoot);
-            var imagePath = imageRoot + "image" + dir.GetFiles().Length + ".jpg";
-            using (Image image = Image.FromStream(new MemoryStream(record.Image)))
-            {
-                image.Save(imagePath, ImageFormat.Jpeg);  // Or Png
-                recordEntity.Image = imagePath;
-            }
-
-            using (var transaction = unitOfWork.CreateTransaction())
-            {
-                try
-                {
-                    //save record
-                    await recordRepository.AddAsync(recordEntity);
-                    //save noti
-                    unitOfWork.NotificationRepository.Add(notificationFCM.NotificationVM.ToEntity<Notifications>());
-                    transaction.Commit();
-                    result = recordEntity.ToViewModel<RecordViewModel>();
-                }
-                catch (Exception e)
-                {
-                    transaction.Rollback();
-                    throw e;
-                }
-            }
-            this.SendNotify(notificationFCM);
-
-            return result;
-        }
-
-        private NotificationFCMViewModel CreateNotificationFCM(Record record, string deviceCode)
-        {
-
             //Get room from device is placed
-            var room = unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == record.DeviceId
+            var room = unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == device.DeviceId
                                                                  && rd.IsActive == true, null, "Room")
                                                                 .FirstOrDefault().Room;
             if (room == null)
@@ -419,23 +310,124 @@ namespace DWDW_Service.Services
             }
 
             //Get the shift of room and time
-            var shift = unitOfWork.ShiftRepository.GetShiftByRoomDate(room.RoomId, record.RecordDateTime);
+            var shift = unitOfWork.ShiftRepository.GetShiftByRoomDate(room.RoomId, DateTime.Now);
             if (shift == null)
             {
                 throw new BaseException(ErrorMessages.SHIFT_IS_NOT_EXISTED);
             }
 
             var worker = unitOfWork.UserRepository.Find(shift.Arrangement.UserId);
-            var notification = unitOfWork.NotificationRepository.CreateNotification(record, room, manager, worker, deviceCode);
 
-            return new NotificationFCMViewModel
+            var recordEntity = new Record
+            {
+                UserId = worker.UserId,
+                DeviceId = device.DeviceId,
+                Type = record.Type,
+                RecordDateTime = DateTime.Now,
+                Status = Constant.NOT_CONFIRMED
+            };
+            var notification = this.unitOfWork.NotificationRepository.CreateNotification(recordEntity, room, manager, worker, device.DeviceCode);
+            var notificationFCM = new NotificationFCMViewModel
             {
                 Title = notification.MessageTitle,
                 Message = notification.MessageContent,
                 DeviceToken = manager.DeviceToken,
                 NotificationVM = notification.ToViewModel<NotificationViewModel>()
             };
+            if (record.Image.Length <= 0)
+            {
+                throw new BaseException("Image is not existed!");
+            }
+            if (!Directory.Exists(imageRoot))
+            {
+                Directory.CreateDirectory(imageRoot);
+
+            }
+            var dir = new DirectoryInfo(imageRoot);
+            var imagePath = imageRoot + record.Image.Name + dir.GetFiles().Length + ".jpg";
+            using (var fileStream = File.Create(imagePath))
+            {
+                await record.Image.CopyToAsync(fileStream);
+                fileStream.Flush();
+                recordEntity.Image = imagePath;
+            }
+            using (var transaction = unitOfWork.CreateTransaction())
+            {
+                try
+                {
+                    //save record
+                    await recordRepository.AddAsync(recordEntity);
+                    //save noti
+                    await unitOfWork.NotificationRepository.AddAsync(notificationFCM.NotificationVM.ToEntity<Notifications>());
+                    transaction.Commit();
+                    this.SendNotify(notificationFCM);
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    throw e;
+                }
+            }
+
+
+
+            return recordEntity.ToViewModel<RecordViewModel>(); ;
         }
+
+        //public async Task<RecordViewModel> SaveRecordByte(RecordReceivedByteModel record, string imageRoot)
+        //{
+        //    RecordViewModel result;
+        //    var device = unitOfWork.DeviceRepository.GetDeviceCode(record.DeviceCode);
+        //    if (device == null)
+        //    {
+        //        throw new BaseException(ErrorMessages.DEVICE_IS_NOT_EXISTED);
+        //    }
+        //    var recordEntity = new Record
+        //    {
+        //        DeviceId = device.DeviceId,
+        //        Type = record.Type,
+        //        RecordDateTime = DateTime.Now,
+
+        //    };
+        //    var notificationFCM = this.CreateNotificationFCM(recordEntity, device.DeviceCode);
+        //    if (record.Image.Length <= 0)
+        //    {
+        //        throw new BaseException("Image is not existed!");
+        //    }
+        //    if (!Directory.Exists(imageRoot))
+        //    {
+        //        Directory.CreateDirectory(imageRoot);
+
+        //    }
+        //    var dir = new DirectoryInfo(imageRoot);
+        //    var imagePath = imageRoot + "image" + dir.GetFiles().Length + ".jpg";
+        //    using (Image image = Image.FromStream(new MemoryStream(record.Image)))
+        //    {
+        //        image.Save(imagePath, ImageFormat.Jpeg);  // Or Png
+        //        recordEntity.Image = imagePath;
+        //    }
+
+        //    using (var transaction = unitOfWork.CreateTransaction())
+        //    {
+        //        try
+        //        {
+        //            //save record
+        //            await recordRepository.AddAsync(recordEntity);
+        //            //save noti
+        //            unitOfWork.NotificationRepository.Add(notificationFCM.NotificationVM.ToEntity<Notifications>());
+        //            transaction.Commit();
+        //            result = recordEntity.ToViewModel<RecordViewModel>();
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            transaction.Rollback();
+        //            throw e;
+        //        }
+        //    }
+        //    this.SendNotify(notificationFCM);
+
+        //    return result;
+        //}
 
         private byte[] generateNotify(NotificationFCMViewModel notificationFCM)
         {
@@ -498,7 +490,7 @@ namespace DWDW_Service.Services
             var room = this.unitOfWork.RoomDeviceRepository.Get(rd => rd.DeviceId == recordEntity.DeviceId, null, "Room")
                                                                .Where(rd => rd.Room != null)
                                                                .Select(rd => rd.Room).FirstOrDefault();
-            if(room == null)
+            if (room == null)
             {
                 throw new BaseException(ErrorMessages.ROOM_IS_NOT_EXISTED);
             }
@@ -519,6 +511,6 @@ namespace DWDW_Service.Services
             return recordVM;
         }
 
-       
+
     }
 }
