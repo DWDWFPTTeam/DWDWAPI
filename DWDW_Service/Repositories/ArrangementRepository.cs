@@ -55,7 +55,7 @@ namespace DWDW_Service.Repositories
         {
             return Get(a => a.UserId.Equals(userId)
                        && a.LocationId.Equals(locationId)
-                       && a.IsActive == true, null, "Location").LastOrDefault();
+                       && a.IsActive == true, null, "Location").FirstOrDefault();
         }
         public bool CheckUserShift(int userID, int? ArrangementID)
         {
