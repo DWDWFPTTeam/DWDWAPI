@@ -48,7 +48,7 @@ namespace DWDW_Service.Repositories
             //Loai bo room da co device
             foreach (var element in devices.ToList())
             {
-                var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.DeviceId == element.DeviceId);
+                var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.DeviceId == element.DeviceId && x.IsActive == true);
                 if (roomDevice != null)
                 {
                     devices.Remove(element);

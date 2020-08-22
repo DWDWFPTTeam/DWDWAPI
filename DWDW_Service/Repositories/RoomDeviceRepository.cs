@@ -28,9 +28,11 @@ namespace DWDW_Service.Repositories
         {
             bool result = false;
             var existedRoomDeviceD = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.DeviceId == roomDeviceCreate.DeviceId
-            && x.IsActive == true);
+            && x.IsActive == true
+            && (x.StartDate <= roomDeviceCreate.StartDate || x.EndDate >= roomDeviceCreate.EndDate));
             var existedRoomDeviceR = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.RoomId == roomDeviceCreate.RoomId
-            && x.IsActive == true);
+            && x.IsActive == true
+            && (x.StartDate <= roomDeviceCreate.StartDate || x.EndDate >= roomDeviceCreate.EndDate));
             if (existedRoomDeviceD == null && existedRoomDeviceR == null)
             {
                 result = true;
