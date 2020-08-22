@@ -25,7 +25,8 @@ namespace DWDW_Service.Repositories
         List<int?> GetArrangementBelongToWorker(int userID);
 
         List<Arrangement> GetOverdue();
-        Arrangement GetManagerArrangementWithinDate(ArrangementReceivedViewModel newArrangement);
+        bool GetArrangementConflictDate(ArrangementReceivedViewModel newArrangement);
+        bool GetManagerArrangementWithinDate(ArrangementReceivedViewModel newArrangement);
     }
     public class ArrangementRepository : BaseRepository<Arrangement>, IArrangementRepository
     {
@@ -147,13 +148,44 @@ namespace DWDW_Service.Repositories
             return dbContext.Set<Arrangement>().Where(x => x.EndDate < now && x.IsActive == true).ToList();
         }
 
-        public Arrangement GetManagerArrangementWithinDate(ArrangementReceivedViewModel newArrangement)
+        public bool GetArrangementConflictDate(ArrangementReceivedViewModel newArrangement)
         {
-            var result = new Arrangement();
-            var arrangementOther = dbContext.Set<Arrangement>().FirstOrDefault(x => x.IsActive == true && x.UserId != newArrangement.UserId
+            var result = false;
+            var arrangementWithin = dbContext.Set<Arrangement>().FirstOrDefault(x => x.IsActive == true && x.UserId != newArrangement.UserId
+            && x.LocationId == newArrangement.LocationId
+            && x.StartDate <= newArrangement.StartDate && x.EndDate >= newArrangement.EndDate);
+            var arrangementConflict1 = dbContext.Set<Arrangement>().FirstOrDefault(x => x.IsActive == true && x.UserId != newArrangement.UserId
+            && x.LocationId == newArrangement.LocationId
+            && x.StartDate <= newArrangement.StartDate);
+            var arrangementConflict2 = dbContext.Set<Arrangement>().FirstOrDefault(x => x.IsActive == true && x.UserId != newArrangement.UserId
+            && x.LocationId == newArrangement.LocationId
+            && x.EndDate >= newArrangement.EndDate);
+            if (arrangementWithin == null && arrangementConflict1 == null && arrangementConflict2 == null)
+            {
+                result = true;
+            }
+            return result;
+        }
+
+        public bool GetManagerArrangementWithinDate(ArrangementReceivedViewModel newArrangement)
+        {
+            var result = false;
+            var arrangementManagerWithin = dbContext.Set<Arrangement>().FirstOrDefault(x => x.IsActive == true && x.LocationId != newArrangement.LocationId
+            && x.UserId != newArrangement.UserId
             && x.StartDate <= newArrangement.StartDate && x.EndDate >= newArrangement.EndDate
             && x.User.RoleId == 2);
-            result = arrangementOther;
+            var arrangementManagerConflic1 = dbContext.Set<Arrangement>().FirstOrDefault(x => x.IsActive == true && x.LocationId != newArrangement.LocationId
+            && x.UserId != newArrangement.UserId
+            && x.StartDate <= newArrangement.StartDate
+            && x.User.RoleId == 2);
+            var arrangementManagerConflic2 = dbContext.Set<Arrangement>().FirstOrDefault(x => x.IsActive == true && x.LocationId != newArrangement.LocationId
+            && x.UserId != newArrangement.UserId
+            && x.EndDate >= newArrangement.EndDate
+            && x.User.RoleId == 2);
+            if (arrangementManagerWithin == null && arrangementManagerConflic1 == null && arrangementManagerConflic2 == null)
+            {
+                result = true;
+            }
             return result;
         }
     }

@@ -242,7 +242,7 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
             }
-            if (shift.Date > arrangementWorker.EndDate || shift.Date < DateTime.Now)
+            if (shift.Date > arrangementWorker.EndDate || shift.Date < DateTime.Today.AddHours(8))
             {
                 throw new BaseException(ErrorMessages.SHIFT_DATE_INVALID);
             }
@@ -299,7 +299,7 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
             }
-            if (shift.Date > arrangementWorker.EndDate || shift.Date < DateTime.Now)
+            if (shift.Date > arrangementWorker.EndDate || shift.Date < DateTime.Today.AddHours(8))
             {
                 throw new BaseException(ErrorMessages.SHIFT_DATE_INVALID);
             }

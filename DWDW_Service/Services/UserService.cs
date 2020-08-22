@@ -508,52 +508,28 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.DATE_INVALID);
             }
-            //Lay ra arrangement moi nhat da ton tai cua user
-            var existedArrangement = arrangementRepo.GetArrangementOfUserInThisLocation(arrangement.UserId, arrangement.LocationId);
-            DateTime oldArrangementEnd = existedArrangement.EndDate ?? DateTime.Now;
-            //Worker có tồn tại mối quan hệ cũ
-            if (existedArrangement != null && user.RoleId != 2)
+            //Lay ra arrangement da ton tai cua user trong khoang thoi gian
+            var conflictedArrangement = arrangementRepo.GetArrangementConflictDate(arrangement);
+            if (conflictedArrangement == false)
             {
-                if (arrangement.StartDate <= oldArrangementEnd.AddDays(-1))
-                {
-                    throw new BaseException(ErrorMessages.STARDATE_MUST_BIGGER_NOW);
-                }
-                var arrangementEntity = arrangement.ToEntity<Arrangement>();
-                arrangementEntity.IsActive = true;
-                unitOfWork.ArrangementRepository.Add(arrangementEntity);
-                result = arrangementEntity.ToViewModel<ArrangementViewModel>();
+                throw new BaseException(ErrorMessages.RELATIONSHIP_EXISTED);
             }
-            //Worker không tồn tại mối quan hệ cũ
-            else if (existedArrangement == null && user.RoleId != 2)
+
+            //Neu day la worker
+            if (user.RoleId == 3)
             {
                 var arrangementEntity = arrangement.ToEntity<Arrangement>();
                 arrangementEntity.IsActive = true;
                 unitOfWork.ArrangementRepository.Add(arrangementEntity);
                 result = arrangementEntity.ToViewModel<ArrangementViewModel>();
             }
-            //Manager tồn tại mối quan hệ cũ
-            else if (existedArrangement != null && user.RoleId == 2)
+            else if(user.RoleId == 2)
             {
-                if (arrangement.StartDate <= oldArrangementEnd.AddDays(-1))
+                //Phai xet xem location nay da co manager nao khac chua
+                var otherManagerArrangement = arrangementRepo.GetManagerArrangementWithinDate(arrangement);
+                if (otherManagerArrangement == false)
                 {
-                    throw new BaseException(ErrorMessages.STARDATE_MUST_BIGGER_NOW);
-                }
-                var managerArrangement = arrangementRepo.GetManagerArrangementWithinDate(arrangement);
-                if (managerArrangement != null)
-                {
-                    throw new BaseException(ErrorMessages.RELATIONSHIP_EXISTED);
-                }
-                var arrangementEntity = arrangement.ToEntity<Arrangement>();
-                arrangementEntity.IsActive = true;
-                unitOfWork.ArrangementRepository.Add(arrangementEntity);
-                result = arrangementEntity.ToViewModel<ArrangementViewModel>();
-            }
-            else if (existedArrangement != null && user.RoleId == 2)
-            {
-                var managerArrangement = arrangementRepo.GetManagerArrangementWithinDate(arrangement);
-                if (managerArrangement != null)
-                {
-                    throw new BaseException(ErrorMessages.RELATIONSHIP_EXISTED);
+                    throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_MANAGER);
                 }
                 var arrangementEntity = arrangement.ToEntity<Arrangement>();
                 arrangementEntity.IsActive = true;
