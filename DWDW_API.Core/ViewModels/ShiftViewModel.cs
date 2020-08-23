@@ -37,7 +37,7 @@ namespace DWDW_API.Core.ViewModels
         [Required(ErrorMessage = ErrorMessages.USERID_INVALID)]
         public int WorkerID { get; set; }
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
-        public DateTime? Date { get; set; }
+        public DateTime Date { get; set; }
         [Required(ErrorMessage = ErrorMessages.ROOM_ID_INVALID)]
         public int? RoomId { get; set; }
     }

@@ -237,12 +237,12 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
             }
-            var arrangementWorker = arrangementRepo.GetArrangementOfUserInThisLocation(shift.WorkerID, location.LocationId);
+            var arrangementWorker = arrangementRepo.GetArrangementByLocationUserDate(shift.WorkerID, location.LocationId, shift.Date);
             if (arrangementWorker == null)
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
             }
-            if (shift.Date > arrangementWorker.EndDate || (DateTime.Now > DateTime.Today.AddHours(8) && shift.Date == DateTime.Today))
+            if (DateTime.Now > DateTime.Today.AddHours(8) && shift.Date == DateTime.Today)
             {
                 throw new BaseException(ErrorMessages.SHIFT_DATE_INVALID);
             }
@@ -294,12 +294,12 @@ namespace DWDW_Service.Services
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_EXISTED);
             }
             //Xac dinh xem shift dang dinh update co thuoc manager khong
-            var arrangementWorker = arrangementRepo.GetArrangementOfUserInThisLocation(shift.WorkerID, location.LocationId);
+            var arrangementWorker = arrangementRepo.GetArrangementByLocationUserDate(shift.WorkerID, location.LocationId, shift.Date);
             if (arrangementWorker == null)
             {
                 throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
             }
-            if (shift.Date > arrangementWorker.EndDate || (DateTime.Now > DateTime.Today.AddHours(8) && shift.Date == DateTime.Today))
+            if (DateTime.Now > DateTime.Today.AddHours(8) && shift.Date == DateTime.Today)
             {
                 throw new BaseException(ErrorMessages.SHIFT_DATE_INVALID);
             }

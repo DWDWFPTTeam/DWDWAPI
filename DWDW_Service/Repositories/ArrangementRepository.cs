@@ -19,6 +19,7 @@ namespace DWDW_Service.Repositories
         List<ArrangementUserViewModel> GetArrangementUserFromLocation(int locationId);
         //end chi
         Arrangement GetArrangementOfUserInThisLocation(int userId, int? locationId);
+        Arrangement GetArrangementByLocationUserDate(int userId, int? locationId, DateTime date);
         bool CheckUserShift(int userID, int? ArrangementID);
         List<Arrangement> DisableArrangementFromLocation(int locationId);
         List<int?> GetArrangementBelongToManager(int userID);
@@ -57,6 +58,13 @@ namespace DWDW_Service.Repositories
                        && a.LocationId.Equals(locationId)
                        && a.IsActive == true, null, "Location").FirstOrDefault();
         }
+
+        public Arrangement GetArrangementByLocationUserDate(int userId, int? locationId, DateTime date)
+        {
+            return dbContext.Set<Arrangement>().FirstOrDefault(x => x.UserId == userId && x.LocationId == locationId
+            && x.IsActive == true && (x.StartDate <= date || x.EndDate >= date));
+        }
+
         public bool CheckUserShift(int userID, int? ArrangementID)
         {
             bool result = false;
