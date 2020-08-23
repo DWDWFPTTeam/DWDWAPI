@@ -32,8 +32,9 @@ namespace DWDW_API.Core.Constants
         public const int WORK = 5;
 
         //record status
-        public static string NOT_CONFIRMED = "NOT_CONFIRMED";
-        public static string CONFIRMED = "CONFIRMED";
+        public static string NOT_CONFIRMED = "UNKNOWN";
+        public static string ACCEPT = "ACCEPT";
+        public static string REFUSE = "REFUSE";
 
 
         public const string DEVICE_HOANG_MOBILETOKEN = "cAF8JeveS9av5pIdQtge0-:APA91bGvzkAno7ycM_fIzqwEjhIUTBy-la9u71_" +

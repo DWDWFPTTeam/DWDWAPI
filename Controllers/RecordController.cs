@@ -123,5 +123,17 @@ namespace DWDW_API.Controllers
             });
         }
 
+        [Route("UpdateRecordStatusWorker")]
+        [Authorize(Roles = Constant.WORKER)]
+        [HttpPut]
+        public dynamic UpdateRecordStatusWorker(RecordStatusModel record)
+        {
+            int userID = int.Parse(CurrentUserId);
+            return ExecuteInMonitoring(() =>
+            {
+                return recordService.UpdateRecordStatusWorker(userID, record);
+            });
+        }
+
     }
 }

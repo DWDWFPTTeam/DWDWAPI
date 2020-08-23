@@ -40,6 +40,7 @@ namespace DWDW_API.Core.Constants
         public const string DEVICE_CODE_INVALID = "Device Code is invalid";
         public const string DEVICE_ID_INVALID = "Device ID is invalid";
         public const string STATUS_INVALID = "Status is invalid";
+        public const string COMMENT_INVALID = "Comment is invalid";
         public const string DEVICE_IS_DISABLE = "This device is disable";
 
 
@@ -119,7 +120,7 @@ namespace DWDW_API.Core.Constants
         //Record Massage
         public const string RECORDID_IS_NOT_EXISTED= "RecordId is not existed";
         public const string LOCATION_HAVE_NO_DEVICE = "Location has no device";
-
+        public const string RECORD_USER_NOT_RELATED = "Location has no device";
 
 
 

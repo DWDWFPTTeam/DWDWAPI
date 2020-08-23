@@ -30,6 +30,7 @@ namespace DWDW_Service.Services
         IEnumerable<RecordViewModel> GetRecordByLocationWorkerDateForManager(int managerID, int workerID, int locationID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
         RecordImageViewModel GetRecordById(int recordId);
+        RecordViewModel UpdateRecordStatusWorker(int userID, RecordStatusModel record);
         //Task<RecordViewModel> SaveRecordByte(RecordReceivedByteModel recordReceived, string imageRoot);
     }
 
@@ -556,6 +557,24 @@ namespace DWDW_Service.Services
             return recordVM;
         }
 
-
+        public RecordViewModel UpdateRecordStatusWorker(int userID, RecordStatusModel recordUpdateStatus)
+        {
+            var result = new RecordViewModel();
+            var userRepo = unitOfWork.UserRepository;
+            var record = recordRepository.Find(recordUpdateStatus.RecordId);
+            if (record == null)
+            {
+                throw new BaseException(ErrorMessages.RECORDID_IS_NOT_EXISTED);
+            }
+            if (record.UserId != userID)
+            {
+                throw new BaseException(ErrorMessages.RECORD_USER_NOT_RELATED);
+            }
+            record.Status = recordUpdateStatus.Status;
+            record.Comment = recordUpdateStatus.Comment;
+            recordRepository.Update(record);
+            result = record.ToViewModel<RecordViewModel>();
+            return result;
+        }
     }
 }

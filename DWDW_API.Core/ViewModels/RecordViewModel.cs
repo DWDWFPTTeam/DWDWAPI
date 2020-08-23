@@ -11,28 +11,37 @@ namespace DWDW_API.Core.ViewModels
     public class RecordViewModel : BaseModel
     {
         public int? RecordId { get; set; }
+        public int? UserId { get; set; }
         public int? DeviceId { get; set; }
         public int? RoomId { get; set; }
         public int? Type { get; set; }
         public DateTime? RecordDateTime { get; set; }
+        public string Status { get; set; }
+        public string Comment { get; set; }
     }
     public class RecordRoomCodeViewModel : BaseModel
     {
         public int? RecordId { get; set; }
+        public int? UserId { get; set; }
         public int? DeviceId { get; set; }
-        public String RoomCode { get; set; }
+        public string RoomCode { get; set; }
         public int? Type { get; set; }
         public DateTime? RecordDateTime { get; set; }
+        public string Status { get; set; }
+        public string Comment { get; set; }
     }
 
     public class RecordImageViewModel : BaseModel
     {
         public int? RecordId { get; set; }
+        public int? UserId { get; set; }
         public int? DeviceId { get; set; }
-        public String FullName { get; set; }
-        public String RoomCode { get; set; }
+        public string FullName { get; set; }
+        public string RoomCode { get; set; }
         public int? Type { get; set; }
         public DateTime? RecordDateTime { get; set; }
+        public string Status { get; set; }
+        public string Comment { get; set; }
         public byte[] ImageByte { get; set; }
     }
     public class RecordReceivedModel
@@ -59,7 +68,7 @@ namespace DWDW_API.Core.ViewModels
         public byte[] Image { get; set; }
 
     }
-    public class RecordLocationReceivedViewModel
+    public class RecordLocationReceivedViewModel : BaseModel
     {
         [Required(ErrorMessage = ErrorMessages.LOCATIONID_INVALID)]
         public int LocationId { get; set; }
@@ -73,5 +82,19 @@ namespace DWDW_API.Core.ViewModels
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
         [DisplayFormat(DataFormatString = "yyyy-MM-dd")]
         public DateTime EndDate { get; set; }
+    }
+
+    public class RecordStatusModel : BaseModel
+    {
+        [Required(ErrorMessage = ErrorMessages.RECORDID_IS_NOT_EXISTED)]
+        public int? RecordId { get; set; }
+        [Required(ErrorMessage = ErrorMessages.INVALID_DATE_FORMAT)]
+        [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
+        [DisplayFormat(DataFormatString = "yyyy-MM-dd")]
+        public DateTime? RecordDateTime { get; set; }
+        [Required(ErrorMessage = ErrorMessages.STATUS_INVALID)]
+        public string Status { get; set; }
+        [Required(ErrorMessage = ErrorMessages.COMMENT_INVALID)]
+        public string Comment { get; set; }
     }
 }
