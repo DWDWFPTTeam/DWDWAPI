@@ -29,6 +29,8 @@ namespace DWDW_Service.Services
         IEnumerable<RecordViewModel> GetRecordByWorkerDateForManager(int managerID, int workerID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByLocationWorkerDateForManager(int managerID, int workerID, int locationID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
+        IEnumerable<RecordViewModel> GetUnknownRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
+        IEnumerable<RecordViewModel> GetConfirmRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
         RecordImageViewModel GetRecordById(int recordId);
         RecordViewModel UpdateRecordStatusWorker(int userID, RecordStatusModel record);
         //Task<RecordViewModel> SaveRecordByte(RecordReceivedByteModel recordReceived, string imageRoot);
@@ -189,11 +191,6 @@ namespace DWDW_Service.Services
             //Từ device và date ra record
             var record = recordRepository.GetRecordByDeviceDate(device.DeviceId, date);
             result = record.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
-            result.Skip(Math.Max(0, result.Count() - 10));
-            foreach (var element in result)
-            {
-                element.RoomId = roomID;
-            }
             return result;
         }
 
@@ -228,13 +225,21 @@ namespace DWDW_Service.Services
             //Từ device và date ra record
             var record = recordRepository.GetRecordByDeviceDate(device.DeviceId, date);
             var result = record.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
-            result.Skip(Math.Max(0, result.Count() - 10));
-            foreach (var element in result)
-            {
-                element.RoomId = roomID;
-            }
             return result;
         }
+        public IEnumerable<RecordViewModel> GetUnknownRecordByLocationDateForWorker(int workerID, int locationID, DateTime date)
+        {
+            var listRecordOriginal = GetRecordByLocationDateForWorker(workerID, locationID, date);
+            var result = listRecordOriginal.Where(x => x.Status == Constant.NOT_CONFIRMED).ToList();
+            return result;
+        }
+        public IEnumerable<RecordViewModel> GetConfirmRecordByLocationDateForWorker(int workerID, int locationID, DateTime date)
+        {
+            var listRecordOriginal = GetRecordByLocationDateForWorker(workerID, locationID, date);
+            var result = listRecordOriginal.Where(x => x.Status == Constant.ACCEPT || x.Status == Constant.REFUSE).ToList();
+            return result;
+        }
+
         //public IEnumerable<RecordViewModel> GetRecordsByLocationDate(int locationId, DateTime startDate, DateTime endDate)
         //{
         //    var locationRepo = this.unitOfWork.LocationRepository;

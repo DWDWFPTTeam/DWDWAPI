@@ -122,6 +122,28 @@ namespace DWDW_API.Controllers
                 return recordService.GetRecordByLocationDateForWorker(userID, locationID, date);
             });
         }
+        [Route("GetUnknownRecordByLocationDateForWorker")]
+        [Authorize(Roles = Constant.WORKER)]
+        [HttpGet]
+        public dynamic GetUnknownRecordByLocationDateForWorker(int locationID, DateTime date)
+        {
+            int userID = int.Parse(CurrentUserId);
+            return ExecuteInMonitoring(() =>
+            {
+                return recordService.GetUnknownRecordByLocationDateForWorker(userID, locationID, date);
+            });
+        }
+        [Route("GetConfirmRecordByLocationDateForWorker")]
+        [Authorize(Roles = Constant.WORKER)]
+        [HttpGet]
+        public dynamic GetConfirmRecordByLocationDateForWorker(int locationID, DateTime date)
+        {
+            int userID = int.Parse(CurrentUserId);
+            return ExecuteInMonitoring(() =>
+            {
+                return recordService.GetConfirmRecordByLocationDateForWorker(userID, locationID, date);
+            });
+        }
 
         [Route("UpdateRecordStatusWorker")]
         [Authorize(Roles = Constant.WORKER)]
