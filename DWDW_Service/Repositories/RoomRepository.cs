@@ -1,4 +1,5 @@
 ﻿using DWDW_API.Core.Entities;
+using DWDW_API.Core.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace DWDW_Service.Repositories
         List<Room> SearchRoomByRoomCode(string roomCode);
         List<Room> SearchRoomByRoomCode(int locationId, string roomCode);
 
-        Room GetRoomFromDevice(int? deviceID);
+        Room GetRoomFromDevice(RecordViewModel record);
 
         List<int?> GetRelatedRoomIDFromLocation(List<int?> locationRelatedID);
     }
@@ -144,9 +145,10 @@ namespace DWDW_Service.Repositories
             return relatedRoom;
         }
 
-        public Room GetRoomFromDevice(int? deviceID)
+        public Room GetRoomFromDevice(RecordViewModel record)
         {
-            var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.DeviceId == deviceID && x.IsActive == true);
+            var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.DeviceId == record.DeviceId && x.IsActive == true
+            && x.StartDate <= record.RecordDateTime && x.EndDate >= record.RecordDateTime);
             var result = dbContext.Set<Room>().Find(roomDevice.RoomId);
             return result;
         }

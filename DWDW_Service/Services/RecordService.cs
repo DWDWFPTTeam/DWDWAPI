@@ -191,6 +191,12 @@ namespace DWDW_Service.Services
             //Từ device và date ra record
             var record = recordRepository.GetRecordByDeviceDate(device.DeviceId, date);
             result = record.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+            foreach (var element in result)
+            {
+                var roomRecord = roomRepo.GetRoomFromDevice(element);
+                element.RoomId = roomRecord.RoomId;
+                element.RoomCode = roomRecord.RoomCode;
+            }
             return result;
         }
 
@@ -199,6 +205,7 @@ namespace DWDW_Service.Services
             var locationRepo = unitOfWork.LocationRepository;
             var shiftRepo = unitOfWork.ShiftRepository;
             var deviceRepo = unitOfWork.DeviceRepository;
+            var roomRepo = unitOfWork.RoomRepository;
             var arrangementRepo = unitOfWork.ArrangementRepository;
             var location = locationRepo.Find(locationID);
             if (location == null)
@@ -225,6 +232,12 @@ namespace DWDW_Service.Services
             //Từ device và date ra record
             var record = recordRepository.GetRecordByDeviceDate(device.DeviceId, date);
             var result = record.Select(x => x.ToViewModel<RecordViewModel>()).ToList();
+            foreach(var element in result)
+            {
+                var roomRecord = roomRepo.GetRoomFromDevice(element);
+                element.RoomId = roomRecord.RoomId;
+                element.RoomCode = roomRecord.RoomCode;
+            }
             return result;
         }
         public IEnumerable<RecordViewModel> GetUnknownRecordByLocationDateForWorker(int workerID, int locationID, DateTime date)
@@ -327,7 +340,7 @@ namespace DWDW_Service.Services
             foreach (var element in record)
             {
                 int? deviceID = element.DeviceId;
-                var room = roomRepo.GetRoomFromDevice(deviceID);
+                var room = roomRepo.GetRoomFromDevice(element);
                 element.RoomId = room.RoomId;
             }
             return record;
@@ -566,6 +579,7 @@ namespace DWDW_Service.Services
         {
             var result = new RecordViewModel();
             var userRepo = unitOfWork.UserRepository;
+            var roomRepo = unitOfWork.RoomRepository;
             var record = recordRepository.Find(recordUpdateStatus.RecordId);
             if (record == null)
             {
@@ -579,6 +593,9 @@ namespace DWDW_Service.Services
             record.Comment = recordUpdateStatus.Comment;
             recordRepository.Update(record);
             result = record.ToViewModel<RecordViewModel>();
+            var roomRecord = roomRepo.GetRoomFromDevice(result);
+            result.RoomId = roomRecord.RoomId;
+            result.RoomCode = roomRecord.RoomCode;
             return result;
         }
     }

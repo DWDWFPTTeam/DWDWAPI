@@ -14,6 +14,7 @@ namespace DWDW_API.Core.ViewModels
         public int? UserId { get; set; }
         public int? DeviceId { get; set; }
         public int? RoomId { get; set; }
+        public string RoomCode { get; set; }
         public int? Type { get; set; }
         public DateTime? RecordDateTime { get; set; }
         public string Status { get; set; }

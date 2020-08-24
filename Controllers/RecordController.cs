@@ -44,7 +44,7 @@ namespace DWDW_API.Controllers
         //}
 
         [Route("GetRecordById")]
-        [Authorize(Roles = Constant.ADMIN + "," + Constant.MANAGER)]
+        [Authorize(Roles = Constant.ADMIN + "," + Constant.MANAGER + "," + Constant.WORKER)]
         [HttpGet]
         public dynamic GetRecordById(int recordId)
         {
