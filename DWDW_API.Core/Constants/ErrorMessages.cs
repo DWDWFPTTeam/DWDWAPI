@@ -104,7 +104,7 @@ namespace DWDW_API.Core.Constants
         public const string LOCATIONID_INVALID = "Location ID is invalid";
         public const string LOCATION_CODE_INVALID = "Location code is invalid";
         public const string LOCATION_IS_NOT_BELONG_TO_MANAGER = "Location Is not belong to manager";
-        public const string LOCATION_IS_NOT_BELONG_TO_WORKER = "Location Is not belong to worker";
+        public const string LOCATION_IS_NOT_BELONG_TO_WORKER = "Location does not belong to the worker";
         public const string LOCATION_DEVICE_EMPTY = "There is no device in this location";
         public const string ARRANGEMENT_NOT_EXISTED = "The relationship between this user and location is not existed";
         public const string MANAGER_WORKER_NOT_EXISTED = "The relationship between this manager and worker is not existed";
@@ -122,7 +122,7 @@ namespace DWDW_API.Core.Constants
         public const string LOCATION_HAVE_NO_DEVICE = "Location has no device";
         public const string RECORD_USER_NOT_RELATED = "Location has no device";
 
-
+        public const string RECORD_DATE_NOT_EXISTED = "There's no record at this date";
 
 
     }

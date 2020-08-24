@@ -226,6 +226,10 @@ namespace DWDW_Service.Services
             }
             var shiftLocation = shiftRepo.GetShiftFromLocationWorker(workerID, locationID);
             var shiftList = shiftLocation.FirstOrDefault(x => x.Date == date.Date && x.IsActive == true);
+            if (shiftList == null)
+            {
+                throw new BaseException(ErrorMessages.RECORD_DATE_NOT_EXISTED);
+            }
             //Lấy ra room từ shift và từ room ra device
             var roomID = shiftList.RoomId;
             var device = deviceRepo.GetDeviceFromRoom(roomID);
