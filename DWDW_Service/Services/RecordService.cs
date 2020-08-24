@@ -232,7 +232,7 @@ namespace DWDW_Service.Services
             }
             //Lấy ra room từ shift và từ room ra device
             var roomID = shiftList.RoomId;
-            var device = deviceRepo.GetDeviceFromRoom(roomID);
+            var device = deviceRepo.GetDeviceFromRoomByDate(roomID, date);
             //Từ device và date ra record
             var record = recordRepository.GetRecordByDeviceDate(device.DeviceId, date);
             var result = record.Select(x => x.ToViewModel<RecordViewModel>()).ToList();

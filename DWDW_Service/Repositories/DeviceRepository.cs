@@ -16,6 +16,7 @@ namespace DWDW_Service.Repositories
         Device GetDeviceCode(string deviceCode);
         Device CheckDeviceCodeExisted(string deviceCode);
         Device GetDeviceFromRoom(int? roomID);
+        Device GetDeviceFromRoomByDate(int? roomID, DateTime date);
         bool CheckUserLocation(int userID, int locationID);
         bool CheckUserRoom(int userID, int roomID);
 
@@ -71,6 +72,13 @@ namespace DWDW_Service.Repositories
             return this.dbContext.Set<Device>().FirstOrDefault(x => x.RoomDevice.Any(b => b.RoomId == roomID
             && b.IsActive == true));
         }
+        public Device GetDeviceFromRoomByDate(int? roomID, DateTime date)
+        {
+            return this.dbContext.Set<Device>().FirstOrDefault(x => x.RoomDevice.Any(b => b.RoomId == roomID
+            && b.StartDate <= date && b.EndDate >= date
+            && b.IsActive == true));
+        }
+
 
         public bool CheckUserLocation(int userID, int locationID)
         {
