@@ -105,6 +105,7 @@ namespace DWDW_API.Core.Constants
         public const string LOCATION_CODE_INVALID = "Location code is invalid";
         public const string LOCATION_IS_NOT_BELONG_TO_MANAGER = "Location Is not belong to manager";
         public const string LOCATION_IS_NOT_BELONG_TO_WORKER = "Location does not belong to the worker";
+        public const string LOCATION_IS_NOT_CURRENT_BELONG_TO_WORKER = "Location does not belong to the worker currently";
         public const string LOCATION_DEVICE_EMPTY = "There is no device in this location";
         public const string ARRANGEMENT_NOT_EXISTED = "The relationship between this user and location is not existed";
         public const string MANAGER_WORKER_NOT_EXISTED = "The relationship between this manager and worker is not existed";

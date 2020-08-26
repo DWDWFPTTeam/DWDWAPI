@@ -56,8 +56,8 @@ namespace DWDW_API
 
             //Hangfire
             //string ConnectionString = "Server=.;Database=DWDB;Trusted_Connection=True;User Id=sa;Password=123;MultipleActiveResultSets=True;";
-            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddHangfireServer();
+            //services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddHangfireServer();
 
         }
 
@@ -309,20 +309,20 @@ namespace DWDW_API
             app.UseAuthorization();
 
             //Hangfire
-            var options = new BackgroundJobServerOptions
-            {
-                SchedulePollingInterval = TimeSpan.FromMilliseconds(1000)
-            };
+            //var options = new BackgroundJobServerOptions
+            //{
+            //    SchedulePollingInterval = TimeSpan.FromMilliseconds(1000)
+            //};
 
-            app.UseHangfireServer(options);
-            app.UseHangfireDashboard(options: new DashboardOptions
-            {
-                Authorization = new List<IDashboardAuthorizationFilter>()
-            {
-                new HangfireDashboardFilter()
-            },
-                IsReadOnlyFunc = CapstoneContext => false
-            });
+            //app.UseHangfireServer(options);
+            //app.UseHangfireDashboard(options: new DashboardOptions
+            //{
+            //    Authorization = new List<IDashboardAuthorizationFilter>()
+            //{
+            //    new HangfireDashboardFilter()
+            //},
+            //    IsReadOnlyFunc = CapstoneContext => false
+            //});
 
 
             app.UseEndpoints(endpoints =>

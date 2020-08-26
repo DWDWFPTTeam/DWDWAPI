@@ -240,9 +240,9 @@ namespace DWDW_Service.Services
             var arrangementWorker = arrangementRepo.GetArrangementByLocationUserDate(shift.WorkerID, location.LocationId, shift.Date);
             if (arrangementWorker == null)
             {
-                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_CURRENT_BELONG_TO_WORKER);
             }
-            if (DateTime.Now > DateTime.Today.AddHours(8) && shift.Date == DateTime.Today)
+            if ((DateTime.Now > DateTime.Today.AddHours(8) && shift.Date == DateTime.Today) || shift.Date < DateTime.Today)
             {
                 throw new BaseException(ErrorMessages.SHIFT_DATE_INVALID);
             }
@@ -297,9 +297,9 @@ namespace DWDW_Service.Services
             var arrangementWorker = arrangementRepo.GetArrangementByLocationUserDate(shift.WorkerID, location.LocationId, shift.Date);
             if (arrangementWorker == null)
             {
-                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_BELONG_TO_WORKER);
+                throw new BaseException(ErrorMessages.LOCATION_IS_NOT_CURRENT_BELONG_TO_WORKER);
             }
-            if (DateTime.Now > DateTime.Today.AddHours(8) && shift.Date == DateTime.Today)
+            if ((DateTime.Now > DateTime.Today.AddHours(8) && shift.Date == DateTime.Today) || shift.Date < DateTime.Today)
             {
                 throw new BaseException(ErrorMessages.SHIFT_DATE_INVALID);
             }

@@ -62,7 +62,7 @@ namespace DWDW_Service.Repositories
         public Arrangement GetArrangementByLocationUserDate(int userId, int? locationId, DateTime date)
         {
             return dbContext.Set<Arrangement>().FirstOrDefault(x => x.UserId == userId && x.LocationId == locationId
-            && x.IsActive == true && (x.StartDate <= date || x.EndDate >= date));
+            && x.IsActive == true && x.StartDate <= date && x.EndDate >= date);
         }
 
         public bool CheckUserShift(int userID, int? ArrangementID)
@@ -161,7 +161,9 @@ namespace DWDW_Service.Repositories
             var result = false;
             var arrangementWithin = dbContext.Set<Arrangement>().FirstOrDefault(x => x.IsActive == true && x.UserId == newArrangement.UserId
             && x.LocationId == newArrangement.LocationId
-            && (x.StartDate <= newArrangement.StartDate || x.EndDate >= newArrangement.EndDate));
+            && ((x.StartDate <= newArrangement.StartDate && x.EndDate >= newArrangement.EndDate)
+            ||(x.StartDate <= newArrangement.StartDate && x.EndDate >= newArrangement.StartDate)
+            || (x.StartDate <= newArrangement.EndDate && x.EndDate >= newArrangement.EndDate)));
             if (arrangementWithin == null)
             {
                 result = true;
@@ -174,7 +176,9 @@ namespace DWDW_Service.Repositories
             var result = false;
             var arrangementManagerWithin = dbContext.Set<Arrangement>().FirstOrDefault(x => x.IsActive == true && x.LocationId == newArrangement.LocationId
             && x.UserId != newArrangement.UserId
-            && (x.StartDate <= newArrangement.StartDate || x.EndDate >= newArrangement.EndDate)
+            && ((x.StartDate <= newArrangement.StartDate && x.EndDate >= newArrangement.EndDate)
+            || (x.StartDate <= newArrangement.StartDate && x.EndDate >= newArrangement.StartDate)
+            || (x.StartDate <= newArrangement.EndDate && x.EndDate >= newArrangement.EndDate))
             && x.User.RoleId == 2);
             if (arrangementManagerWithin == null)
             {
