@@ -294,9 +294,13 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.RELATIONSHIP_EXISTED);
             }
-            if (roomDevice.StartDate < DateTime.Now)
+            if (roomDevice.StartDate < DateTime.Today)
             {
                 throw new BaseException(ErrorMessages.STARDATE_MUST_BIGGER_NOW);
+            }
+            if (roomDevice.StartDate == DateTime.Today && DateTime.Now > DateTime.Today.AddHours(8))
+            {
+                throw new BaseException(ErrorMessages.DATE_INVALID);
             }
             if (roomDevice.StartDate < roomDevice.EndDate)
             {

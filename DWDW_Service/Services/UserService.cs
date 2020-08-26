@@ -500,11 +500,12 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
             }
-            if (arrangement.StartDate < DateTime.Now)
+            if (arrangement.StartDate < DateTime.Today)
             {
                 throw new BaseException(ErrorMessages.STARDATE_MUST_BIGGER_NOW);
             }
-            if (arrangement.StartDate > arrangement.EndDate)
+            if (arrangement.StartDate > arrangement.EndDate ||
+                (arrangement.StartDate == DateTime.Today && DateTime.Now > DateTime.Today.AddHours(8)))
             {
                 throw new BaseException(ErrorMessages.DATE_INVALID);
             }
