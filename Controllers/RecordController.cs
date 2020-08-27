@@ -122,26 +122,26 @@ namespace DWDW_API.Controllers
                 return recordService.GetRecordByLocationDateForWorker(userID, locationID, date);
             });
         }
-        [Route("GetUnknownRecordByLocationDateForWorker")]
+        [Route("GetSleepyRecordByLocationDateForWorker")]
         [Authorize(Roles = Constant.WORKER)]
         [HttpGet]
-        public dynamic GetUnknownRecordByLocationDateForWorker(int locationID, DateTime date)
+        public dynamic GetSleepyRecordByLocationDateForWorker(int locationID, DateTime date)
         {
             int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
-                return recordService.GetUnknownRecordByLocationDateForWorker(userID, locationID, date);
+                return recordService.GetSleepyRecordByLocationDateForWorker(userID, locationID, date);
             });
         }
-        [Route("GetConfirmRecordByLocationDateForWorker")]
+        [Route("GetDeniedRecordByLocationDateForWorker")]
         [Authorize(Roles = Constant.WORKER)]
         [HttpGet]
-        public dynamic GetConfirmRecordByLocationDateForWorker(int locationID, DateTime date)
+        public dynamic GetDeniedRecordByLocationDateForWorker(int locationID, DateTime date)
         {
             int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
-                return recordService.GetConfirmRecordByLocationDateForWorker(userID, locationID, date);
+                return recordService.GetDeniedRecordByLocationDateForWorker(userID, locationID, date);
             });
         }
 

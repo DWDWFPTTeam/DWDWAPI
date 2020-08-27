@@ -29,8 +29,8 @@ namespace DWDW_Service.Services
         IEnumerable<RecordViewModel> GetRecordByWorkerDateForManager(int managerID, int workerID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByLocationWorkerDateForManager(int managerID, int workerID, int locationID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
-        IEnumerable<RecordViewModel> GetUnknownRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
-        IEnumerable<RecordViewModel> GetConfirmRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
+        IEnumerable<RecordViewModel> GetSleepyRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
+        IEnumerable<RecordViewModel> GetDeniedRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
         RecordImageViewModel GetRecordById(int recordId);
         RecordViewModel UpdateRecordStatusWorker(int userID, RecordStatusModel record);
         //Task<RecordViewModel> SaveRecordByte(RecordReceivedByteModel recordReceived, string imageRoot);
@@ -244,16 +244,16 @@ namespace DWDW_Service.Services
             }
             return result;
         }
-        public IEnumerable<RecordViewModel> GetUnknownRecordByLocationDateForWorker(int workerID, int locationID, DateTime date)
+        public IEnumerable<RecordViewModel> GetSleepyRecordByLocationDateForWorker(int workerID, int locationID, DateTime date)
         {
             var listRecordOriginal = GetRecordByLocationDateForWorker(workerID, locationID, date);
-            var result = listRecordOriginal.Where(x => x.Status == Constant.NOT_CONFIRMED).ToList();
+            var result = listRecordOriginal.Where(x => x.Status == Constant.SLEEPY).ToList();
             return result;
         }
-        public IEnumerable<RecordViewModel> GetConfirmRecordByLocationDateForWorker(int workerID, int locationID, DateTime date)
+        public IEnumerable<RecordViewModel> GetDeniedRecordByLocationDateForWorker(int workerID, int locationID, DateTime date)
         {
             var listRecordOriginal = GetRecordByLocationDateForWorker(workerID, locationID, date);
-            var result = listRecordOriginal.Where(x => x.Status == Constant.ACCEPT || x.Status == Constant.REFUSE).ToList();
+            var result = listRecordOriginal.Where(x => x.Status == Constant.DENY_SLEEPY).ToList();
             return result;
         }
 
@@ -392,7 +392,7 @@ namespace DWDW_Service.Services
                 DeviceId = device.DeviceId,
                 Type = record.Type,
                 RecordDateTime = DateTime.Now,
-                Status = Constant.NOT_CONFIRMED
+                Status = Constant.SLEEPY
             };
             var notification = this.unitOfWork.NotificationRepository.CreateNotification(recordEntity, room, manager, worker, device.DeviceCode);
             var notificationFCM = new NotificationFCMViewModel

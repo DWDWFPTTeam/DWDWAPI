@@ -33,6 +33,8 @@ namespace DWDW_API.Core.Constants
 
         //record status
         public static string NOT_CONFIRMED = "UNKNOWN";
+        public static string SLEEPY = "SLEEPY";
+        public static string DENY_SLEEPY = "NOT SLEEPY";
         public static string ACCEPT = "ACCEPT";
         public static string REFUSE = "REFUSE";
 
