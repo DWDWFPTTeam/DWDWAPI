@@ -83,7 +83,7 @@ namespace DWDW_Service.Services
                     record.ImageByte = File.ReadAllBytes(r.Image);
                     return record;
                 }).ToList();
-
+            records.Reverse();
             return records;
         }
 
@@ -113,6 +113,7 @@ namespace DWDW_Service.Services
             {
                 element.RoomId = roomID;
             }
+            result.Reverse();
             return result;
         }
 
@@ -154,6 +155,7 @@ namespace DWDW_Service.Services
             {
                 element.RoomId = roomID;
             }
+            result.Reverse();
             return result;
         }
 
@@ -349,6 +351,7 @@ namespace DWDW_Service.Services
                 recordViewModel.RoomCode = room.RoomCode;
                 return recordViewModel;
             });
+            recordVM.Reverse();
             return recordVM;
         }
 
@@ -364,6 +367,7 @@ namespace DWDW_Service.Services
                 var room = roomRepo.GetRoomFromDevice(element);
                 element.RoomId = room.RoomId;
             }
+            record.Reverse();
             return record;
         }
 
