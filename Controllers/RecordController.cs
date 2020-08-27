@@ -110,6 +110,28 @@ namespace DWDW_API.Controllers
                 return recordService.GetRecordByLocationWorkerDateForManager(userID, workerID, locationID, date);
             });
         }
+        [Route("GetSleepyRecordByLocationWorkerDateForManager")]
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpGet]
+        public dynamic GetSleepyRecordByLocationWorkerDateForManager(int workerID, int locationID, DateTime date)
+        {
+            int userID = int.Parse(CurrentUserId);
+            return ExecuteInMonitoring(() =>
+            {
+                return recordService.GetSleepyRecordByLocationWorkerDateForManager(userID, workerID, locationID, date);
+            });
+        }
+        [Route("GetDeniedRecordByLocationWorkerDateForManager")]
+        [Authorize(Roles = Constant.MANAGER)]
+        [HttpGet]
+        public dynamic GetDeniedRecordByLocationWorkerDateForManager(int workerID, int locationID, DateTime date)
+        {
+            int userID = int.Parse(CurrentUserId);
+            return ExecuteInMonitoring(() =>
+            {
+                return recordService.GetDeniedRecordByLocationWorkerDateForManager(userID, workerID, locationID, date);
+            });
+        }
 
         [Route("GetRecordByLocationDateForWorker")]
         [Authorize(Roles = Constant.WORKER)]
@@ -145,15 +167,15 @@ namespace DWDW_API.Controllers
             });
         }
 
-        [Route("UpdateRecordStatusWorker")]
+        [Route("DenyRecordStatusWorker")]
         [Authorize(Roles = Constant.WORKER)]
         [HttpPut]
-        public dynamic UpdateRecordStatusWorker(RecordStatusModel record)
+        public dynamic DenyRecordStatusWorker(RecordStatusModel record)
         {
             int userID = int.Parse(CurrentUserId);
             return ExecuteInMonitoring(() =>
             {
-                return recordService.UpdateRecordStatusWorker(userID, record);
+                return recordService.DenyRecordStatusWorker(userID, record);
             });
         }
 

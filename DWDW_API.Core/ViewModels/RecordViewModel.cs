@@ -93,8 +93,6 @@ namespace DWDW_API.Core.ViewModels
         [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
         [DisplayFormat(DataFormatString = "yyyy-MM-dd")]
         public DateTime? RecordDateTime { get; set; }
-        [Required(ErrorMessage = ErrorMessages.STATUS_INVALID)]
-        public string Status { get; set; }
         [Required(ErrorMessage = ErrorMessages.COMMENT_INVALID)]
         public string Comment { get; set; }
     }

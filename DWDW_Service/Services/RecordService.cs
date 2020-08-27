@@ -28,11 +28,13 @@ namespace DWDW_Service.Services
         IEnumerable<RecordViewModel> GetRecordByWorkerDate(int workerID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByWorkerDateForManager(int managerID, int workerID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByLocationWorkerDateForManager(int managerID, int workerID, int locationID, DateTime date);
+        IEnumerable<RecordViewModel> GetSleepyRecordByLocationWorkerDateForManager(int managerID, int workerID, int locationID, DateTime date);
+        IEnumerable<RecordViewModel> GetDeniedRecordByLocationWorkerDateForManager(int managerID, int workerID, int locationID, DateTime date);
         IEnumerable<RecordViewModel> GetRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
         IEnumerable<RecordViewModel> GetSleepyRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
         IEnumerable<RecordViewModel> GetDeniedRecordByLocationDateForWorker(int workerID, int locationID, DateTime date);
         RecordImageViewModel GetRecordById(int recordId);
-        RecordViewModel UpdateRecordStatusWorker(int userID, RecordStatusModel record);
+        RecordViewModel DenyRecordStatusWorker(int userID, RecordStatusModel record);
         //Task<RecordViewModel> SaveRecordByte(RecordReceivedByteModel recordReceived, string imageRoot);
     }
 
@@ -197,6 +199,20 @@ namespace DWDW_Service.Services
                 element.RoomId = roomRecord.RoomId;
                 element.RoomCode = roomRecord.RoomCode;
             }
+            result.Reverse();
+            return result;
+        }
+
+        public IEnumerable<RecordViewModel> GetSleepyRecordByLocationWorkerDateForManager(int managerID, int workerID, int locationID, DateTime date)
+        {
+            var records = GetRecordByLocationWorkerDateForManager(managerID, workerID, locationID, date);
+            var result = records.Where(x => x.Status == Constant.SLEEPY).ToList();
+            return result;
+        }
+        public IEnumerable<RecordViewModel> GetDeniedRecordByLocationWorkerDateForManager(int managerID, int workerID, int locationID, DateTime date)
+        {
+            var records = GetRecordByLocationWorkerDateForManager(managerID, workerID, locationID, date);
+            var result = records.Where(x => x.Status == Constant.DENY_SLEEPY).ToList();
             return result;
         }
 
@@ -242,6 +258,7 @@ namespace DWDW_Service.Services
                 element.RoomId = roomRecord.RoomId;
                 element.RoomCode = roomRecord.RoomCode;
             }
+            result.Reverse();
             return result;
         }
         public IEnumerable<RecordViewModel> GetSleepyRecordByLocationDateForWorker(int workerID, int locationID, DateTime date)
@@ -579,7 +596,7 @@ namespace DWDW_Service.Services
             return recordVM;
         }
 
-        public RecordViewModel UpdateRecordStatusWorker(int userID, RecordStatusModel recordUpdateStatus)
+        public RecordViewModel DenyRecordStatusWorker(int userID, RecordStatusModel recordUpdateStatus)
         {
             var result = new RecordViewModel();
             var userRepo = unitOfWork.UserRepository;
@@ -593,7 +610,7 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.RECORD_USER_NOT_RELATED);
             }
-            record.Status = recordUpdateStatus.Status;
+            record.Status = Constant.DENY_SLEEPY;
             record.Comment = recordUpdateStatus.Comment;
             recordRepository.Update(record);
             result = record.ToViewModel<RecordViewModel>();
