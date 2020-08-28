@@ -152,8 +152,9 @@ namespace DWDW_Service.Repositories
 
         public List<Arrangement> GetOverdue()
         {
-            DateTime now = DateTime.Now;
-            return dbContext.Set<Arrangement>().Where(x => x.EndDate < now && x.IsActive == true).ToList();
+            DateTime now = DateTime.Today;
+            DateTime today = now.AddDays(-1);
+            return dbContext.Set<Arrangement>().Where(x => x.EndDate < today && x.IsActive == true).ToList();
         }
 
         public bool GetArrangementConflictDate(ArrangementReceivedViewModel newArrangement)

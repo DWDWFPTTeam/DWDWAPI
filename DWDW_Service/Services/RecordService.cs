@@ -191,7 +191,7 @@ namespace DWDW_Service.Services
             var shiftList = shiftLocation.FirstOrDefault(x => x.Date == date.Date && x.IsActive == true);
             //Lấy ra room từ shift và từ room ra device
             var roomID = shiftList.RoomId;
-            var device = deviceRepo.GetDeviceFromRoom(roomID);
+            var device = deviceRepo.GetDeviceFromRoomByDate(roomID, date);
             //Từ device và date ra record
             var record = recordRepository.GetRecordByDeviceDate(device.DeviceId, date);
             result = record.Select(x => x.ToViewModel<RecordViewModel>()).ToList();

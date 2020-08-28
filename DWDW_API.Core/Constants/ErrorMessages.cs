@@ -121,7 +121,7 @@ namespace DWDW_API.Core.Constants
         //Record Massage
         public const string RECORDID_IS_NOT_EXISTED= "RecordId is not existed";
         public const string LOCATION_HAVE_NO_DEVICE = "Location has no device";
-        public const string RECORD_USER_NOT_RELATED = "Location has no device";
+        public const string RECORD_USER_NOT_RELATED = "This record not belong to this user";
 
         public const string RECORD_DATE_NOT_EXISTED = "There's no record at this date";
 
