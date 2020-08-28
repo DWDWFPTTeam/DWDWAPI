@@ -36,6 +36,7 @@ namespace DWDW_API.Controllers
         }
 
         [HttpGet]
+        [Route("DisableOverdue")]
         [Authorize(Roles = Constant.ADMIN)]
         public IActionResult CreateCheckingOverdueJob(int number1, int number2)
         {
