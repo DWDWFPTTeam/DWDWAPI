@@ -40,8 +40,8 @@ namespace DWDW_API.Controllers
         [Authorize(Roles = Constant.ADMIN)]
         public IActionResult CreateCheckingOverdueJob()
         {
-            userService.DeactiveOverdue();
-            //RecurringJob.AddOrUpdate("DeactiveOverdue", () => userService.DeactiveOverdue(), "0 0 * * *", TimeZoneInfo.Local);
+            //userService.DeactiveOverdue();
+            RecurringJob.AddOrUpdate("DeactiveOverdue", () => userService.DeactiveOverdue(), "0 0 * * *", TimeZoneInfo.Local);
             return Ok();
         }
 
