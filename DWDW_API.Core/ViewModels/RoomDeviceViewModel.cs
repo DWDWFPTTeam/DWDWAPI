@@ -22,10 +22,10 @@ namespace DWDW_API.Core.ViewModels
         public int? RoomId { get; set; }
         [Required(ErrorMessage = ErrorMessages.DEVICE_ID_INVALID)]
         public int? DeviceId { get; set; }
-        [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
-        public DateTime? StartDate { get; set; }
-        [DataType(DataType.DateTime, ErrorMessage = ErrorMessages.WRONG_DATETIME_FORMAT)]
-        public DateTime? EndDate { get; set; }
+        [Required(ErrorMessage = ErrorMessages.DATE_INVALID)]
+        public DateTime StartDate { get; set; }
+        [Required(ErrorMessage = ErrorMessages.DATE_INVALID)]
+        public DateTime EndDate { get; set; }
     }
 
     public class RoomDeviceAssignModel : BaseModel

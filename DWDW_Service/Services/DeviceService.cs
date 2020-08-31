@@ -302,7 +302,7 @@ namespace DWDW_Service.Services
             {
                 throw new BaseException(ErrorMessages.DATE_INVALID);
             }
-            if (roomDevice.StartDate < roomDevice.EndDate)
+            if (roomDevice.StartDate > roomDevice.EndDate)
             {
                 throw new BaseException(ErrorMessages.DATE_INVALID);
             }
