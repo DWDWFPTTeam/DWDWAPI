@@ -17,6 +17,7 @@ namespace DWDW_API.Core.ViewModels
     }
     public class LocationUserViewModel : BaseModel
     {
+        public int? ArrangementId { get; set; }
         public int LocationId { get; set; }
         public string LocationCode { get; set; }
         public bool? IsActive { get; set; }

@@ -245,11 +245,11 @@ namespace DWDW_API.Controllers
         [Route("DeassignUserFromLocationByAdmin")]
         [Authorize(Roles = Constant.ADMIN)]
         [HttpPut]
-        public dynamic DeassignUserFromLocationByAdmin(ArrangementDisableViewModel arrangement)
+        public dynamic DeassignUserFromLocationByAdmin(int arrangementID)
         {
             return ExecuteInMonitoring(() =>
             {
-                return userService.DeassignUserToLocation(arrangement);
+                return userService.DeassignUserToLocation(arrangementID);
             });
         }
 

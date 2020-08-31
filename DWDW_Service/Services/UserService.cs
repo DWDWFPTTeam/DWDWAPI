@@ -38,7 +38,7 @@ namespace DWDW_Service.Services
         UserViewModel UpdateUserDeviceToken(int userID, string deviceToken);
         UserViewModel UpdatePersonalInfo(int userID, UserPersonalUpdateModel updateUser);
         ArrangementViewModel AssignUserToLocation(ArrangementReceivedViewModel arrangement);
-        ArrangementViewModel DeassignUserToLocation(ArrangementDisableViewModel arrangement);
+        ArrangementViewModel DeassignUserToLocation(int arrangementID);
         void DeactiveOverdue();
     }
     public class UserService : BaseService<User>, IUserService
@@ -124,9 +124,20 @@ namespace DWDW_Service.Services
                 throw new BaseException(ErrorMessages.USERID_IS_NOT_EXISTED);
             }
             result = user.ToViewModel<UserGetAllViewModel>();
-            result.Locations = this.unitOfWork.ArrangementRepository.Get(arr => arr.UserId == user.UserId
-                                                                        && arr.IsActive == true, null, "Location")
-                                                                        .Select(arr => arr.Location.ToViewModel<LocationUserViewModel>());
+            var arrangementList = unitOfWork.ArrangementRepository.GetArrangementOfUser(userId);
+            var locationList = new List<LocationUserViewModel>();
+            foreach (var element in arrangementList)
+            {
+                var location = element.Location.ToViewModel<LocationUserViewModel>();
+                location.StartDate = element.StartDate;
+                location.EndDate = element.EndDate;
+                location.ArrangementId = element.ArrangementId;
+                locationList.Add(location);
+            }
+            //result.Locations = this.unitOfWork.ArrangementRepository.Get(arr => arr.UserId == user.UserId
+            //                                                            && arr.IsActive == true, null, "Location")
+            //                                                            .Select(arr => arr.Location.ToViewModel<LocationUserViewModel>());
+            result.Locations = locationList;
             result.Role = this.unitOfWork.RoleRepository.Get(role => role.RoleId == user.RoleId
                                                                           && role.IsActive == true, null, "")
                                                                           .FirstOrDefault().ToViewModel<RoleViewModel>();
@@ -540,10 +551,10 @@ namespace DWDW_Service.Services
             return result;
         }
 
-        public ArrangementViewModel DeassignUserToLocation(ArrangementDisableViewModel arrangement)
+        public ArrangementViewModel DeassignUserToLocation(int arrangementID)
         {
             var arrangementRepo = this.unitOfWork.ArrangementRepository;
-            var arrangementDeassign = arrangementRepo.CheckLocationManagerWorker(arrangement.UserId, arrangement.LocationId, DateTime.Now);
+            var arrangementDeassign = arrangementRepo.Find(arrangementID);
             if (arrangementDeassign == null)
             {
                 throw new BaseException(ErrorMessages.ARRANGEMENT_NOT_EXISTED);
