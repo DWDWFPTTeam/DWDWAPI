@@ -101,7 +101,7 @@ namespace DWDW_Service.Repositories
         public int? GetShiftRoomByArrangementDate(List<int?> arrangementRelated, DateTime date)
         {
             var result = dbContext.Set<Shift>().FirstOrDefault(x => arrangementRelated.Contains(x.ArrangementId)
-            && x.Date == date);
+            && x.Date == date && x.IsActive == true);
             int? workerRoomID;
             if (result == null)
             {
@@ -127,7 +127,8 @@ namespace DWDW_Service.Repositories
         }
         public List<Record> GetRecordByWorkerDate(int? roomID, DateTime date)
         {
-            var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.RoomId == roomID && x.IsActive == true);
+            var roomDevice = dbContext.Set<RoomDevice>().FirstOrDefault(x => x.RoomId == roomID && x.IsActive == true
+            && x.StartDate <= date && x.EndDate >= date);
             var result = dbContext.Set<Record>().Where(x => x.DeviceId == roomDevice.DeviceId
             && x.RecordDateTime < date.AddDays(1) && x.RecordDateTime > date).ToList();
             return result;
