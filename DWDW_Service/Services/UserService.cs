@@ -64,7 +64,10 @@ namespace DWDW_Service.Services
                 {
                     throw new BaseException(ErrorMessages.ROLE_IS_NOT_EXISTED);
                 }
-
+                if (create.DateOfBirth > DateTime.Today)
+                {
+                    throw new BaseException(ErrorMessages.DATE_INVALID);
+                }
                 //Map userCreateModel => userEntity to insert to database
                 var userEntity = create.ToEntity<User>();
 
@@ -212,6 +215,10 @@ namespace DWDW_Service.Services
             if (user == null)
             {
                 throw new BaseException(ErrorMessages.USER_IS_NOT_EXISTED);
+            }
+            if (userUpdate.DateOfBirth > DateTime.Today)
+            {
+                throw new BaseException(ErrorMessages.DATE_INVALID);
             }
             user.FullName = userUpdate.FullName;
             user.DateOfBirth = userUpdate.DateOfBirth;
